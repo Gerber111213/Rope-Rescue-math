@@ -118,6 +118,30 @@
       border-color: var(--accent-cyan);
     }
 
+    /* Stepper Controls (+ / -) */
+    .stepper-control {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #090d16;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 0.3rem;
+    }
+
+    .step-btn {
+      background-color: var(--panel-bg);
+      color: var(--text-main);
+      border: none;
+      padding: 0.4rem 0.8rem;
+      font-weight: bold;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .step-btn:hover { background-color: var(--accent-cyan); color: #090d16; }
+    .step-value { font-weight: bold; font-size: 1.1rem; color: var(--accent-cyan); }
+
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -185,7 +209,7 @@
 
   <header>
     <h1>Rope Rescue Command Aid</h1>
-    <span style="font-size: 0.85rem; color: var(--accent-cyan);">Advanced Rigging & Safety Engine</span>
+    <span style="font-size: 0.85rem; color: var(--accent-cyan);">Professional Incident Command Engine</span>
   </header>
 
   <nav class="screen-tabs">
@@ -199,11 +223,18 @@
     <section id="screen-inputs" class="screen active">
       <div class="input-grid">
         
-        <!-- Hardware & Rigging -->
+        <!-- System Architecture & Rigging -->
         <div class="card">
-          <h3>Rope & Hardware</h3>
+          <h3>System Architecture</h3>
           <div class="field">
-            <label>Rope Type</label>
+            <label>Rigging Strategy</label>
+            <div class="btn-group" data-key="riggingStrategy">
+              <button class="opt-btn active" onclick="selectOption(this, 'riggingStrategy', 'tts')">Twin Tension System</button>
+              <button class="opt-btn" onclick="selectOption(this, 'riggingStrategy', 'mb')">Main & Belay</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Rope Type & Diameter</label>
             <div class="btn-group" data-key="ropeType">
               <button class="opt-btn active" onclick="selectOption(this, 'ropeType', 'static')">Static</button>
               <button class="opt-btn" onclick="selectOption(this, 'ropeType', 'dynamic')">Dynamic</button>
@@ -212,8 +243,8 @@
           <div class="field">
             <label>Rope Diameter</label>
             <div class="btn-group" data-key="ropeDiameter">
-              <button class="opt-btn" onclick="selectOption(this, 'ropeDiameter', 11)">11mm (7/16")</button>
-              <button class="opt-btn active" onclick="selectOption(this, 'ropeDiameter', 12.5)">12.5mm (1/2")</button>
+              <button class="opt-btn" onclick="selectOption(this, 'ropeDiameter', 11)">11mm (T)</button>
+              <button class="opt-btn active" onclick="selectOption(this, 'ropeDiameter', 12.5)">12.5mm (G)</button>
             </div>
           </div>
           <div class="field">
@@ -223,41 +254,40 @@
               <button class="opt-btn" onclick="selectOption(this, 'highDir', 'other')">Other High Dir.</button>
             </div>
           </div>
-          <div class="field">
-            <label>Mechanical Advantage</label>
-            <div class="btn-group" data-key="maSystem">
-              <button class="opt-btn" onclick="selectOption(this, 'maSystem', 1)">1:1</button>
-              <button class="opt-btn" onclick="selectOption(this, 'maSystem', 3)">3:1</button>
-              <button class="opt-btn active" onclick="selectOption(this, 'maSystem', 5)">5:1</button>
-            </div>
-          </div>
         </div>
 
-        <!-- Load & Personnel -->
+        <!-- Load & Personnel Steppers -->
         <div class="card">
           <h3>Load & Personnel</h3>
           <div class="field">
+            <label>Rescue Basket (Litter)</label>
+            <div class="btn-group" data-key="useLitter">
+              <button class="opt-btn active" onclick="selectOption(this, 'useLitter', true)">Metal Basket (+30 lbs)</button>
+              <button class="opt-btn" onclick="selectOption(this, 'useLitter', false)">None / Sked Only</button>
+            </div>
+          </div>
+          <div class="field">
             <label>Number of Patients</label>
-            <div class="btn-group" data-key="numPatients">
-              <button class="opt-btn" onclick="selectOption(this, 'numPatients', 0)">0</button>
-              <button class="opt-btn active" onclick="selectOption(this, 'numPatients', 1)">1</button>
-              <button class="opt-btn" onclick="selectOption(this, 'numPatients', 2)">2</button>
+            <div class="stepper-control">
+              <button class="step-btn" onclick="adjustValue('numPatients', -1)">-</button>
+              <span class="step-value" id="val-numPatients">1</span>
+              <button class="step-btn" onclick="adjustValue('numPatients', 1)">+</button>
             </div>
           </div>
           <div class="field">
-            <label>Rescuers on Load</label>
-            <div class="btn-group" data-key="numRescuers">
-              <button class="opt-btn" onclick="selectOption(this, 'numRescuers', 0)">0</button>
-              <button class="opt-btn active" onclick="selectOption(this, 'numRescuers', 1)">1</button>
-              <button class="opt-btn" onclick="selectOption(this, 'numRescuers', 2)">2</button>
+            <label>Rescuers on Line</label>
+            <div class="stepper-control">
+              <button class="step-btn" onclick="adjustValue('numRescuers', -1)">-</button>
+              <span class="step-value" id="val-numRescuers">1</span>
+              <button class="step-btn" onclick="adjustValue('numRescuers', 1)">+</button>
             </div>
           </div>
           <div class="field">
-            <label>Avg Weight / Person</label>
-            <div class="btn-group" data-key="avgWeight">
-              <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 180)">180 lbs</button>
-              <button class="opt-btn active" onclick="selectOption(this, 'avgWeight', 220)">220 lbs</button>
-              <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 250)">250 lbs</button>
+            <label>Trained Haul Team Members</label>
+            <div class="stepper-control">
+              <button class="step-btn" onclick="adjustValue('haulTeam', -1)">-</button>
+              <span class="step-value" id="val-haulTeam">4</span>
+              <button class="step-btn" onclick="adjustValue('haulTeam', 1)">+</button>
             </div>
           </div>
         </div>
@@ -265,6 +295,14 @@
         <!-- Geometry & Anchors -->
         <div class="card">
           <h3>Environment & Anchors</h3>
+          <div class="field">
+            <label>Average Weight / Person</label>
+            <div class="btn-group" data-key="avgWeight">
+              <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 180)">180 lbs</button>
+              <button class="opt-btn active" onclick="selectOption(this, 'avgWeight', 220)">220 lbs</button>
+              <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 250)">250 lbs</button>
+            </div>
+          </div>
           <div class="field">
             <label>Slope Angle (Degrees)</label>
             <div class="btn-group" data-key="angle">
@@ -275,12 +313,11 @@
             </div>
           </div>
           <div class="field">
-            <label>Anchor Type / Material</label>
+            <label>Anchor Type / Rating</label>
             <div class="btn-group" data-key="anchorType">
               <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'industrial')">Industrial (6k)</button>
               <button class="opt-btn active" onclick="selectOption(this, 'anchorType', 'tree')">Substantial Tree</button>
               <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'vehicle')">Vehicle</button>
-              <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'picket')">Picket</button>
             </div>
           </div>
         </div>
@@ -290,7 +327,6 @@
 
     <!-- SCREEN 2: ANALYSIS -->
     <section id="screen-analysis" class="screen">
-      <!-- Pop-up Alert Banner for Exceeding Safety Limits -->
       <div id="safetyAlertBanner" class="alert-banner">
         <h3 style="color: var(--accent-red); margin-bottom: 0.3rem;">⚠️ SAFETY FACTOR WARNING</h3>
         <p id="alertBannerText" style="font-size: 0.95rem; line-height: 1.4;">System safety factor has dropped below the standard 10:1 NFPA general rescue guideline threshold.</p>
@@ -308,7 +344,7 @@
           <div class="metric-sub" id="res-rope-load-sub">0 kg / 0 kN</div>
         </div>
         <div class="metric-card">
-          <div class="metric-title">Tension on Haul Team</div>
+          <div class="metric-title">Haul Effort per Hauler</div>
           <div class="metric-value" id="res-haul-tension">0 lbs</div>
           <div class="metric-sub" id="res-haul-tension-sub">0 kg / 0 kN</div>
         </div>
@@ -320,7 +356,7 @@
       </div>
 
       <div class="card" style="margin-bottom: 1.2rem;">
-        <h3>Top 3 Weakest System Components</h3>
+        <h3>Top 3 Weakest System Components (NFPA G/T Ratings)</h3>
         <ul id="weakestGearList" class="weakest-list">
           <!-- Dynamically populated -->
         </ul>
@@ -337,7 +373,7 @@
     <!-- SCREEN 3: LAY DIAGRAM -->
     <section id="screen-diagram" class="screen">
       <div class="canvas-container">
-        <h3 style="color: var(--accent-cyan); margin-bottom: 0.5rem; align-self: flex-start;">Interactive System Lay Diagram</h3>
+        <h3 style="color: var(--accent-cyan); margin-bottom: 0.5rem; align-self: flex-start;">Professional Lay Diagram</h3>
         <canvas id="diagramCanvas" width="900" height="450"></canvas>
       </div>
     </section>
@@ -345,12 +381,14 @@
 
   <script>
     const state = {
+      riggingStrategy: 'tts',
       ropeType: 'static',
       ropeDiameter: 12.5,
       highDir: 'vortex',
-      maSystem: 5,
+      useLitter: true,
       numPatients: 1,
       numRescuers: 1,
+      haulTeam: 4,
       avgWeight: 220,
       angle: 90,
       anchorType: 'tree'
@@ -359,8 +397,7 @@
     const anchorStrengths = {
       industrial: 6000,
       tree: 4000,
-      vehicle: 2500,
-      picket: 1500
+      vehicle: 2500
     };
 
     function selectOption(btn, key, value) {
@@ -368,6 +405,12 @@
       parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state[key] = value;
+      calculate();
+    }
+
+    function adjustValue(key, delta) {
+      state[key] = Math.max(0, state[key] + delta);
+      document.getElementById(`val-${key}`).innerText = state[key];
       calculate();
     }
 
@@ -384,8 +427,10 @@
     }
 
     function calculate() {
-      const totalPersons = state.numPatients + state.numRescuers;
-      const totalWeightLbs = totalPersons * state.avgWeight;
+      const personnelWeight = (state.numPatients + state.numRescuers) * state.avgWeight;
+      const litterWeight = state.useLitter ? 30 : 0; // Standard metal basket weight ~30 lbs
+      const totalWeightLbs = personnelWeight + litterWeight;
+      
       const totalWeightKg = totalWeightLbs * 0.453592;
       const totalWeightKn = totalWeightLbs * 0.00444822;
 
@@ -394,24 +439,26 @@
       const slopeForceKg = slopeForceLbs * 0.453592;
       const slopeForceKn = slopeForceLbs * 0.00444822;
 
-      const haulEffortLbs = slopeForceLbs / state.maSystem;
+      // Effective load distribution based on Rigging Strategy
+      const effectiveLoadPerLine = state.riggingStrategy === 'tts' ? slopeForceLbs / 2 : slopeForceLbs;
+
+      const haulEffortLbs = state.haulTeam > 0 ? effectiveLoadPerLine / (state.haulTeam * 1.5) : effectiveLoadPerLine; // Assuming 3:1 Z-rig per hauler efficiency estimate
       const haulEffortKg = haulEffortLbs * 0.453592;
       const haulEffortKn = haulEffortLbs * 0.00444822;
 
       const ropeMbsLbs = (state.ropeDiameter >= 12.5) ? 9000 : 6000;
-      const safetyFactor = slopeForceLbs > 0 ? (ropeMbsLbs / slopeForceLbs).toFixed(1) : "N/A";
+      const safetyFactor = effectiveLoadPerLine > 0 ? (ropeMbsLbs / effectiveLoadPerLine).toFixed(1) : "N/A";
       const anchorValLbs = anchorStrengths[state.anchorType] || 4000;
-      
       const highDirMbsLbs = state.highDir === 'vortex' ? 8000 : 5000;
 
-      // Populate UI metrics with lbs, kg, kN
+      // Populate UI metrics
       document.getElementById('res-total-weight').innerText = `${totalWeightLbs.toFixed(0)} lbs`;
       document.getElementById('res-total-weight-sub').innerText = `${totalWeightKg.toFixed(0)} kg / ${totalWeightKn.toFixed(2)} kN`;
 
-      document.getElementById('res-rope-load').innerText = `${slopeForceLbs.toFixed(0)} lbs`;
-      document.getElementById('res-rope-load-sub').innerText = `${slopeForceKg.toFixed(0)} kg / ${slopeForceKn.toFixed(2)} kN`;
+      document.getElementById('res-rope-load').innerText = `${effectiveLoadPerLine.toFixed(0)} lbs / line`;
+      document.getElementById('res-rope-load-sub').innerText = `${(effectiveLoadPerLine*0.453592).toFixed(0)} kg / ${(effectiveLoadPerLine*0.00444822).toFixed(2)} kN`;
 
-      document.getElementById('res-haul-tension').innerText = `${haulEffortLbs.toFixed(0)} lbs`;
+      document.getElementById('res-haul-tension').innerText = `${haulEffortLbs.toFixed(0)} lbs / person`;
       document.getElementById('res-haul-tension-sub').innerText = `${haulEffortKg.toFixed(0)} kg / ${haulEffortKn.toFixed(2)} kN`;
       
       const sfElement = document.getElementById('res-safety-factor');
@@ -427,17 +474,16 @@
         alertBanner.classList.remove('visible');
       }
 
-      // Identify 3 weakest components based on rated capacities vs actual system force
+      // NFPA G/T Hardware Ratings Check (~40kN General / ~25kN Technical)
       const components = [
         { name: `Anchor Point (${state.anchorType.toUpperCase()})`, capacity: anchorValLbs },
         { name: `Main Line Rope (${state.ropeDiameter}mm ${state.ropeType})`, capacity: ropeMbsLbs },
         { name: `High Directional (${state.highDir.toUpperCase()})`, capacity: highDirMbsLbs },
-        { name: `Rigging Carabiners / Connectors`, capacity: 9000 },
-        { name: `Pulleys & Haul Rigging`, capacity: 8000 }
+        { name: `General Use (G) Carabiners / Connectors (~40 kN)`, capacity: 8992 },
+        { name: `Technical Use (T) Hardware / Pulleys (~25 kN)`, capacity: 5620 }
       ];
 
-      // Sort components by capacity margin relative to load
-      components.sort((a, b) => (a.capacity / slopeForceLbs) - (b.capacity / slopeForceLbs));
+      components.sort((a, b) => (a.capacity / effectiveLoadPerLine) - (b.capacity / effectiveLoadPerLine));
       
       const weakestListHtml = components.slice(0, 3).map((item, idx) => `
         <li class="weakest-item">
@@ -447,10 +493,10 @@
       document.getElementById('weakestGearList').innerHTML = weakestListHtml;
 
       document.getElementById('res-breakdown-text').innerHTML = `
-        <strong>Rope Spec:</strong> ${state.ropeType.toUpperCase()} (${state.ropeDiameter}mm, MBS: ${ropeMbsLbs} lbs)<br/>
-        <strong>High Directional:</strong> ${state.highDir === 'vortex' ? 'Arizona Vortex' : 'Other High Dir'} (MBS: ${highDirMbsLbs} lbs)<br/>
+        <strong>Strategy:</strong> ${state.riggingStrategy === 'tts' ? 'Twin Tension System (Shared Load)' : 'Main & Belay System'}<br/>
+        <strong>Basket / Litter:</strong> ${state.useLitter ? 'Included Metal Basket (+30 lbs)' : 'Not included'}<br/>
         <strong>Slope Angle Multiplier:</strong> sin(${state.angle}°) = ${Math.sin(rad).toFixed(2)}<br/>
-        <strong>Anchor Reserve Limit:</strong> ${(anchorValLbs - slopeForceLbs).toFixed(0)} lbs remaining capacity.
+        <strong>Haul Team Status:</strong> ${state.haulTeam} Haulers active on scene.
       `;
 
       drawDiagram();
@@ -509,24 +555,20 @@
         ctx.fillStyle = '#000';
         ctx.beginPath(); ctx.arc(anchorX - 20, anchorY - 5, 8, 0, Math.PI * 2); ctx.arc(anchorX + 15, anchorY - 5, 8, 0, Math.PI * 2); ctx.fill();
       } else {
-        ctx.strokeStyle = '#94a3b8';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(anchorX - 15, anchorY); ctx.lineTo(anchorX - 5, anchorY - 35);
-        ctx.moveTo(anchorX + 5, anchorY); ctx.lineTo(anchorX + 15, anchorY - 35);
-        ctx.stroke();
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(anchorX - 20, anchorY - 25, 40, 25);
       }
 
       ctx.fillStyle = '#f8fafc';
       ctx.font = 'bold 12px sans-serif';
       ctx.fillText(`Anchor (${state.anchorType.toUpperCase()})`, anchorX - 35, anchorY - 70);
 
-      // High Directional (Arizona Vortex / Other) at Edge
+      // High Directional at Edge
       ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(edgeX - 15, edgeY - 40, 10, 40);
-      ctx.fillText(state.highDir === 'vortex' ? 'AZ Vortex' : 'High Dir', edgeX - 45, edgeY - 45);
+      ctx.fillRect(edgeX - 15, edgeY - 45, 12, 45);
+      ctx.fillText(state.highDir === 'vortex' ? 'AZ Vortex' : 'High Dir', edgeX - 45, anchorY - 50);
 
-      // Main Line
+      // Main Line Rope
       ctx.strokeStyle = state.ropeType === 'static' ? '#38bdf8' : '#f59e0b';
       ctx.lineWidth = 3;
       ctx.beginPath();
@@ -535,7 +577,7 @@
       ctx.lineTo(targetX, targetY);
       ctx.stroke();
 
-      // Midline Rescuer
+      // Midline Rescuer Cartoon
       const midX = edgeX + (targetX - edgeX) * 0.45;
       const midY = edgeY + (targetY - edgeY) * 0.45;
 
@@ -545,25 +587,28 @@
         ctx.strokeStyle = '#38bdf8';
         ctx.lineWidth = 4;
         ctx.beginPath(); ctx.moveTo(midX, midY - 9); ctx.lineTo(midX, midY + 8); ctx.stroke();
-        ctx.fillText('Rescuer', midX + 10, midY);
+        ctx.fillText(`Rescuer (${state.numRescuers})`, midX + 10, midY);
       }
 
-      // Patient Litter
-      ctx.fillStyle = '#eab308';
-      ctx.fillRect(targetX - 20, targetY - 10, 40, 20);
-      ctx.strokeStyle = '#f8fafc';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(targetX - 20, targetY - 10, 40, 20);
+      // Detailed Metal Litter Basket Cartoon
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(targetX - 25, targetY - 12, 50, 24);
+      // Tubing crossbars
+      ctx.beginPath();
+      ctx.moveTo(targetX - 15, targetY - 12); ctx.lineTo(targetX - 15, targetY + 12);
+      ctx.moveTo(targetX + 15, targetY - 12); ctx.lineTo(targetX + 15, targetY + 12);
+      ctx.stroke();
 
       if (state.numPatients > 0) {
         ctx.fillStyle = '#ef4444';
-        ctx.beginPath(); ctx.arc(targetX - 8, targetY, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(targetX, targetY, 5, 0, Math.PI * 2); ctx.fill();
       }
 
       ctx.fillStyle = '#f8fafc';
-      ctx.fillText(`Patient Litter (${state.numPatients} P / ${state.numRescuers} R)`, targetX - 50, targetY + 30);
+      ctx.fillText(`Rescue Basket / Litter (${state.numPatients} P)`, targetX - 60, targetY + 35);
       
-      // Angle Indicator
+      // Angle Indicator Arc
       ctx.strokeStyle = '#ef4444';
       ctx.lineWidth = 2;
       ctx.beginPath();
