@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rope Rescue Command Calculator & Aid</title>
+  <style>
+    :root {
+      --bg-main: #0f172a;
+      --panel-bg: #1e293b;
+      --accent-red: #d9381e;
+      --accent-cyan: #38bdf8;
+      --accent-green: #22c55e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background-color: #090d16;
+      border-bottom: 3px solid var(--accent-red);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 { font-size: 1.4rem; color: var(--accent-red); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Nav Screens */
+    .screen-tabs {
+      display: flex;
+      background-color: var(--panel-bg);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.8rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-weight: bold;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--accent-cyan);
+      border-bottom: 3px solid var(--accent-cyan);
+      background-color: rgba(56, 189, 248, 0.05);
+    }
+
+    /* Container & Screens */
+    main { flex: 1; padding: 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* Grid Layout for Inputs */
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .card {
+      background-color: var(--panel-bg);
+      padding: 1.2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .card h3 {
+      color: var(--accent-cyan);
+      margin-bottom: 0.8rem;
+      font-size: 1.1rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.4rem;
+    }
+
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem; }
+    .field input, .field select {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      background-color: #090d16;
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+
+    /* Output Summary Screen */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric-card {
+      background-color: var(--panel-bg);
+      padding: 1rem;
+      border-radius: 6px;
+      border-left: 4px solid var(--accent-cyan);
+    }
+
+    .metric-card.alert { border-left-color: var(--accent-red); }
+    .metric-card.good { border-left-color: var(--accent-green); }
+
+    .metric-title { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
+    .metric-value { font-size: 1.6rem; font-weight: bold; margin-top: 0.3rem; }
+
+    /* Diagram Canvas Container */
+    .canvas-container {
+      background-color: #050811;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    canvas {
+      background-color: #020408;
+      border-radius: 4px;
+      width: 100%;
+      max-width: 900px;
+      height: 450px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Rope Rescue Aid</h1>
+    <span style="font-size: 0.85rem; color: var(--accent-cyan);">Rigging & System Estimator</span>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="screen-tabs">
+    <button class="tab-btn active" onclick="switchTab('screen-inputs')">1. Operations & Inputs</button>
+    <button class="tab-btn" onclick="switchTab('screen-analysis')">2. Load Analysis</button>
+    <button class="tab-btn" onclick="switchTab('screen-diagram')">3. Lay Diagram</button>
+  </nav>
+
+  <main>
+    <!-- SCREEN 1: INPUTS -->
+    <section id="screen-inputs" class="screen active">
+      <div class="input-grid">
+        
+        <!-- Rope & Mechanical Advantage -->
+        <div class="card">
+          <h3>Rope & Hardware</h3>
+          <div class="field">
+            <label>Rope Type</label>
+            <select id="ropeType" onchange="calculate()">
+              <option value="static">Static Kernmantle (Low Elongation)</option>
+              <option value="dynamic">Dynamic (High Stretch)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Rope Diameter</label>
+            <select id="ropeDiameter" onchange="calculate()">
+              <option value="11">11 mm (7/16 in)</option>
+              <option value="12.5" selected>12.5 mm (1/2 in)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Mechanical Advantage System</label>
+            <select id="maSystem" onchange="calculate()">
+              <option value="1">1:1 Direct</option>
+              <option value="3">3:1 Z-Rig</option>
+              <option value="5" selected>5:1 Compound / Complex</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Loads & Personnel -->
+        <div class="card">
+          <h3>Load & Personnel</h3>
+          <div class="field">
+            <label>Number of Patients</label>
+            <input type="number" id="numPatients" value="1" min="0" onchange="calculate()">
+          </div>
+          <div class="field">
+            <label>Number of Rescuers on Load</label>
+            <input type="number" id="numRescuers" value="1" min="0" onchange="calculate()">
+          </div>
+          <div class="field">
+            <label>Average Weight per Person (lbs)</label>
+            <input type="number" id="avgWeight" value="220" onchange="calculate()">
+          </div>
+        </div>
+
+        <!-- Geometry & Environment -->
+        <div class="card">
+          <h3>Geometry & Anchors</h3>
+          <div class="field">
+            <label>Rope Length / Distance (ft)</label>
+            <input type="number" id="distance" value="150" onchange="calculate()">
+          </div>
+          <div class="field">
+            <label>Slope / Direction Angle (Degrees)</label>
+            <input type="number" id="angle" value="90" min="0" max="90" onchange="calculate()">
+          </div>
+          <div class="field">
+            <label>Anchor Type / Material</label>
+            <select id="anchorType" onchange="calculate()">
+              <option value="4000">Substantial Tree / Large Steel Beam (High Strength)</option>
+              <option value="2500">Vehicle / Moderate Structural Point</option>
+              <option value="1500">Single Pickets / Light Anchor Point</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SCREEN 2: ANALYSIS -->
+    <section id="screen-analysis" class="screen">
+      <div class="summary-grid">
+        <div class="metric-card">
+          <div class="metric-title">Total Suspended Mass</div>
+          <div class="metric-value" id="res-total-weight">0 lbs</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Calculated Rope Load</div>
+          <div class="metric-value" id="res-rope-load">0 lbs</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Tension on Haul Team</div>
+          <div class="metric-value" id="res-haul-tension">0 lbs</div>
+        </div>
+        <div class="metric-card" id="card-sf">
+          <div class="metric-title">Safety Factor (10:1 Rec)</div>
+          <div class="metric-value" id="res-safety-factor">0 : 1</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Calculated System Breakdown</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;" id="res-breakdown-text">
+          Adjust parameters on the operational tab to view calculations.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: LAY DIAGRAM -->
+    <section id="screen-diagram" class="screen">
+      <div class="canvas-container">
+        <h3 style="color: var(--accent-cyan); margin-bottom: 0.5rem; align-self: flex-start;">High-Detail System Lay Diagram</h3>
+        <canvas id="diagramCanvas" width="900" height="450"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+
+      if(tabId === 'screen-diagram') {
+        drawDiagram();
+      }
+    }
+
+    function calculate() {
+      const ropeType = document.getElementById('ropeType').value;
+      const ropeDia = parseFloat(document.getElementById('ropeDiameter').value);
+      const ma = parseFloat(document.getElementById('maSystem').value);
+      
+      const patients = parseInt(document.getElementById('numPatients').value) || 0;
+      const rescuers = parseInt(document.getElementById('numRescuers').value) || 0;
+      const weightPerPerson = parseFloat(document.getElementById('avgWeight').value) || 0;
+
+      const slopeAngle = parseFloat(document.getElementById('angle').value) || 0;
+      const anchorVal = parseFloat(document.getElementById('anchorType').value);
+
+      // Load Calculations
+      const totalPersons = patients + rescuers;
+      const totalWeight = totalPersons * weightPerPerson;
+
+      // Angle Force Modifier = sin(radians)
+      const rad = slopeAngle * (Math.PI / 180);
+      const slopeForce = totalWeight * Math.sin(rad);
+
+      // System Haul Effort
+      const haulEffort = slopeForce / ma;
+
+      // Rope Breaking Strength Estimation (approx. MBS lbs)
+      // 12.5mm ~ 9000 lbs, 11mm ~ 6000 lbs
+      const ropeMbs = (ropeDia >= 12.5) ? 9000 : 6000;
+      const safetyFactor = slopeForce > 0 ? (ropeMbs / slopeForce).toFixed(1) : "N/A";
+
+      // Populate UI
+      document.getElementById('res-total-weight').innerText = `${totalWeight.toFixed(0)} lbs`;
+      document.getElementById('res-rope-load').innerText = `${slopeForce.toFixed(0)} lbs`;
+      document.getElementById('res-haul-tension').innerText = `${haulEffort.toFixed(0)} lbs`;
+      
+      const sfElement = document.getElementById('res-safety-factor');
+      const sfCard = document.getElementById('card-sf');
+      sfElement.innerText = `${safetyFactor} : 1`;
+
+      if (parseFloat(safetyFactor) < 10) {
+        sfCard.className = "metric-card alert";
+      } else {
+        sfCard.className = "metric-card good";
+      }
+
+      document.getElementById('res-breakdown-text').innerHTML = `
+        <strong>Rope Class:</strong> ${ropeType.toUpperCase()} (${ropeDia}mm)<br/>
+        <strong>MBS Estimate:</strong> ${ropeMbs} lbs<br/>
+        <strong>Effective Slope Multiplier:</strong> ${Math.sin(rad).toFixed(2)} (${slopeAngle}° slope)<br/>
+        <strong>Anchor Reserve Margin:</strong> ${(anchorVal - slopeForce).toFixed(0)} lbs remaining on anchor limit.
+      `;
+
+      drawDiagram();
+    }
+
+    function drawDiagram() {
+      const canvas = document.getElementById('diagramCanvas');
+      if(!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const width = canvas.width;
+      const height = canvas.height;
+
+      // Clear Canvas
+      ctx.clearRect(0, 0, width, height);
+
+      // Background Grid
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < width; x += 30) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+      }
+      for (let y = 0; y < height; y += 30) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+      }
+
+      // Draw Cliff Edge
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(0, 150);
+      ctx.lineTo(350, 150);
+      ctx.lineTo(600, 400);
+      ctx.stroke();
+
+      // Anchor Point
+      ctx.fillStyle = '#d9381e';
+      ctx.beginPath();
+      ctx.arc(80, 150, 12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '12px sans-serif';
+      ctx.fillText('Main Anchor', 50, 125);
+
+      // Mechanical Advantage Rig (Pulleys)
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(200, 140, 20, 20);
+      ctx.fillText('MA Pulley', 180, 125);
+
+      // Main Line Rope
+      ctx.strokeStyle = '#22c55e';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(80, 150);
+      ctx.lineTo(200, 150);
+      ctx.lineTo(350, 150);
+      ctx.lineTo(480, 280);
+      ctx.stroke();
+
+      // Suspended Load / Litter
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(460, 280, 40, 20);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('Rescue Load', 445, 320);
+
+      // Force Vector Arrows
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(480, 280);
+      ctx.lineTo(480, 340);
+      ctx.stroke();
+      
+      // Arrow Head
+      ctx.beginPath();
+      ctx.moveTo(475, 330);
+      ctx.lineTo(480, 340);
+      ctx.lineTo(485, 330);
+      ctx.stroke();
+
+      ctx.fillStyle = '#ef4444';
+      ctx.fillText('Gravity Vector', 495, 340);
+    }
+
+    // Initial Calculation
+    window.onload = calculate;
+  </script>
+</body>
+</html>
