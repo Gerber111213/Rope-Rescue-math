@@ -47,7 +47,7 @@
 
         /* Inputs & Layout Styles */
         .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
-        .card { background-color: var(--panel-bg); padding: 1.2rem; border-radius: 8px; border: 1px solid var(--border-color); }
+        .card { background-color: var(--panel-bg); padding: 1.2rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1.2rem; }
         .card h3 { color: var(--accent-cyan); margin-bottom: 0.8rem; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem; }
         .field { margin-bottom: 1.2rem; }
         .field label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
@@ -75,6 +75,18 @@
 
         .canvas-container { background-color: #050811; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; align-items: center; }
         canvas { background-color: #020408; border-radius: 4px; width: 100%; max-width: 900px; height: 450px; }
+
+        /* Cheat Sheet Tables & Lists */
+        .cheat-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.85rem; }
+        .cheat-table th, .cheat-table td { padding: 0.6rem; border: 1px solid var(--border-color); text-align: left; }
+        .cheat-table th { background-color: #090d16; color: var(--accent-cyan); }
+        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; }
+        .glossary-item { background-color: #090d16; padding: 0.8rem; border-radius: 6px; border: 1px solid var(--border-color); }
+        .glossary-item strong { color: var(--accent-cyan); display: block; margin-bottom: 0.2rem; }
+        .flowchart-step { background-color: #090d16; border-left: 4px solid var(--accent-green); padding: 0.8rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.9rem; }
+        .flowchart-step span { color: var(--accent-green); font-weight: bold; }
+        .link-medical { color: var(--accent-cyan); text-decoration: underline; cursor: pointer; font-weight: bold; }
+        .link-medical:hover { color: #fff; }
     </style>
 </head>
 <body>
@@ -103,7 +115,7 @@
             </div>
             
             <div class="hub-grid">
-                <!-- Rope Rescue (Active) -->
+                <!-- Rope Rescue -->
                 <div class="hub-card active-module" onclick="launchModule('rope')">
                     <div>
                         <h3>Rope Rescue <span style="color: var(--accent-cyan);">→</span></h3>
@@ -134,9 +146,9 @@
                 <div class="hub-card active-module" onclick="launchModule('swiftwater')">
                     <div>
                         <h3>Swift Water Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>CFR tension diagonal calculations, throw-bag metrics, hydraulic hazard identification, and boat tether load charts.</p>
+                        <p>Complete operational cheat sheet, river classes, hazard glossaries, whistle protocols, hierarchy, and anchor calculators.</p>
                     </div>
-                    <span class="hub-badge badge-active">Operational</span>
+                    <span class="hub-badge badge-active">Fully Operational</span>
                 </div>
 
                 <!-- Surface Water Rescue -->
@@ -327,21 +339,22 @@
         <!-- SCREEN: SWIFT WATER RESCUE -->
         <section id="screen-swiftwater" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Swift Water Operations & Calculations</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Tension diagonal (Tyrolean) force estimates and throw-bag hydraulic metrics.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Swift Water Command & Reference Guide</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Operational cheat sheet, river classes, hazard glossaries, standard commands, and force calculations.</p>
             </div>
-            
-            <div class="input-grid">
-                <div class="card">
-                    <h3>Tyrolean / Tension Diagonal Inputs</h3>
-                    <div class="field">
+
+            <!-- SECTION A: TENSION CALCULATOR -->
+            <div class="card">
+                <h3>Tyrolean / Tension Diagonal Calculator</h3>
+                <div class="input-grid" style="margin-bottom: 1rem;">
+                    <div class="field" style="margin-bottom:0;">
                         <label>River Flow Speed</label>
                         <div class="btn-group" data-key="swiftFlow">
                             <button class="opt-btn active" onclick="selectSwiftOption(this, 'flow', 5)">Moderate (5 fps)</button>
                             <button class="opt-btn" onclick="selectSwiftOption(this, 'flow', 10)">High / Flood (10 fps)</button>
                         </div>
                     </div>
-                    <div class="field">
+                    <div class="field" style="margin-bottom:0;">
                         <label>Line Deflection Angle (Sag)</label>
                         <div class="btn-group" data-key="swiftSag">
                             <button class="opt-btn" onclick="selectSwiftOption(this, 'sag', 10)">10° (High Force)</button>
@@ -349,18 +362,84 @@
                         </div>
                     </div>
                 </div>
+                <div class="metric-card">
+                    <div class="metric-title">Estimated Anchor Load (Diagonal)</div>
+                    <div class="metric-value" id="res-swift-load">0 lbs</div>
+                    <div class="metric-sub">Water force scales exponentially with current velocity</div>
+                </div>
+            </div>
+
+            <!-- SECTION B: MEDICAL PRIORITY FLOW CHART -->
+            <div class="card">
+                <h3>Medical Priorities & Drowning Care Flow Chart</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">
+                    Immediate triage protocol for pulled swift water victims. For advanced procedures, reference the <span class="link-medical" onclick="alert('Remote Medical / Drowning Care module is queued for upcoming development.')">Remote Medical Module (Drowning Care)</span>.
+                </p>
+                <div class="flowchart-step"><span>Step 1: Scene Safety & Extraction</span> — Ensure victim is secure from current and suspect spinal trauma if mechanism of injury involves rocks or debris.</div>
+                <div class="flowchart-step"><span>Step 2: Airway & Breathing (ABCs)</span> — Clear airway of water/debris. Initiate rescue breaths/CPR immediately if pulseless/apneic. Cold-water submersion reflex can prolong survivability.</div>
+                <div class="flowchart-step"><span>Step 3: Circulation & Hypothermia</span> — Remove wet garments, insulate victim to prevent after-drop, and monitor core temperature.</div>
+                <div class="flowchart-step"><span>Step 4: CASEVAC / Transport</span> — Rapid transfer to definitive emergency medical care.</div>
+            </div>
+
+            <!-- SECTION C: INTERNATIONAL RIVER CLASSES -->
+            <div class="card">
+                <h3>International Scale of River Difficulty</h3>
+                <table class="cheat-table">
+                    <tr><th>Class</th><th>Description & Characteristics</th></tr>
+                    <tr><td><strong>Class I</strong></td><td>Fast-moving water with small riffles and few obstruction points. Clear and easy self-rescue.</td></tr>
+                    <tr><td><strong>Class II</strong></td><td>Straightforward rapids with wide channels and clear passages. Occasional maneuvering required.</td></tr>
+                    <tr><td><strong>Class III</strong></td><td>Moderate, irregular waves, complex maneuvers, and narrow passages. May require scouting for unexperienced groups.</td></tr>
+                    <tr><td><strong>Class IV</strong></td><td>Intense, powerful rapids requiring precise boat handling and high-consequence rescue profiles.</td></tr>
+                    <tr><td><strong>Class V</strong></td><td>Extremely long, obstructed, or violent rapids with massive drops, unavoidable hydraulics, and high hazard levels.</td></tr>
+                    <tr><td><strong>Class VI</strong></td><td>Unrunnable / Navigability limits. Extreme risk to life; rescue attempted only from shore with high-line systems.</td></tr>
+                </table>
+            </div>
+
+            <!-- SECTION D: GLOSSARY OF RIVER HAZARDS -->
+            <div class="card">
+                <h3>River Features & Hazards Glossary</h3>
+                <div class="glossary-grid">
+                    <div class="glossary-item"><strong>Eddy</strong> Safe slackwater zone behind rocks/banks where water flows upstream; vital for staging and catch points.</div>
+                    <div class="glossary-item"><strong>Pillow</strong> Water piling up on the upstream side of a large obstacle, creating a hydraulic cushion and a downstream wave.</div>
+                    <div class="glossary-item"><strong>Hydraulic (Hole)</strong> Water plunging over a ledge and recirculating upstream. Keeper holes trap objects and swimmers.</div>
+                    <div class="glossary-item"><strong>Undercut</strong> Rocks or banks hollowed out underneath by current; extreme entrapment risk.</div>
+                    <div class="glossary-item"><strong>Strainer</strong> Obstructions (trees, fences, grates) that let water pass while trapping solid objects and bodies.</div>
+                </div>
+            </div>
+
+            <!-- SECTION E: WHISTLE COMMANDS & HIERARCHY -->
+            <div class="input-grid">
+                <div class="card">
+                    <h3>Standard Whistle Commands</h3>
+                    <ul class="weakest-list">
+                        <li class="weakest-item"><strong>1 Blast (Short):</strong> Stop / Look / Attention.</li>
+                        <li class="weakest-item"><strong>2 Blasts (Short):</strong> Forward / Move / Paddle on.</li>
+                        <li class="weakest-item"><strong>3 Blasts (Short):</strong> Back Up / Reverse.</li>
+                        <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>Long Continuous Blast:</strong> 🚨 <strong>EMERGENCY / SOS</strong> (All units stop and look to command).</li>
+                    </ul>
+                </div>
 
                 <div class="card">
-                    <h3>Calculated Water Forces</h3>
-                    <div class="metric-card" style="margin-bottom: 1rem;">
-                        <div class="metric-title">Estimated Anchor Load (Diagonal)</div>
-                        <div class="metric-value" id="res-swift-load">0 lbs</div>
-                        <div class="metric-sub">Based on current flow & sag</div>
-                    </div>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">
-                        <em>Note:</em> Water force scales exponentially with velocity against submerged cross-sectional surface areas. Always maintain rapid-release mechanisms on anchor tethers.
-                    </p>
+                    <h3>The Rescue Progression ("Reach, Throw, Row, Go")</h3>
+                    <ul class="weakest-list">
+                        <li class="weakest-item"><strong>Reach (Voice & Extension):</strong> Reach with your voice or tools (poles, branches) from shore. Lowest risk.</li>
+                        <li class="weakest-item"><strong>Throw:</strong> Deploy a throw bag to a conscious swimmer.</li>
+                        <li class="weakest-item"><strong>Row:</strong> Use watercraft (rafts, kayaks, motorized boats) to effect rescue.</li>
+                        <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>Go:</strong> In-water contact rescue by trained technician. Highest risk; last resort.</li>
+                    </ul>
                 </div>
+            </div>
+
+            <!-- SECTION F: NFPA STANDARDS -->
+            <div class="card">
+                <h3>Key NFPA Standards for Swift Water Rescue</h3>
+                <ul class="weakest-list">
+                    <li class="weakest-item"><strong>NFPA 1006:</strong> Standard for Technical Rescuer Professional Qualifications (Defines Awareness, Operations, and Technician levels for water rescue).</li>
+                    <li class="weakest-item"><strong>NFPA 1670:</strong> Standard for Operations and Training for Technical Search and Rescue Incidents (Organizational responsibilities & safety).</li>
+                    <li class="weakest-item"><strong>NFPA 1620:</strong> Standard for Pre-Incident Planning (Covers water hazards and local geography planning).</li>
+                    <li class="weakest-item"><strong>NFPA 1500:</strong> Standard on Occupational Safety, Health, and Wellness Program.</li>
+                    <li class="weakest-item"><strong>NFPA 1952:</strong> Standard on Protective Ensembles for Water Rescues.</li>
+                </ul>
             </div>
         </section>
     </main>
@@ -391,7 +470,7 @@
         }
 
         function launchPlaceholder(moduleName) {
-            alert(`${moduleName} module is queued next for development! Which discipline would you like to build out after Swift Water?`);
+            alert(`${moduleName} module is queued next for development!`);
         }
 
         function returnToHub() {
