@@ -33,19 +33,15 @@
         .screen { display: none; }
         .screen.active { display: block; }
 
-        /* Landing Page Grid */
         .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
         .hub-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; cursor: pointer; transition: all 0.2s ease-in-out; display: flex; flex-direction: column; justify-content: space-between; }
         .hub-card:hover { transform: translateY(-3px); border-color: var(--accent-cyan); background-color: rgba(30, 41, 59, 0.8); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .hub-card.active-module { border-left: 5px solid var(--accent-cyan); }
-        .hub-card.coming-soon { border-left: 5px solid var(--text-muted); opacity: 0.8; }
         .hub-card h3 { color: var(--text-main); font-size: 1.15rem; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; }
         .hub-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 1rem; }
         .hub-badge { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: bold; align-self: flex-start; }
         .badge-active { background-color: rgba(56, 189, 248, 0.2); color: var(--accent-cyan); }
-        .badge-pending { background-color: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
 
-        /* Inputs & Layout Styles */
         .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
         .card { background-color: var(--panel-bg); padding: 1.2rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1.2rem; }
         .card h3 { color: var(--accent-cyan); margin-bottom: 0.8rem; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem; }
@@ -76,7 +72,6 @@
         .canvas-container { background-color: #050811; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; align-items: center; }
         canvas { background-color: #020408; border-radius: 4px; width: 100%; max-width: 900px; height: 450px; }
 
-        /* Cheat Sheet Tables & Lists */
         .cheat-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.85rem; }
         .cheat-table th, .cheat-table td { padding: 0.6rem; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
         .cheat-table th { background-color: #090d16; color: var(--accent-cyan); }
@@ -99,11 +94,10 @@
         </div>
     </header>
 
-    <!-- Rope Rescue Sub-navigation Tabs -->
     <nav id="ropeNavTabs" class="screen-tabs">
-        <button class="tab-btn active" onclick="switchRopeTab('screen-inputs')">1. Operations & Inputs</button>
-        <button class="tab-btn" onclick="switchRopeTab('screen-analysis')">2. Load Analysis & Safety</button>
-        <button class="tab-btn" onclick="switchRopeTab('screen-diagram')">3. Lay Diagram</button>
+        <button class="tab-btn active" onclick="switchRopeTab('screen-inputs', event)">1. Operations & Inputs</button>
+        <button class="tab-btn" onclick="switchRopeTab('screen-analysis', event)">2. Load Analysis & Safety</button>
+        <button class="tab-btn" onclick="switchRopeTab('screen-diagram', event)">3. Lay Diagram</button>
     </nav>
 
     <main>
@@ -115,7 +109,6 @@
             </div>
             
             <div class="hub-grid">
-                <!-- Rope Rescue -->
                 <div class="hub-card active-module" onclick="launchModule('rope')">
                     <div>
                         <h3>Rope Rescue <span style="color: var(--accent-cyan);">→</span></h3>
@@ -124,25 +117,22 @@
                     <span class="hub-badge badge-active">Fully Operational</span>
                 </div>
 
-<!-- Heavy Vehicle Extrication -->
-        <div class="hub-card active-module" onclick="launchModule('extrication')">
-            <div>
-                <h3>Heavy Vehicle Extrication <span style="color: var(--accent-cyan);">→</span></h3>
-                <p>Stabilization calculations, heavy lift/shift capacities, cribbing loads, and semi-truck/bus incident management.</p>
-            </div>
-            <span class="hub-badge badge-active">Fully Operational</span>
-        </div>
+                <div class="hub-card active-module" onclick="launchModule('extrication')">
+                    <div>
+                        <h3>Heavy Vehicle Extrication <span style="color: var(--accent-cyan);">→</span></h3>
+                        <p>Stabilization calculations, heavy lift/shift capacities, cribbing loads, and semi-truck/bus incident management.</p>
+                    </div>
+                    <span class="hub-badge badge-active">Fully Operational</span>
+                </div>
 
-               <!-- Structural Collapse Rescue -->
-        <div class="hub-card active-module" onclick="launchModule('collapse')">
-            <div>
-                <h3>Structural Collapse Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                <p>Shoring calculations (vertical posts, window/door shores), pancake/lean-to load estimates, and void search metrics.</p>
-            </div>
-            <span class="hub-badge badge-active">Fully Operational</span>
-        </div>
+                <div class="hub-card active-module" onclick="launchModule('collapse')">
+                    <div>
+                        <h3>Structural Collapse Rescue <span style="color: var(--accent-cyan);">→</span></h3>
+                        <p>Shoring calculations (vertical posts, window/door shores), pancake/lean-to load estimates, and void search metrics.</p>
+                    </div>
+                    <span class="hub-badge badge-active">Fully Operational</span>
+                </div>
 
-                <!-- Swift Water Rescue -->
                 <div class="hub-card active-module" onclick="launchModule('swiftwater')">
                     <div>
                         <h3>Swift Water Rescue <span style="color: var(--accent-cyan);">→</span></h3>
@@ -151,41 +141,37 @@
                     <span class="hub-badge badge-active">Fully Operational</span>
                 </div>
 
-               <!-- Surface Water Rescue -->
-        <div class="hub-card active-module" onclick="launchModule('surfacewater')">
-            <div>
-                <h3>Surface Water Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                <p>Search grid patterns, drift vector estimators, thermal exposure calculators, and shore-based team tracking.</p>
-            </div>
-            <span class="hub-badge badge-active">Fully Operational</span>
-        </div>
+                <div class="hub-card active-module" onclick="launchModule('surfacewater')">
+                    <div>
+                        <h3>Surface Water Rescue <span style="color: var(--accent-cyan);">→</span></h3>
+                        <p>Search grid patterns, drift vector estimators, thermal exposure calculators, and shore-based team tracking.</p>
+                    </div>
+                    <span class="hub-badge badge-active">Fully Operational</span>
+                </div>
 
-                <!-- Confined Space Rescue -->
-        <div class="hub-card active-module" onclick="launchModule('confined')">
-            <div>
-                <h3>Confined Space Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                <p>Atmospheric monitoring logs, retrieval tripod load tracking, IDLH entry time logs, and ventilation air-change rates.</p>
-            </div>
-            <span class="hub-badge badge-active">Fully Operational</span>
-        </div>
+                <div class="hub-card active-module" onclick="launchModule('confined')">
+                    <div>
+                        <h3>Confined Space Rescue <span style="color: var(--accent-cyan);">→</span></h3>
+                        <p>Atmospheric monitoring logs, retrieval tripod load tracking, IDLH entry time logs, and ventilation air-change rates.</p>
+                    </div>
+                    <span class="hub-badge badge-active">Fully Operational</span>
+                </div>
 
-                <!-- Ice Rescue -->
-        <div class="hub-card active-module" onclick="launchModule('ice')">
-            <div>
-                <h3>Ice Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                <p>Ice thickness safety ratings, load distribution platform calculations, and reach-pole/boat deployment metrics.</p>
-            </div>
-            <span class="hub-badge badge-active">Fully Operational</span>
-        </div>
+                <div class="hub-card active-module" onclick="launchModule('ice')">
+                    <div>
+                        <h3>Ice Rescue <span style="color: var(--accent-cyan);">→</span></h3>
+                        <p>Ice thickness safety ratings, load distribution platform calculations, and reach-pole/boat deployment metrics.</p>
+                    </div>
+                    <span class="hub-badge badge-active">Fully Operational</span>
+                </div>
 
-        <!-- Remote Medical -->
-        <div class="hub-card active-module" onclick="launchModule('medical')">
-            <div>
-                <h3>Remote Medical <span style="color: var(--accent-cyan);">→</span></h3>
-                <p>Prolonged field care logs, fluid resuscitation rates, casualty evacuation (CASEVAC) timelines, and SOAP notes.</p>
-            </div>
-            <span class="hub-badge badge-active">Fully Operational</span>
-        </div>
+                <div class="hub-card active-module" onclick="launchModule('medical')">
+                    <div>
+                        <h3>Remote Medical <span style="color: var(--accent-cyan);">→</span></h3>
+                        <p>Prolonged field care logs, fluid resuscitation rates, casualty evacuation (CASEVAC) timelines, and SOAP notes.</p>
+                    </div>
+                    <span class="hub-badge badge-active">Fully Operational</span>
+                </div>
             </div>
         </section>
 
@@ -343,7 +329,6 @@
                 <p style="color: var(--text-muted); font-size: 0.9rem;">Operational cheat sheet, river classes, hazard glossaries, standard commands, and force calculations.</p>
             </div>
 
-            <!-- SECTION A: TENSION CALCULATOR -->
             <div class="card">
                 <h3>Tyrolean / Tension Diagonal Calculator</h3>
                 <div class="input-grid" style="margin-bottom: 1rem;">
@@ -369,7 +354,6 @@
                 </div>
             </div>
 
-            <!-- SECTION B: MEDICAL PRIORITY FLOW CHART -->
             <div class="card">
                 <h3>Medical Priorities & Drowning Care Flow Chart</h3>
                 <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">
@@ -381,7 +365,6 @@
                 <div class="flowchart-step"><span>Step 4: CASEVAC / Transport</span> — Rapid transfer to definitive emergency medical care.</div>
             </div>
 
-            <!-- SECTION C: INTERNATIONAL RIVER CLASSES -->
             <div class="card">
                 <h3>Technical Rescue River Difficulty Matrix</h3>
                 <table class="cheat-table">
@@ -423,7 +406,6 @@
                 </table>
             </div>
 
-            <!-- SECTION D: GLOSSARY OF RIVER HAZARDS -->
             <div class="card">
                 <h3>River Features & Hazards Glossary</h3>
                 <div class="glossary-grid">
@@ -435,7 +417,6 @@
                 </div>
             </div>
 
-            <!-- SECTION E: WHISTLE COMMANDS & HIERARCHY -->
             <div class="input-grid">
                 <div class="card">
                     <h3>Standard Whistle Commands</h3>
@@ -458,19 +439,19 @@
                 </div>
             </div>
 
-            <!-- SECTION F: NFPA STANDARDS -->
             <div class="card">
                 <h3>Key NFPA Standards for Swift Water Rescue</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>NFPA 1006:</strong> Standard for Technical Rescuer Professional Qualifications (Defines Awareness, Operations, and Technician levels for water rescue).</li>
-                    <li class="weakest-item"><strong>NFPA 1670:</strong> Standard for Operations and Training for Technical Search and Rescue Incidents (Organizational responsibilities & safety).</li>
-                    <li class="weakest-item"><strong>NFPA 1620:</strong> Standard for Pre-Incident Planning (Covers water hazards and local geography planning).</li>
+                    <li class="weakest-item"><strong>NFPA 1006:</strong> Standard for Technical Rescuer Professional Qualifications.</li>
+                    <li class="weakest-item"><strong>NFPA 1670:</strong> Standard for Operations and Training for Technical Search and Rescue Incidents.</li>
+                    <li class="weakest-item"><strong>NFPA 1620:</strong> Standard for Pre-Incident Planning.</li>
                     <li class="weakest-item"><strong>NFPA 1500:</strong> Standard on Occupational Safety, Health, and Wellness Program.</li>
                     <li class="weakest-item"><strong>NFPA 1952:</strong> Standard on Protective Ensembles for Water Rescues.</li>
                 </ul>
             </div>
         </section>
-   <!-- SCREEN: HEAVY VEHICLE EXTRICATION -->
+
+        <!-- SCREEN: HEAVY VEHICLE EXTRICATION -->
         <section id="screen-extrication" class="screen">
             <div style="margin-bottom: 1.2rem;">
                 <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Heavy Vehicle Extrication Command</h2>
@@ -597,79 +578,83 @@
         }; 
         const anchorStrengths = { industrial: 6000, tree: 4000, vehicle: 2500 }; 
 
-function launchModule(moduleName) {
+        function launchModule(moduleName) {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById('hubBackBtn').style.display = 'block';
 
             if (moduleName === 'rope') {
                 document.getElementById('screen-inputs').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'flex';
-                document.getElementById('headerSubtitle').innerText = 'Rope Rescue Command Engine';
+                document.getElementById('headerSubtitle').innerText = 'Rope Rescue Mechanical Advantage & Friction Calculator';
                 calculate();
             } else if (moduleName === 'swiftwater') {
                 document.getElementById('screen-swiftwater').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Swift Water Rescue Module';
+                document.getElementById('headerSubtitle').innerText = 'Swift Water Rescue Anchor Load Calculator';
                 calculateSwiftWater();
             } else if (moduleName === 'extrication') {
                 document.getElementById('screen-extrication').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Heavy Vehicle Extrication Module';
+                document.getElementById('headerSubtitle').innerText = 'Heavy Vehicle Extrication Calculator';
             } else if (moduleName === 'collapse') {
                 document.getElementById('screen-collapse').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Structural Collapse Module';
+                document.getElementById('headerSubtitle').innerText = 'Structural Collapse Shoring Calculator';
             } else if (moduleName === 'surfacewater') {
                 document.getElementById('screen-surfacewater').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Surface Water Rescue Module';
+                document.getElementById('headerSubtitle').innerText = 'Surface Water Operations Calculator';
             } else if (moduleName === 'confined') {
                 document.getElementById('screen-confined').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Confined Space Rescue Module';
+                document.getElementById('headerSubtitle').innerText = 'Confined Space Rescue Calculator';
             } else if (moduleName === 'ice') {
                 document.getElementById('screen-ice').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Ice Rescue Module';
+                document.getElementById('headerSubtitle').innerText = 'Ice Rescue Load & Span Calculator';
             } else if (moduleName === 'medical') {
                 document.getElementById('screen-medical').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Remote Medical Module';
+                document.getElementById('headerSubtitle').innerText = 'Remote Wilderness Medical Calculator';
             }
-        }
-        function launchPlaceholder(moduleName) {
-            alert(`${moduleName} module is queued next for development!`);
         }
 
         function returnToHub() {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById('screen-home').classList.add('active');
-            document.getElementById('ropeNavTabs').style.display = 'none';
             document.getElementById('hubBackBtn').style.display = 'none';
+            document.getElementById('ropeNavTabs').style.display = 'none';
             document.getElementById('headerSubtitle').innerText = 'Incident Command Engine';
         }
 
+        function switchRopeTab(tabId, evt) {
+            document.querySelectorAll('#screen-inputs, #screen-analysis, #screen-diagram').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#ropeNavTabs .tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add('active');
+            }
+            if (tabId === 'screen-analysis') {
+                calculate();
+            } else if (tabId === 'screen-diagram') { 
+                drawDiagram(); 
+            }
+        }
+
         function selectOption(btn, key, value) {
-            const parent = btn.parentElement; 
-            parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active')); 
-            btn.classList.add('active'); 
-            state[key] = value; 
-            calculate(); 
-        } 
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state[key] = value;
+            calculate();
+        }
 
         function adjustValue(key, delta) {
-            state[key] = Math.max(0, state[key] + delta); 
-            document.getElementById(`val-${key}`).innerText = state[key]; 
-            calculate(); 
-        } 
-
-        function switchRopeTab(tabId) {
-            document.querySelectorAll('#screen-inputs, #screen-analysis, #screen-diagram').forEach(el => el.classList.remove('active')); 
-            document.querySelectorAll('#ropeNavTabs .tab-btn').forEach(el => el.classList.remove('active')); 
-            document.getElementById(tabId).classList.add('active'); 
-            event.currentTarget.classList.add('active'); 
-            if(tabId === 'screen-diagram') { drawDiagram(); } 
-        } 
+            state[key] = Math.max(0, state[key] + delta);
+            const valEl = document.getElementById(`val-${key}`);
+            if (valEl) valEl.innerText = state[key];
+            calculate();
+        }
 
         const swiftState = { flow: 5, sag: 30 };
         function selectSwiftOption(btn, key, value) {
@@ -684,7 +669,8 @@ function launchModule(moduleName) {
             const baseForce = swiftState.flow * 120; 
             const angleFactor = 1 / Math.sin(swiftState.sag * (Math.PI / 180));
             const totalForce = baseForce * angleFactor;
-            document.getElementById('res-swift-load').innerText = `${totalForce.toFixed(0)} lbs`;
+            const resSwiftLoad = document.getElementById('res-swift-load');
+            if (resSwiftLoad) resSwiftLoad.innerText = `${totalForce.toFixed(0)} lbs`;
         }
 
         function calculate() {
@@ -707,25 +693,29 @@ function launchModule(moduleName) {
             const anchorValLbs = anchorStrengths[state.anchorType] || 4000; 
             const highDirMbsLbs = state.highDir === 'vortex' ? 8000 : 5000; 
 
-            document.getElementById('res-total-weight').innerText = `${totalWeightLbs.toFixed(0)} lbs`; 
-            document.getElementById('res-total-weight-sub').innerText = `${totalWeightKg.toFixed(0)} kg / ${totalWeightKn.toFixed(2)} kN`; 
-            document.getElementById('res-rope-load').innerText = `${effectiveLoadPerLine.toFixed(0)} lbs / line`; 
-            document.getElementById('res-rope-load-sub').innerText = `${(effectiveLoadPerLine*0.453592).toFixed(0)} kg / ${(effectiveLoadPerLine*0.00444822).toFixed(2)} kN`; 
-            document.getElementById('res-haul-tension').innerText = `${haulEffortLbs.toFixed(0)} lbs / person`; 
-            document.getElementById('res-haul-tension-sub').innerText = `${haulEffortKg.toFixed(0)} kg / ${haulEffortKn.toFixed(2)} kN`; 
+            if (document.getElementById('res-total-weight')) {
+                document.getElementById('res-total-weight').innerText = `${totalWeightLbs.toFixed(0)} lbs`; 
+                document.getElementById('res-total-weight-sub').innerText = `${totalWeightKg.toFixed(0)} kg / ${totalWeightKn.toFixed(2)} kN`; 
+                document.getElementById('res-rope-load').innerText = `${effectiveLoadPerLine.toFixed(0)} lbs / line`; 
+                document.getElementById('res-rope-load-sub').innerText = `${(effectiveLoadPerLine*0.453592).toFixed(0)} kg / ${(effectiveLoadPerLine*0.00444822).toFixed(2)} kN`; 
+                document.getElementById('res-haul-tension').innerText = `${haulEffortLbs.toFixed(0)} lbs / person`; 
+                document.getElementById('res-haul-tension-sub').innerText = `${haulEffortKg.toFixed(0)} kg / ${haulEffortKn.toFixed(2)} kN`; 
+            }
             
             const sfElement = document.getElementById('res-safety-factor'); 
             const sfCard = document.getElementById('card-sf'); 
-            sfElement.innerText = `${safetyFactor} : 1`; 
             const alertBanner = document.getElementById('safetyAlertBanner'); 
-            
-            if (parseFloat(safetyFactor) < 10) {
-                sfCard.className = "metric-card alert"; 
-                alertBanner.classList.add('visible'); 
-            } else {
-                sfCard.className = "metric-card good"; 
-                alertBanner.classList.remove('visible'); 
-            } 
+
+            if (sfElement && sfCard) {
+                sfElement.innerText = `${safetyFactor} : 1`; 
+                if (parseFloat(safetyFactor) < 10) {
+                    sfCard.className = "metric-card alert"; 
+                    if (alertBanner) alertBanner.classList.add('visible'); 
+                } else {
+                    sfCard.className = "metric-card good"; 
+                    if (alertBanner) alertBanner.classList.remove('visible'); 
+                } 
+            }
 
             const components = [
                 { name: `Anchor Point (${state.anchorType.toUpperCase()})`, capacity: anchorValLbs }, 
@@ -741,14 +731,19 @@ function launchModule(moduleName) {
                     <strong>#${idx + 1}: ${item.name}</strong> — Rated MBS: ~${item.capacity} lbs (${(item.capacity*0.00444822).toFixed(1)} kN)
                 </li>
             `).join(''); 
-            document.getElementById('weakestGearList').innerHTML = weakestListHtml; 
             
-            document.getElementById('res-breakdown-text').innerHTML = `
-                <strong>Strategy:</strong> ${state.riggingStrategy === 'tts' ? 'Twin Tension System (Shared Load)' : 'Main & Belay System'}<br/>
-                <strong>Basket / Litter:</strong> ${state.useLitter ? 'Included Metal Basket (+30 lbs)' : 'Not included'}<br/>
-                <strong>Slope Angle Multiplier:</strong> sin(${state.angle}°) = ${Math.sin(rad).toFixed(2)}<br/>
-                <strong>Haul Team Status:</strong> ${state.haulTeam} Haulers active on scene.
-            `; 
+            const weakestGearList = document.getElementById('weakestGearList');
+            if (weakestGearList) weakestGearList.innerHTML = weakestListHtml; 
+            
+            const breakdownText = document.getElementById('res-breakdown-text');
+            if (breakdownText) {
+                breakdownText.innerHTML = `
+                    <strong>Strategy:</strong> ${state.riggingStrategy === 'tts' ? 'Twin Tension System (Shared Load)' : 'Main & Belay System'}<br/>
+                    <strong>Basket / Litter:</strong> ${state.useLitter ? 'Included Metal Basket (+30 lbs)' : 'Not included'}<br/>
+                    <strong>Slope Angle Multiplier:</strong> sin(${state.angle}°) = ${Math.sin(rad).toFixed(2)}<br/>
+                    <strong>Haul Team Status:</strong> ${state.haulTeam} Haulers active on scene.
+                `; 
+            }
         } 
 
         function drawDiagram() {
@@ -833,124 +828,7 @@ function launchModule(moduleName) {
             ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; 
             ctx.beginPath(); ctx.arc(edgeX, edgeY, 35, 0, rad); ctx.stroke(); 
             ctx.fillStyle = '#ef4444'; ctx.fillText(`${state.angle}° Slope`, edgeX + 45, edgeY + 25); 
-        } 
-   <!-- SCREEN: HEAVY VEHICLE EXTRICATION -->
-        <section id="screen-extrication" class="screen">
-            <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Heavy Vehicle Extrication Command</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Stabilization matrices, heavy lift capacities, and semi/bus incident management.</p>
-            </div>
-            <div class="card">
-                <h3>Vehicle Stabilization & Cribbing Load Rules</h3>
-                <table class="cheat-table">
-                    <tr><th>Cribbing Material</th><th>Safe Working Load (SWL)</th><th>Notes</th></tr>
-                    <tr><td><strong>4x4 Wood (Softwood)</strong></td><td>~1,200 lbs per point of contact</td><td>Inspect for knots/cracks; cross-stack max 3-high without interlocking.</td></tr>
-                    <tr><td><strong>4x4 Wood (Hardwood - Oak)</strong></td><td>~3,000 lbs per point of contact</td><td>Standard for heavy rescue struts and box cribs.</td></tr>
-                    <tr><td><strong>6x6 Wood (Hardwood)</strong></td><td>~10,000 lbs per point of contact</td><td>Required for semi-truck axles and heavy equipment lifts.</td></tr>
-                </table>
-            </div>
-            <div class="card">
-                <h3>Semi-Truck & Bus Incident Quick Reference</h3>
-                <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Underride Stabilization:</strong> Prioritize rear/side structural rails using pneumatic struts before attempting patient access.</li>
-                    <li class="weakest-item"><strong>Air Brake Systems:</strong> Chock wheels immediately. Bleed air tanks if stabilization requires settling the vehicle onto blocks.</li>
-                    <li class="weakest-item"><strong>High-Voltage / Alternative Fuel:</strong> Identify orange/blue HV cables (EV trucks) and CNG/LNG shut-off valves before cutting pillars.</li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- SCREEN: STRUCTURAL COLLAPSE RESCUE -->
-        <section id="screen-collapse" class="screen">
-            <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Structural Collapse Command</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Shoring calculations, void search metrics, and pancake/lean-to patterns.</p>
-            </div>
-            <div class="card">
-                <h3>Vertical Post Shoring Formulas (NFPA Standards)</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">
-                    Safe load capacity of wood posts decreases rapidly as height-to-thickness ratio increases.
-                </p>
-                <table class="cheat-table">
-                    <tr><th>Post Size</th><th>Max Unbraced Height</th><th>Safe Working Capacity</th></tr>
-                    <tr><td><strong>4 x 4 Post</strong></td><td>Up to 8 feet</td><td>~8,000 lbs (reduces with height)</td></tr>
-                    <tr><td><strong>6 x 6 Post</strong></td><td>Up to 10 feet</td><td>~20,000 lbs</td></tr>
-                </table>
-            </div>
-            <div class="card">
-                <h3>Collapse Void Patterns</h3>
-                <div class="glossary-grid">
-                    <div class="glossary-item"><strong>Lean-To Collapse</strong> One end of floor rests on a wall/debris, creating a triangular survivable void.</div>
-                    <div class="glossary-item"><strong>V-Shape Collapse</strong> Center of floor collapses, leaving two survivable voids near exterior load-bearing walls.</div>
-                    <div class="glossary-item"><strong>Pancake Collapse</strong> Floors stack vertically; extremely low survival rate without precise breaching and shoring.</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SCREEN: SURFACE WATER RESCUE -->
-        <section id="screen-surfacewater" class="screen">
-            <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Surface Water & Open Water Search</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Search grid patterns, drift vector calculations, and thermal exposure limits.</p>
-            </div>
-            <div class="card">
-                <h3>Search Patterns & Drift Vectors</h3>
-                <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Expanding Square:</strong> Best when last-known position (LKP) is highly accurate.</li>
-                    <li class="weakest-item"><strong>Parallel Track:</strong> Ideal for large open water bodies with uniform search conditions and multiple watercraft.</li>
-                    <li class="weakest-item"><strong>Wind / Current Drift:</strong> Objects drift downwind at ~3% of wind speed plus 100% of current velocity vector.</li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- SCREEN: CONFINED SPACE RESCUE -->
-        <section id="screen-confined" class="screen">
-            <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Confined Space Command Hub</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Atmospheric monitoring limits, retrieval tripods, and ventilation timelines.</p>
-            </div>
-            <div class="card">
-                <h3>IDLH & Acceptable Atmospheric Parameters</h3>
-                <table class="cheat-table">
-                    <tr><th>Parameter</th><th>Normal Range</th><th>Action Threshold / IDLH</th></tr>
-                    <tr><td><strong>Oxygen (O2)</strong></td><td>20.8% - 21.0%</td><td>&lt; 19.5% (Deficient) or &gt; 23.5% (Enriched / Fire hazard)</td></tr>
-                    <tr><td><strong>Flammable Vapors (LEL)</strong></td><td>0%</td><td>&gt; 10% LEL requires immediate evacuation / ventilation</td></tr>
-                    <tr><td><strong>Carbon Monoxide (CO)</strong></td><td>0 ppm</td><td>&gt; 25 ppm (Action) / 1200 ppm (IDLH threshold)</td></tr>
-                </table>
-            </div>
-        </section>
-
-        <!-- SCREEN: ICE RESCUE -->
-        <section id="screen-ice" class="screen">
-            <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Ice Rescue Thickness & Load Metrics</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Clear solid blue ice weight ratings and deployment platforms.</p>
-            </div>
-            <div class="card">
-                <h3>Clear Blue Ice Load Safety Matrix</h3>
-                <table class="cheat-table">
-                    <tr><th>Ice Thickness</th><th>Max Safe Load</th><th>Operational Guidance</th></tr>
-                    <tr><td><strong>2 inches</strong></td><td>Keep Off</td><td>Unsafe for any personnel.</td></tr>
-                    <tr><td><strong>4 inches</strong></td><td>200 lbs (1 Person)</td><td>Single rescuer in specialized flotation suit with tether.</td></tr>
-                    <tr><td><strong>5 inches</strong></td><td>1,000 lbs</td><td>Group of rescuers spaced out or lightweight rescue sled.</td></tr>
-                    <tr><td><strong>8+ inches</strong></td><td>Passenger Car / ATV</td><td>Supported vehicle access for heavy extraction gear.</td></tr>
-                </table>
-            </div>
-        </section>
-
-        <!-- SCREEN: REMOTE MEDICAL -->
-        <section id="screen-medical" class="screen">
-            <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Remote Medical & Prolonged Field Care</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Drowning care protocols, hypothermia management, and SOAP logs.</p>
-            </div>
-            <div class="card">
-                <h3>Cold Water Submersion & Drowning Care Rules</h3>
-                <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Mammalian Dive Reflex:</strong> Cold water (&lt; 21°F / 7°C) can significantly extend resuscitation viability in pediatric patients due to metabolic slowing. Do not call time of death prematurely in cold-water arrests.</li>
-                    <li class="weakest-item"><strong>After-Drop Phenomenon:</strong> Handle rescued hypothermic patients gently. Rough movement can force cold peripheral blood back to the core, causing cardiac arrest. Insulate and vapor-barrier protect immediately.</li>
-                </ul>
-            </div>
-        </section>
-       </script>
+        }
+    </script>
 </body>
 </html>
