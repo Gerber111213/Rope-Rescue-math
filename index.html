@@ -470,6 +470,123 @@
                 </ul>
             </div>
         </section>
+   <!-- SCREEN: HEAVY VEHICLE EXTRICATION -->
+        <section id="screen-extrication" class="screen">
+            <div style="margin-bottom: 1.2rem;">
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Heavy Vehicle Extrication Command</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Stabilization matrices, heavy lift capacities, and semi/bus incident management.</p>
+            </div>
+            <div class="card">
+                <h3>Vehicle Stabilization & Cribbing Load Rules</h3>
+                <table class="cheat-table">
+                    <tr><th>Cribbing Material</th><th>Safe Working Load (SWL)</th><th>Notes</th></tr>
+                    <tr><td><strong>4x4 Wood (Softwood)</strong></td><td>~1,200 lbs per point of contact</td><td>Inspect for knots/cracks; cross-stack max 3-high without interlocking.</td></tr>
+                    <tr><td><strong>4x4 Wood (Hardwood - Oak)</strong></td><td>~3,000 lbs per point of contact</td><td>Standard for heavy rescue struts and box cribs.</td></tr>
+                    <tr><td><strong>6x6 Wood (Hardwood)</strong></td><td>~10,000 lbs per point of contact</td><td>Required for semi-truck axles and heavy equipment lifts.</td></tr>
+                </table>
+            </div>
+            <div class="card">
+                <h3>Semi-Truck & Bus Incident Quick Reference</h3>
+                <ul class="weakest-list">
+                    <li class="weakest-item"><strong>Underride Stabilization:</strong> Prioritize rear/side structural rails using pneumatic struts before attempting patient access.</li>
+                    <li class="weakest-item"><strong>Air Brake Systems:</strong> Chock wheels immediately. Bleed air tanks if stabilization requires settling the vehicle onto blocks.</li>
+                    <li class="weakest-item"><strong>High-Voltage / Alternative Fuel:</strong> Identify orange/blue HV cables (EV trucks) and CNG/LNG shut-off valves before cutting pillars.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SCREEN: STRUCTURAL COLLAPSE RESCUE -->
+        <section id="screen-collapse" class="screen">
+            <div style="margin-bottom: 1.2rem;">
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Structural Collapse Command</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Shoring calculations, void search metrics, and pancake/lean-to patterns.</p>
+            </div>
+            <div class="card">
+                <h3>Vertical Post Shoring Formulas (NFPA Standards)</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">
+                    Safe load capacity of wood posts decreases rapidly as height-to-thickness ratio increases.
+                </p>
+                <table class="cheat-table">
+                    <tr><th>Post Size</th><th>Max Unbraced Height</th><th>Safe Working Capacity</th></tr>
+                    <tr><td><strong>4 x 4 Post</strong></td><td>Up to 8 feet</td><td>~8,000 lbs (reduces with height)</td></tr>
+                    <tr><td><strong>6 x 6 Post</strong></td><td>Up to 10 feet</td><td>~20,000 lbs</td></tr>
+                </table>
+            </div>
+            <div class="card">
+                <h3>Collapse Void Patterns</h3>
+                <div class="glossary-grid">
+                    <div class="glossary-item"><strong>Lean-To Collapse</strong> One end of floor rests on a wall/debris, creating a triangular survivable void.</div>
+                    <div class="glossary-item"><strong>V-Shape Collapse</strong> Center of floor collapses, leaving two survivable voids near exterior load-bearing walls.</div>
+                    <div class="glossary-item"><strong>Pancake Collapse</strong> Floors stack vertically; extremely low survival rate without precise breaching and shoring.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN: SURFACE WATER RESCUE -->
+        <section id="screen-surfacewater" class="screen">
+            <div style="margin-bottom: 1.2rem;">
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Surface Water & Open Water Search</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Search grid patterns, drift vector calculations, and thermal exposure limits.</p>
+            </div>
+            <div class="card">
+                <h3>Search Patterns & Drift Vectors</h3>
+                <ul class="weakest-list">
+                    <li class="weakest-item"><strong>Expanding Square:</strong> Best when last-known position (LKP) is highly accurate.</li>
+                    <li class="weakest-item"><strong>Parallel Track:</strong> Ideal for large open water bodies with uniform search conditions and multiple watercraft.</li>
+                    <li class="weakest-item"><strong>Wind / Current Drift:</strong> Objects drift downwind at ~3% of wind speed plus 100% of current velocity vector.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SCREEN: CONFINED SPACE RESCUE -->
+        <section id="screen-confined" class="screen">
+            <div style="margin-bottom: 1.2rem;">
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Confined Space Command Hub</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Atmospheric monitoring limits, retrieval tripods, and ventilation timelines.</p>
+            </div>
+            <div class="card">
+                <h3>IDLH & Acceptable Atmospheric Parameters</h3>
+                <table class="cheat-table">
+                    <tr><th>Parameter</th><th>Normal Range</th><th>Action Threshold / IDLH</th></tr>
+                    <tr><td><strong>Oxygen (O2)</strong></td><td>20.8% - 21.0%</td><td>&lt; 19.5% (Deficient) or &gt; 23.5% (Enriched / Fire hazard)</td></tr>
+                    <tr><td><strong>Flammable Vapors (LEL)</strong></td><td>0%</td><td>&gt; 10% LEL requires immediate evacuation / ventilation</td></tr>
+                    <tr><td><strong>Carbon Monoxide (CO)</strong></td><td>0 ppm</td><td>&gt; 25 ppm (Action) / 1200 ppm (IDLH threshold)</td></tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- SCREEN: ICE RESCUE -->
+        <section id="screen-ice" class="screen">
+            <div style="margin-bottom: 1.2rem;">
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Ice Rescue Thickness & Load Metrics</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Clear solid blue ice weight ratings and deployment platforms.</p>
+            </div>
+            <div class="card">
+                <h3>Clear Blue Ice Load Safety Matrix</h3>
+                <table class="cheat-table">
+                    <tr><th>Ice Thickness</th><th>Max Safe Load</th><th>Operational Guidance</th></tr>
+                    <tr><td><strong>2 inches</strong></td><td>Keep Off</td><td>Unsafe for any personnel.</td></tr>
+                    <tr><td><strong>4 inches</strong></td><td>200 lbs (1 Person)</td><td>Single rescuer in specialized flotation suit with tether.</td></tr>
+                    <tr><td><strong>5 inches</strong></td><td>1,000 lbs</td><td>Group of rescuers spaced out or lightweight rescue sled.</td></tr>
+                    <tr><td><strong>8+ inches</strong></td><td>Passenger Car / ATV</td><td>Supported vehicle access for heavy extraction gear.</td></tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- SCREEN: REMOTE MEDICAL -->
+        <section id="screen-medical" class="screen">
+            <div style="margin-bottom: 1.2rem;">
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Remote Medical & Prolonged Field Care</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Drowning care protocols, hypothermia management, and SOAP logs.</p>
+            </div>
+            <div class="card">
+                <h3>Cold Water Submersion & Drowning Care Rules</h3>
+                <ul class="weakest-list">
+                    <li class="weakest-item"><strong>Mammalian Dive Reflex:</strong> Cold water (&lt; 21°F / 7°C) can significantly extend resuscitation viability in pediatric patients due to metabolic slowing. Do not call time of death prematurely in cold-water arrests.</li>
+                    <li class="weakest-item"><strong>After-Drop Phenomenon:</strong> Handle rescued hypothermic patients gently. Rough movement can force cold peripheral blood back to the core, causing cardiac arrest. Insulate and vapor-barrier protect immediately.</li>
+                </ul>
+            </div>
+        </section>
     </main>
 
     <script>
