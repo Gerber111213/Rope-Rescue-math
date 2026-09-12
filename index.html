@@ -1,624 +1,534 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rope Rescue Command Calculator & Aid</title>
-  <style>
-    :root {
-      --bg-main: #0f172a;
-      --panel-bg: #1e293b;
-      --accent-red: #d9381e;
-      --accent-cyan: #38bdf8;
-      --accent-green: #22c55e;
-      --accent-yellow: #eab308;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border-color: #334155;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Rescue Command Hub & Aid</title>
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --panel-bg: #1e293b;
+            --accent-red: #d9381e;
+            --accent-cyan: #38bdf8;
+            --accent-green: #22c55e;
+            --accent-yellow: #eab308;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+        
+        header { background-color: #090d16; border-bottom: 3px solid var(--accent-red); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-size: 1.4rem; color: var(--accent-red); text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
+        .header-nav { display: flex; align-items: center; gap: 1rem; }
+        .hub-back-btn { background-color: var(--panel-bg); color: var(--accent-cyan); border: 1px solid var(--border-color); padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: none; }
+        .hub-back-btn:hover { background-color: var(--accent-cyan); color: #090d16; }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .screen-tabs { display: none; background-color: var(--panel-bg); border-bottom: 1px solid var(--border-color); }
+        .tab-btn { flex: 1; padding: 0.8rem; background: none; border: none; color: var(--text-muted); font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
+        .tab-btn.active { color: var(--accent-cyan); border-bottom: 3px solid var(--accent-cyan); background-color: rgba(56, 189, 248, 0.05); }
 
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+        main { flex: 1; padding: 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .screen { display: none; }
+        .screen.active { display: block; }
 
-    header {
-      background-color: #090d16;
-      border-bottom: 3px solid var(--accent-red);
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        /* Landing Page Grid */
+        .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
+        .hub-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; cursor: pointer; transition: all 0.2s ease-in-out; display: flex; flex-direction: column; justify-content: space-between; }
+        .hub-card:hover { transform: translateY(-3px); border-color: var(--accent-cyan); background-color: rgba(30, 41, 59, 0.8); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .hub-card.active-module { border-left: 5px solid var(--accent-cyan); }
+        .hub-card.coming-soon { border-left: 5px solid var(--text-muted); opacity: 0.8; }
+        .hub-card h3 { color: var(--text-main); font-size: 1.15rem; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; }
+        .hub-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 1rem; }
+        .hub-badge { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: bold; align-self: flex-start; }
+        .badge-active { background-color: rgba(56, 189, 248, 0.2); color: var(--accent-cyan); }
+        .badge-pending { background-color: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
 
-    header h1 { font-size: 1.4rem; color: var(--accent-red); text-transform: uppercase; letter-spacing: 1px; }
+        /* Existing Inputs & Layout Styles */
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
+        .card { background-color: var(--panel-bg); padding: 1.2rem; border-radius: 8px; border: 1px solid var(--border-color); }
+        .card h3 { color: var(--accent-cyan); margin-bottom: 0.8rem; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem; }
+        .field { margin-bottom: 1.2rem; }
+        .field label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .btn-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .opt-btn { flex: 1; min-width: 70px; padding: 0.6rem 0.4rem; background-color: #090d16; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.15s ease-in-out; }
+        .opt-btn.active { background-color: var(--accent-cyan); color: #090d16; border-color: var(--accent-cyan); }
+        
+        .stepper-control { display: flex; align-items: center; justify-content: space-between; background-color: #090d16; border: 1px solid var(--border-color); border-radius: 4px; padding: 0.3rem; }
+        .step-btn { background-color: var(--panel-bg); color: var(--text-main); border: none; padding: 0.4rem 0.8rem; font-weight: bold; border-radius: 3px; cursor: pointer; }
+        .step-btn:hover { background-color: var(--accent-cyan); color: #090d16; }
+        .step-value { font-weight: bold; font-size: 1.1rem; color: var(--accent-cyan); }
 
-    .screen-tabs {
-      display: flex;
-      background-color: var(--panel-bg);
-      border-bottom: 1px solid var(--border-color);
-    }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .metric-card { background-color: var(--panel-bg); padding: 1rem; border-radius: 6px; border-left: 4px solid var(--accent-cyan); }
+        .metric-card.alert { border-left-color: var(--accent-red); background-color: rgba(217, 56, 30, 0.1); }
+        .metric-card.good { border-left-color: var(--accent-green); }
+        .metric-title { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
+        .metric-value { font-size: 1.4rem; font-weight: bold; margin-top: 0.3rem; }
+        .metric-sub { font-size: 0.8rem; color: var(--accent-cyan); margin-top: 0.2rem; }
 
-    .tab-btn {
-      flex: 1;
-      padding: 0.8rem;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-weight: bold;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      transition: all 0.2s;
-    }
+        .alert-banner { background-color: rgba(217, 56, 30, 0.2); border: 1px solid var(--accent-red); padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; display: none; }
+        .alert-banner.visible { display: block; }
+        .weakest-list { list-style-type: none; margin-top: 0.5rem; }
+        .weakest-item { padding: 0.6rem; margin-bottom: 0.4rem; background-color: #090d16; border-left: 3px solid var(--accent-yellow); border-radius: 4px; font-size: 0.9rem; }
 
-    .tab-btn.active {
-      color: var(--accent-cyan);
-      border-bottom: 3px solid var(--accent-cyan);
-      background-color: rgba(56, 189, 248, 0.05);
-    }
-
-    main { flex: 1; padding: 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%; }
-
-    .screen { display: none; }
-    .screen.active { display: block; }
-
-    .input-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.2rem;
-    }
-
-    .card {
-      background-color: var(--panel-bg);
-      padding: 1.2rem;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-    }
-
-    .card h3 {
-      color: var(--accent-cyan);
-      margin-bottom: 0.8rem;
-      font-size: 1.1rem;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 0.4rem;
-    }
-
-    .field { margin-bottom: 1.2rem; }
-    .field label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
-    
-    .btn-group {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-
-    .opt-btn {
-      flex: 1;
-      min-width: 70px;
-      padding: 0.6rem 0.4rem;
-      background-color: #090d16;
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      border-radius: 4px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.15s ease-in-out;
-    }
-
-    .opt-btn.active {
-      background-color: var(--accent-cyan);
-      color: #090d16;
-      border-color: var(--accent-cyan);
-    }
-
-    /* Stepper Controls (+ / -) */
-    .stepper-control {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #090d16;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 0.3rem;
-    }
-
-    .step-btn {
-      background-color: var(--panel-bg);
-      color: var(--text-main);
-      border: none;
-      padding: 0.4rem 0.8rem;
-      font-weight: bold;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-
-    .step-btn:hover { background-color: var(--accent-cyan); color: #090d16; }
-    .step-value { font-weight: bold; font-size: 1.1rem; color: var(--accent-cyan); }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .metric-card {
-      background-color: var(--panel-bg);
-      padding: 1rem;
-      border-radius: 6px;
-      border-left: 4px solid var(--accent-cyan);
-    }
-
-    .metric-card.alert { border-left-color: var(--accent-red); background-color: rgba(217, 56, 30, 0.1); }
-    .metric-card.good { border-left-color: var(--accent-green); }
-
-    .metric-title { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
-    .metric-value { font-size: 1.4rem; font-weight: bold; margin-top: 0.3rem; }
-    .metric-sub { font-size: 0.8rem; color: var(--accent-cyan); margin-top: 0.2rem; }
-
-    .alert-banner {
-      background-color: rgba(217, 56, 30, 0.2);
-      border: 1px solid var(--accent-red);
-      padding: 1rem;
-      border-radius: 6px;
-      margin-bottom: 1.5rem;
-      display: none;
-    }
-    .alert-banner.visible { display: block; }
-
-    .weakest-list {
-      list-style-type: none;
-      margin-top: 0.5rem;
-    }
-    .weakest-item {
-      padding: 0.6rem;
-      margin-bottom: 0.4rem;
-      background-color: #090d16;
-      border-left: 3px solid var(--accent-yellow);
-      border-radius: 4px;
-      font-size: 0.9rem;
-    }
-
-    .canvas-container {
-      background-color: #050811;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    canvas {
-      background-color: #020408;
-      border-radius: 4px;
-      width: 100%;
-      max-width: 900px;
-      height: 450px;
-    }
-  </style>
+        .canvas-container { background-color: #050811; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; align-items: center; }
+        canvas { background-color: #020408; border-radius: 4px; width: 100%; max-width: 900px; height: 450px; }
+    </style>
 </head>
 <body>
 
-  <header>
-    <h1>Rope Rescue Command Aid</h1>
-    <span style="font-size: 0.85rem; color: var(--accent-cyan);">Professional Incident Command Engine</span>
-  </header>
-
-  <nav class="screen-tabs">
-    <button class="tab-btn active" onclick="switchTab('screen-inputs')">1. Operations & Inputs</button>
-    <button class="tab-btn" onclick="switchTab('screen-analysis')">2. Load Analysis & Safety</button>
-    <button class="tab-btn" onclick="switchTab('screen-diagram')">3. Lay Diagram</button>
-  </nav>
-
-  <main>
-    <!-- SCREEN 1: INPUTS -->
-    <section id="screen-inputs" class="screen active">
-      <div class="input-grid">
-        
-        <!-- System Architecture & Rigging -->
-        <div class="card">
-          <h3>System Architecture</h3>
-          <div class="field">
-            <label>Rigging Strategy</label>
-            <div class="btn-group" data-key="riggingStrategy">
-              <button class="opt-btn active" onclick="selectOption(this, 'riggingStrategy', 'tts')">Twin Tension System</button>
-              <button class="opt-btn" onclick="selectOption(this, 'riggingStrategy', 'mb')">Main & Belay</button>
-            </div>
-          </div>
-          <div class="field">
-            <label>Rope Type & Diameter</label>
-            <div class="btn-group" data-key="ropeType">
-              <button class="opt-btn active" onclick="selectOption(this, 'ropeType', 'static')">Static</button>
-              <button class="opt-btn" onclick="selectOption(this, 'ropeType', 'dynamic')">Dynamic</button>
-            </div>
-          </div>
-          <div class="field">
-            <label>Rope Diameter</label>
-            <div class="btn-group" data-key="ropeDiameter">
-              <button class="opt-btn" onclick="selectOption(this, 'ropeDiameter', 11)">11mm (T)</button>
-              <button class="opt-btn active" onclick="selectOption(this, 'ropeDiameter', 12.5)">12.5mm (G)</button>
-            </div>
-          </div>
-          <div class="field">
-            <label>High Directional</label>
-            <div class="btn-group" data-key="highDir">
-              <button class="opt-btn active" onclick="selectOption(this, 'highDir', 'vortex')">Arizona Vortex</button>
-              <button class="opt-btn" onclick="selectOption(this, 'highDir', 'other')">Other High Dir.</button>
-            </div>
-          </div>
+    <header>
+        <h1 onclick="returnToHub()">Technical Rescue Hub</h1>
+        <div class="header-nav">
+            <button id="hubBackBtn" class="hub-back-btn" onclick="returnToHub()">← Rescue Hub</button>
+            <span style="font-size: 0.85rem; color: var(--accent-cyan);" id="headerSubtitle">Incident Command Engine</span>
         </div>
+    </header>
 
-        <!-- Load & Personnel Steppers -->
-        <div class="card">
-          <h3>Load & Personnel</h3>
-          <div class="field">
-            <label>Rescue Basket (Litter)</label>
-            <div class="btn-group" data-key="useLitter">
-              <button class="opt-btn active" onclick="selectOption(this, 'useLitter', true)">Metal Basket (+30 lbs)</button>
-              <button class="opt-btn" onclick="selectOption(this, 'useLitter', false)">None / Sked Only</button>
+    <!-- Rope Rescue Sub-navigation Tabs -->
+    <nav id="ropeNavTabs" class="screen-tabs">
+        <button class="tab-btn active" onclick="switchTab('screen-inputs')">1. Operations & Inputs</button>
+        <button class="tab-btn" onclick="switchTab('screen-analysis')">2. Load Analysis & Safety</button>
+        <button class="tab-btn" onclick="switchTab('screen-diagram')">3. Lay Diagram</button>
+    </nav>
+
+    <main>
+        <!-- LANDING PAGE / RESCUE HUB -->
+        <section id="screen-home" class="screen active">
+            <div style="margin-bottom: 1.5rem;">
+                <h2 style="color: var(--text-main); font-size: 1.5rem; margin-bottom: 0.4rem;">Incident Command Modules</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Select a technical rescue discipline below to launch operational calculators and reference tools.</p>
             </div>
-          </div>
-          <div class="field">
-            <label>Number of Patients</label>
-            <div class="stepper-control">
-              <button class="step-btn" onclick="adjustValue('numPatients', -1)">-</button>
-              <span class="step-value" id="val-numPatients">1</span>
-              <button class="step-btn" onclick="adjustValue('numPatients', 1)">+</button>
+            
+            <div class="hub-grid">
+                <!-- Rope Rescue (Active) -->
+                <div class="hub-card active-module" onclick="launchModule('rope')">
+                    <div>
+                        <h3>Rope Rescue <span style="color: var(--accent-cyan);">→</span></h3>
+                        <p>Twin tension systems, mechanical advantage hauling, safety factors, slope force trigonometry, and system breakdown.</p>
+                    </div>
+                    <span class="hub-badge badge-active">Fully Operational</span>
+                </div>
+
+                <!-- Heavy Vehicle Extrication -->
+                <div class="hub-card coming-soon" onclick="launchPlaceholder('Heavy Vehicle Extrication')">
+                    <div>
+                        <h3>Heavy Vehicle Extrication</h3>
+                        <p>Stabilization calculations, heavy lift/shift capacities, cribbing loads, and semi-truck/bus incident management.</p>
+                    </div>
+                    <span class="hub-badge badge-pending">Module Ready</span>
+                </div>
+
+                <!-- Structural Collapse Rescue -->
+                <div class="hub-card coming-soon" onclick="launchPlaceholder('Structural Collapse Rescue')">
+                    <div>
+                        <h3>Structural Collapse Rescue</h3>
+                        <p>Shoring calculations (vertical posts, window/door shores), pancake/lean-to load estimates, and void search metrics.</p>
+                    </div>
+                    <span class="hub-badge badge-pending">Module Ready</span>
+                </div>
+
+                <!-- Swift Water Rescue -->
+                <div class="hub-card coming-soon" onclick="launchPlaceholder('Swift Water Rescue')">
+                    <div>
+                        <h3>Swift Water Rescue</h3>
+                        <p>CFR tension diagonal calculations, throw-bag metrics, hydraulic hazard identification, and boat tether load charts.</p>
+                    </div>
+                    <span class="hub-badge badge-pending">Module Ready</span>
+                </div>
+
+                <!-- Surface Water Rescue -->
+                <div class="hub-card coming-soon" onclick="launchPlaceholder('Surface Water Rescue')">
+                    <div>
+                        <h3>Surface Water Rescue</h3>
+                        <p>Search grid patterns, drift vector estimators, thermal exposure calculators, and shore-based team tracking.</p>
+                    </div>
+                    <span class="hub-badge badge-pending">Module Ready</span>
+                </div>
+
+                <!-- Confined Space Rescue -->
+                <div class="hub-card coming-soon" onclick="launchPlaceholder('Confined Space Rescue')">
+                    <div>
+                        <h3>Confined Space Rescue</h3>
+                        <p>Atmospheric monitoring logs, retrieval tripod load tracking, IDLH entry time logs, and ventilation air-change rates.</p>
+                    </div>
+                    <span class="hub-badge badge-pending">Module Ready</span>
+                </div>
+
+                <!-- Ice Rescue -->
+                <div class="hub-card coming-soon" onclick="launchPlaceholder('Ice Rescue')">
+                    <div>
+                        <h3>Ice Rescue</h3>
+                        <p>Ice thickness safety ratings, load distribution platform calculations, and reach-pole/boat deployment metrics.</p>
+                    </div>
+                    <span class="hub-badge badge-pending">Module Ready</span>
+                </div>
+
+                <!-- Remote Medical -->
+                <div class="hub-card coming-soon" onclick="launchPlaceholder('Remote Medical')">
+                    <div>
+                        <h3>Remote Medical</h3>
+                        <p>Prolonged field care logs, fluid resuscitation rates, casualty evacuation (CASEVAC) timelines, and SOAP notes.</p>
+                    </div>
+                    <span class="hub-badge badge-pending">Module Ready</span>
+                </div>
             </div>
-          </div>
-          <div class="field">
-            <label>Rescuers on Line</label>
-            <div class="stepper-control">
-              <button class="step-btn" onclick="adjustValue('numRescuers', -1)">-</button>
-              <span class="step-value" id="val-numRescuers">1</span>
-              <button class="step-btn" onclick="adjustValue('numRescuers', 1)">+</button>
+        </section>
+
+        <!-- SCREEN 1: ROPE INPUTS -->
+        <section id="screen-inputs" class="screen">
+            <div class="input-grid">
+                <!-- System Architecture & Rigging -->
+                <div class="card">
+                    <h3>System Architecture</h3>
+                    <div class="field">
+                        <label>Rigging Strategy</label>
+                        <div class="btn-group" data-key="riggingStrategy">
+                            <button class="opt-btn active" onclick="selectOption(this, 'riggingStrategy', 'tts')">Twin Tension System</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'riggingStrategy', 'mb')">Main & Belay</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Rope Type & Diameter</label>
+                        <div class="btn-group" data-key="ropeType">
+                            <button class="opt-btn active" onclick="selectOption(this, 'ropeType', 'static')">Static</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'ropeType', 'dynamic')">Dynamic</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Rope Diameter</label>
+                        <div class="btn-group" data-key="ropeDiameter">
+                            <button class="opt-btn" onclick="selectOption(this, 'ropeDiameter', 11)">11mm (T)</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'ropeDiameter', 12.5)">12.5mm (G)</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>High Directional</label>
+                        <div class="btn-group" data-key="highDir">
+                            <button class="opt-btn active" onclick="selectOption(this, 'highDir', 'vortex')">Arizona Vortex</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'highDir', 'other')">Other High Dir.</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load & Personnel Steppers -->
+                <div class="card">
+                    <h3>Load & Personnel</h3>
+                    <div class="field">
+                        <label>Rescue Basket (Litter)</label>
+                        <div class="btn-group" data-key="useLitter">
+                            <button class="opt-btn active" onclick="selectOption(this, 'useLitter', true)">Metal Basket (+30 lbs)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'useLitter', false)">None / Sked Only</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Number of Patients</label>
+                        <div class="stepper-control">
+                            <button class="step-btn" onclick="adjustValue('numPatients', -1)">-</button>
+                            <span class="step-value" id="val-numPatients">1</span>
+                            <button class="step-btn" onclick="adjustValue('numPatients', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Rescuers on Line</label>
+                        <div class="stepper-control">
+                            <button class="step-btn" onclick="adjustValue('numRescuers', -1)">-</button>
+                            <span class="step-value" id="val-numRescuers">1</span>
+                            <button class="step-btn" onclick="adjustValue('numRescuers', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Trained Haul Team Members</label>
+                        <div class="stepper-control">
+                            <button class="step-btn" onclick="adjustValue('haulTeam', -1)">-</button>
+                            <span class="step-value" id="val-haulTeam">4</span>
+                            <button class="step-btn" onclick="adjustValue('haulTeam', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Geometry & Anchors -->
+                <div class="card">
+                    <h3>Environment & Anchors</h3>
+                    <div class="field">
+                        <label>Average Weight / Person</label>
+                        <div class="btn-group" data-key="avgWeight">
+                            <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 180)">180 lbs</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'avgWeight', 220)">220 lbs</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 250)">250 lbs</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Slope Angle (Degrees)</label>
+                        <div class="btn-group" data-key="angle">
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 30)">30°</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 45)">45°</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 60)">60°</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'angle', 90)">90°</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Anchor Type / Rating</label>
+                        <div class="btn-group" data-key="anchorType">
+                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'industrial')">Industrial (6k)</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'anchorType', 'tree')">Substantial Tree</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'vehicle')">Vehicle</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="field">
-            <label>Trained Haul Team Members</label>
-            <div class="stepper-control">
-              <button class="step-btn" onclick="adjustValue('haulTeam', -1)">-</button>
-              <span class="step-value" id="val-haulTeam">4</span>
-              <button class="step-btn" onclick="adjustValue('haulTeam', 1)">+</button>
+        </section>
+
+        <!-- SCREEN 2: ROPE ANALYSIS -->
+        <section id="screen-analysis" class="screen">
+            <div id="safetyAlertBanner" class="alert-banner">
+                <h3 style="color: var(--accent-red); margin-bottom: 0.3rem;">⚠️ SAFETY FACTOR WARNING</h3>
+                <p id="alertBannerText" style="font-size: 0.95rem; line-height: 1.4;">System safety factor has dropped below the standard 10:1 NFPA general rescue guideline threshold.</p>
             </div>
-          </div>
-        </div>
-
-        <!-- Geometry & Anchors -->
-        <div class="card">
-          <h3>Environment & Anchors</h3>
-          <div class="field">
-            <label>Average Weight / Person</label>
-            <div class="btn-group" data-key="avgWeight">
-              <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 180)">180 lbs</button>
-              <button class="opt-btn active" onclick="selectOption(this, 'avgWeight', 220)">220 lbs</button>
-              <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 250)">250 lbs</button>
+            <div class="summary-grid">
+                <div class="metric-card">
+                    <div class="metric-title">Total Suspended Mass</div>
+                    <div class="metric-value" id="res-total-weight">0 lbs</div>
+                    <div class="metric-sub" id="res-total-weight-sub">0 kg / 0 kN</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Calculated Rope Load</div>
+                    <div class="metric-value" id="res-rope-load">0 lbs</div>
+                    <div class="metric-sub" id="res-rope-load-sub">0 kg / 0 kN</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Haul Effort per Hauler</div>
+                    <div class="metric-value" id="res-haul-tension">0 lbs</div>
+                    <div class="metric-sub" id="res-haul-tension-sub">0 kg / 0 kN</div>
+                </div>
+                <div class="metric-card" id="card-sf">
+                    <div class="metric-title">System Safety Factor</div>
+                    <div class="metric-value" id="res-safety-factor">0 : 1</div>
+                    <div class="metric-sub">Target: 10:1 Minimum</div>
+                </div>
             </div>
-          </div>
-          <div class="field">
-            <label>Slope Angle (Degrees)</label>
-            <div class="btn-group" data-key="angle">
-              <button class="opt-btn" onclick="selectOption(this, 'angle', 30)">30°</button>
-              <button class="opt-btn" onclick="selectOption(this, 'angle', 45)">45°</button>
-              <button class="opt-btn" onclick="selectOption(this, 'angle', 60)">60°</button>
-              <button class="opt-btn active" onclick="selectOption(this, 'angle', 90)">90°</button>
+            <div class="card" style="margin-bottom: 1.2rem;">
+                <h3>Top 3 Weakest System Components (NFPA G/T Ratings)</h3>
+                <ul id="weakestGearList" class="weakest-list"></ul>
             </div>
-          </div>
-          <div class="field">
-            <label>Anchor Type / Rating</label>
-            <div class="btn-group" data-key="anchorType">
-              <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'industrial')">Industrial (6k)</button>
-              <button class="opt-btn active" onclick="selectOption(this, 'anchorType', 'tree')">Substantial Tree</button>
-              <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'vehicle')">Vehicle</button>
+            <div class="card">
+                <h3>System Structural Breakdown</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;" id="res-breakdown-text">Select parameters on the operational tab to evaluate forces.</p>
             </div>
-          </div>
-        </div>
+        </section>
 
-      </div>
-    </section>
+        <!-- SCREEN 3: LAY DIAGRAM -->
+        <section id="screen-diagram" class="screen">
+            <div class="canvas-container">
+                <h3 style="color: var(--accent-cyan); margin-bottom: 0.5rem; align-self: flex-start;">Professional Lay Diagram</h3>
+                <canvas id="diagramCanvas" width="900" height="450"></canvas>
+            </div>
+        </section>
+    </main>
 
-    <!-- SCREEN 2: ANALYSIS -->
-    <section id="screen-analysis" class="screen">
-      <div id="safetyAlertBanner" class="alert-banner">
-        <h3 style="color: var(--accent-red); margin-bottom: 0.3rem;">⚠️ SAFETY FACTOR WARNING</h3>
-        <p id="alertBannerText" style="font-size: 0.95rem; line-height: 1.4;">System safety factor has dropped below the standard 10:1 NFPA general rescue guideline threshold.</p>
-      </div>
+    <script>
+        const state = {
+            riggingStrategy: 'tts', ropeType: 'static', ropeDiameter: 12.5, 
+            highDir: 'vortex', useLitter: true, numPatients: 1, 
+            numRescuers: 1, haulTeam: 4, avgWeight: 220, angle: 90, anchorType: 'tree'
+        }; 
+        const anchorStrengths = { industrial: 6000, tree: 4000, vehicle: 2500 }; 
 
-      <div class="summary-grid">
-        <div class="metric-card">
-          <div class="metric-title">Total Suspended Mass</div>
-          <div class="metric-value" id="res-total-weight">0 lbs</div>
-          <div class="metric-sub" id="res-total-weight-sub">0 kg / 0 kN</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-title">Calculated Rope Load</div>
-          <div class="metric-value" id="res-rope-load">0 lbs</div>
-          <div class="metric-sub" id="res-rope-load-sub">0 kg / 0 kN</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-title">Haul Effort per Hauler</div>
-          <div class="metric-value" id="res-haul-tension">0 lbs</div>
-          <div class="metric-sub" id="res-haul-tension-sub">0 kg / 0 kN</div>
-        </div>
-        <div class="metric-card" id="card-sf">
-          <div class="metric-title">System Safety Factor</div>
-          <div class="metric-value" id="res-safety-factor">0 : 1</div>
-          <div class="metric-sub">Target: 10:1 Minimum</div>
-        </div>
-      </div>
+        function launchModule(moduleName) {
+            if (moduleName === 'rope') {
+                document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+                document.getElementById('screen-inputs').classList.add('active');
+                document.getElementById('ropeNavTabs').style.display = 'flex';
+                document.getElementById('hubBackBtn').style.display = 'block';
+                document.getElementById('headerSubtitle').innerText = 'Rope Rescue Command Engine';
+                calculate();
+            }
+        }
 
-      <div class="card" style="margin-bottom: 1.2rem;">
-        <h3>Top 3 Weakest System Components (NFPA G/T Ratings)</h3>
-        <ul id="weakestGearList" class="weakest-list">
-          <!-- Dynamically populated -->
-        </ul>
-      </div>
+        function launchPlaceholder(moduleName) {
+            alert(`${moduleName} module template is queued for deployment. Click 'Rope Rescue' to access the active calculator.`);
+        }
 
-      <div class="card">
-        <h3>System Structural Breakdown</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;" id="res-breakdown-text">
-          Select parameters on the operational tab to evaluate forces.
-        </p>
-      </div>
-    </section>
+        function returnToHub() {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById('screen-home').classList.add('active');
+            document.getElementById('ropeNavTabs').style.display = 'none';
+            document.getElementById('hubBackBtn').style.display = 'none';
+            document.getElementById('headerSubtitle').innerText = 'Incident Command Engine';
+        }
 
-    <!-- SCREEN 3: LAY DIAGRAM -->
-    <section id="screen-diagram" class="screen">
-      <div class="canvas-container">
-        <h3 style="color: var(--accent-cyan); margin-bottom: 0.5rem; align-self: flex-start;">Professional Lay Diagram</h3>
-        <canvas id="diagramCanvas" width="900" height="450"></canvas>
-      </div>
-    </section>
-  </main>
+        function selectOption(btn, key, value) {
+            const parent = btn.parentElement; 
+            parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active')); 
+            btn.classList.add('active'); 
+            state[key] = value; 
+            calculate(); 
+        } 
 
-  <script>
-    const state = {
-      riggingStrategy: 'tts',
-      ropeType: 'static',
-      ropeDiameter: 12.5,
-      highDir: 'vortex',
-      useLitter: true,
-      numPatients: 1,
-      numRescuers: 1,
-      haulTeam: 4,
-      avgWeight: 220,
-      angle: 90,
-      anchorType: 'tree'
-    };
+        function adjustValue(key, delta) {
+            state[key] = Math.max(0, state[key] + delta); 
+            document.getElementById(`val-${key}`).innerText = state[key]; 
+            calculate(); 
+        } 
 
-    const anchorStrengths = {
-      industrial: 6000,
-      tree: 4000,
-      vehicle: 2500
-    };
+        function switchTab(tabId) {
+            document.querySelectorAll('#screen-inputs, #screen-analysis, #screen-diagram').forEach(el => el.classList.remove('active')); 
+            document.querySelectorAll('.screen-tabs .tab-btn').forEach(el => el.classList.remove('active')); 
+            document.getElementById(tabId).classList.add('active'); 
+            event.currentTarget.classList.add('active'); 
+            if(tabId === 'screen-diagram') { drawDiagram(); } 
+        } 
 
-    function selectOption(btn, key, value) {
-      const parent = btn.parentElement;
-      parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      state[key] = value;
-      calculate();
-    }
+        function calculate() {
+            const personnelWeight = (state.numPatients + state.numRescuers) * state.avgWeight; 
+            const litterWeight = state.useLitter ? 30 : 0; 
+            const totalWeightLbs = personnelWeight + litterWeight; 
+            const totalWeightKg = totalWeightLbs * 0.453592; 
+            const totalWeightKn = totalWeightLbs * 0.00444822; 
+            const rad = state.angle * (Math.PI / 180); 
+            const slopeForceLbs = totalWeightLbs * Math.sin(rad); 
+            const slopeForceKg = slopeForceLbs * 0.453592; 
+            const slopeForceKn = slopeForceLbs * 0.00444822; 
+            
+            const effectiveLoadPerLine = state.riggingStrategy === 'tts' ? slopeForceLbs / 2 : slopeForceLbs; 
+            const haulEffortLbs = state.haulTeam > 0 ? effectiveLoadPerLine / (state.haulTeam * 1.5) : effectiveLoadPerLine; 
+            const haulEffortKg = haulEffortLbs * 0.453592; 
+            const haulEffortKn = haulEffortLbs * 0.00444822; 
+            const ropeMbsLbs = (state.ropeDiameter >= 12.5) ? 9000 : 6000; 
+            const safetyFactor = effectiveLoadPerLine > 0 ? (ropeMbsLbs / effectiveLoadPerLine).toFixed(1) : "N/A"; 
+            const anchorValLbs = anchorStrengths[state.anchorType] || 4000; 
+            const highDirMbsLbs = state.highDir === 'vortex' ? 8000 : 5000; 
 
-    function adjustValue(key, delta) {
-      state[key] = Math.max(0, state[key] + delta);
-      document.getElementById(`val-${key}`).innerText = state[key];
-      calculate();
-    }
+            document.getElementById('res-total-weight').innerText = `${totalWeightLbs.toFixed(0)} lbs`; 
+            document.getElementById('res-total-weight-sub').innerText = `${totalWeightKg.toFixed(0)} kg / ${totalWeightKn.toFixed(2)} kN`; 
+            document.getElementById('res-rope-load').innerText = `${effectiveLoadPerLine.toFixed(0)} lbs / line`; 
+            document.getElementById('res-rope-load-sub').innerText = `${(effectiveLoadPerLine*0.453592).toFixed(0)} kg / ${(effectiveLoadPerLine*0.00444822).toFixed(2)} kN`; 
+            document.getElementById('res-haul-tension').innerText = `${haulEffortLbs.toFixed(0)} lbs / person`; 
+            document.getElementById('res-haul-tension-sub').innerText = `${haulEffortKg.toFixed(0)} kg / ${haulEffortKn.toFixed(2)} kN`; 
+            
+            const sfElement = document.getElementById('res-safety-factor'); 
+            const sfCard = document.getElementById('card-sf'); 
+            sfElement.innerText = `${safetyFactor} : 1`; 
+            const alertBanner = document.getElementById('safetyAlertBanner'); 
+            
+            if (parseFloat(safetyFactor) < 10) {
+                sfCard.className = "metric-card alert"; 
+                alertBanner.classList.add('visible'); 
+            } else {
+                sfCard.className = "metric-card good"; 
+                alertBanner.classList.remove('visible'); 
+            } 
 
-    function switchTab(tabId) {
-      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById(tabId).classList.add('active');
-      event.currentTarget.classList.add('active');
+            const components = [
+                { name: `Anchor Point (${state.anchorType.toUpperCase()})`, capacity: anchorValLbs }, 
+                { name: `Main Line Rope (${state.ropeDiameter}mm ${state.ropeType})`, capacity: ropeMbsLbs }, 
+                { name: `High Directional (${state.highDir.toUpperCase()})`, capacity: highDirMbsLbs }, 
+                { name: `General Use (G) Carabiners / Connectors (~40 kN)`, capacity: 8992 }, 
+                { name: `Technical Use (T) Hardware / Pulleys (~25 kN)`, capacity: 5620 } 
+            ]; 
+            components.sort((a, b) => (a.capacity / effectiveLoadPerLine) - (b.capacity / effectiveLoadPerLine)); 
+            
+            const weakestListHtml = components.slice(0, 3).map((item, idx) => `
+                <li class="weakest-item">
+                    <strong>#${idx + 1}: ${item.name}</strong> — Rated MBS: ~${item.capacity} lbs (${(item.capacity*0.00444822).toFixed(1)} kN)
+                </li>
+            `).join(''); 
+            document.getElementById('weakestGearList').innerHTML = weakestListHtml; 
+            
+            document.getElementById('res-breakdown-text').innerHTML = `
+                <strong>Strategy:</strong> ${state.riggingStrategy === 'tts' ? 'Twin Tension System (Shared Load)' : 'Main & Belay System'}<br/>
+                <strong>Basket / Litter:</strong> ${state.useLitter ? 'Included Metal Basket (+30 lbs)' : 'Not included'}<br/>
+                <strong>Slope Angle Multiplier:</strong> sin(${state.angle}°) = ${Math.sin(rad).toFixed(2)}<br/>
+                <strong>Haul Team Status:</strong> ${state.haulTeam} Haulers active on scene.
+            `; 
+            drawDiagram(); 
+        } 
 
-      if(tabId === 'screen-diagram') {
-        drawDiagram();
-      }
-    }
-
-    function calculate() {
-      const personnelWeight = (state.numPatients + state.numRescuers) * state.avgWeight;
-      const litterWeight = state.useLitter ? 30 : 0; // Standard metal basket weight ~30 lbs
-      const totalWeightLbs = personnelWeight + litterWeight;
-      
-      const totalWeightKg = totalWeightLbs * 0.453592;
-      const totalWeightKn = totalWeightLbs * 0.00444822;
-
-      const rad = state.angle * (Math.PI / 180);
-      const slopeForceLbs = totalWeightLbs * Math.sin(rad);
-      const slopeForceKg = slopeForceLbs * 0.453592;
-      const slopeForceKn = slopeForceLbs * 0.00444822;
-
-      // Effective load distribution based on Rigging Strategy
-      const effectiveLoadPerLine = state.riggingStrategy === 'tts' ? slopeForceLbs / 2 : slopeForceLbs;
-
-      const haulEffortLbs = state.haulTeam > 0 ? effectiveLoadPerLine / (state.haulTeam * 1.5) : effectiveLoadPerLine; // Assuming 3:1 Z-rig per hauler efficiency estimate
-      const haulEffortKg = haulEffortLbs * 0.453592;
-      const haulEffortKn = haulEffortLbs * 0.00444822;
-
-      const ropeMbsLbs = (state.ropeDiameter >= 12.5) ? 9000 : 6000;
-      const safetyFactor = effectiveLoadPerLine > 0 ? (ropeMbsLbs / effectiveLoadPerLine).toFixed(1) : "N/A";
-      const anchorValLbs = anchorStrengths[state.anchorType] || 4000;
-      const highDirMbsLbs = state.highDir === 'vortex' ? 8000 : 5000;
-
-      // Populate UI metrics
-      document.getElementById('res-total-weight').innerText = `${totalWeightLbs.toFixed(0)} lbs`;
-      document.getElementById('res-total-weight-sub').innerText = `${totalWeightKg.toFixed(0)} kg / ${totalWeightKn.toFixed(2)} kN`;
-
-      document.getElementById('res-rope-load').innerText = `${effectiveLoadPerLine.toFixed(0)} lbs / line`;
-      document.getElementById('res-rope-load-sub').innerText = `${(effectiveLoadPerLine*0.453592).toFixed(0)} kg / ${(effectiveLoadPerLine*0.00444822).toFixed(2)} kN`;
-
-      document.getElementById('res-haul-tension').innerText = `${haulEffortLbs.toFixed(0)} lbs / person`;
-      document.getElementById('res-haul-tension-sub').innerText = `${haulEffortKg.toFixed(0)} kg / ${haulEffortKn.toFixed(2)} kN`;
-      
-      const sfElement = document.getElementById('res-safety-factor');
-      const sfCard = document.getElementById('card-sf');
-      sfElement.innerText = `${safetyFactor} : 1`;
-
-      const alertBanner = document.getElementById('safetyAlertBanner');
-      if (parseFloat(safetyFactor) < 10) {
-        sfCard.className = "metric-card alert";
-        alertBanner.classList.add('visible');
-      } else {
-        sfCard.className = "metric-card good";
-        alertBanner.classList.remove('visible');
-      }
-
-      // NFPA G/T Hardware Ratings Check (~40kN General / ~25kN Technical)
-      const components = [
-        { name: `Anchor Point (${state.anchorType.toUpperCase()})`, capacity: anchorValLbs },
-        { name: `Main Line Rope (${state.ropeDiameter}mm ${state.ropeType})`, capacity: ropeMbsLbs },
-        { name: `High Directional (${state.highDir.toUpperCase()})`, capacity: highDirMbsLbs },
-        { name: `General Use (G) Carabiners / Connectors (~40 kN)`, capacity: 8992 },
-        { name: `Technical Use (T) Hardware / Pulleys (~25 kN)`, capacity: 5620 }
-      ];
-
-      components.sort((a, b) => (a.capacity / effectiveLoadPerLine) - (b.capacity / effectiveLoadPerLine));
-      
-      const weakestListHtml = components.slice(0, 3).map((item, idx) => `
-        <li class="weakest-item">
-          <strong>#${idx + 1}: ${item.name}</strong> — Rated MBS: ~${item.capacity} lbs (${(item.capacity*0.00444822).toFixed(1)} kN)
-        </li>
-      `).join('');
-      document.getElementById('weakestGearList').innerHTML = weakestListHtml;
-
-      document.getElementById('res-breakdown-text').innerHTML = `
-        <strong>Strategy:</strong> ${state.riggingStrategy === 'tts' ? 'Twin Tension System (Shared Load)' : 'Main & Belay System'}<br/>
-        <strong>Basket / Litter:</strong> ${state.useLitter ? 'Included Metal Basket (+30 lbs)' : 'Not included'}<br/>
-        <strong>Slope Angle Multiplier:</strong> sin(${state.angle}°) = ${Math.sin(rad).toFixed(2)}<br/>
-        <strong>Haul Team Status:</strong> ${state.haulTeam} Haulers active on scene.
-      `;
-
-      drawDiagram();
-    }
-
-    function drawDiagram() {
-      const canvas = document.getElementById('diagramCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
-
-      ctx.clearRect(0, 0, w, h);
-
-      // Grid Background
-      ctx.strokeStyle = '#1e293b';
-      ctx.lineWidth = 1;
-      for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
-      for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
-
-      const edgeX = 350;
-      const edgeY = 160;
-      const rad = state.angle * (Math.PI / 180);
-      const slopeLength = 220;
-      
-      const targetX = edgeX + Math.cos(rad) * slopeLength;
-      const targetY = edgeY + Math.sin(rad) * slopeLength;
-
-      // Cliff Terrain
-      ctx.fillStyle = '#1e293b';
-      ctx.strokeStyle = '#64748b';
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(0, edgeY);
-      ctx.lineTo(edgeX, edgeY);
-      ctx.lineTo(targetX, targetY);
-      ctx.lineTo(targetX, h);
-      ctx.lineTo(0, h);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-
-      // Anchor Cartoon Selection
-      const anchorX = 120;
-      const anchorY = edgeY;
-
-      if (state.anchorType === 'tree') {
-        ctx.fillStyle = '#8B4513';
-        ctx.fillRect(anchorX - 10, anchorY - 45, 20, 45);
-        ctx.fillStyle = '#22c55e';
-        ctx.beginPath(); ctx.arc(anchorX, anchorY - 55, 30, 0, Math.PI * 2); ctx.fill();
-      } else if (state.anchorType === 'vehicle') {
-        ctx.fillStyle = '#ef4444';
-        ctx.fillRect(anchorX - 35, anchorY - 25, 60, 20);
-        ctx.fillRect(anchorX - 20, anchorY - 40, 35, 15);
-        ctx.fillStyle = '#000';
-        ctx.beginPath(); ctx.arc(anchorX - 20, anchorY - 5, 8, 0, Math.PI * 2); ctx.arc(anchorX + 15, anchorY - 5, 8, 0, Math.PI * 2); ctx.fill();
-      } else {
-        ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(anchorX - 20, anchorY - 25, 40, 25);
-      }
-
-      ctx.fillStyle = '#f8fafc';
-      ctx.font = 'bold 12px sans-serif';
-      ctx.fillText(`Anchor (${state.anchorType.toUpperCase()})`, anchorX - 35, anchorY - 70);
-
-      // High Directional at Edge
-      ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(edgeX - 15, edgeY - 45, 12, 45);
-      ctx.fillText(state.highDir === 'vortex' ? 'AZ Vortex' : 'High Dir', edgeX - 45, anchorY - 50);
-
-      // Main Line Rope
-      ctx.strokeStyle = state.ropeType === 'static' ? '#38bdf8' : '#f59e0b';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(anchorX, anchorY - 10);
-      ctx.lineTo(edgeX, edgeY - 25);
-      ctx.lineTo(targetX, targetY);
-      ctx.stroke();
-
-      // Midline Rescuer Cartoon
-      const midX = edgeX + (targetX - edgeX) * 0.45;
-      const midY = edgeY + (targetY - edgeY) * 0.45;
-
-      if (state.numRescuers > 0) {
-        ctx.fillStyle = '#f97316';
-        ctx.beginPath(); ctx.arc(midX, midY - 15, 6, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 4;
-        ctx.beginPath(); ctx.moveTo(midX, midY - 9); ctx.lineTo(midX, midY + 8); ctx.stroke();
-        ctx.fillText(`Rescuer (${state.numRescuers})`, midX + 10, midY);
-      }
-
-      // Detailed Metal Litter Basket Cartoon
-      ctx.strokeStyle = '#94a3b8';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(targetX - 25, targetY - 12, 50, 24);
-      // Tubing crossbars
-      ctx.beginPath();
-      ctx.moveTo(targetX - 15, targetY - 12); ctx.lineTo(targetX - 15, targetY + 12);
-      ctx.moveTo(targetX + 15, targetY - 12); ctx.lineTo(targetX + 15, targetY + 12);
-      ctx.stroke();
-
-      if (state.numPatients > 0) {
-        ctx.fillStyle = '#ef4444';
-        ctx.beginPath(); ctx.arc(targetX, targetY, 5, 0, Math.PI * 2); ctx.fill();
-      }
-
-      ctx.fillStyle = '#f8fafc';
-      ctx.fillText(`Rescue Basket / Litter (${state.numPatients} P)`, targetX - 60, targetY + 35);
-      
-      // Angle Indicator Arc
-      ctx.strokeStyle = '#ef4444';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(edgeX, edgeY, 35, 0, rad);
-      ctx.stroke();
-      ctx.fillStyle = '#ef4444';
-      ctx.fillText(`${state.angle}° Slope`, edgeX + 45, edgeY + 25);
-    }
-
-    window.onload = calculate;
-  </script>
+        function drawDiagram() {
+            const canvas = document.getElementById('diagramCanvas'); 
+            if (!canvas) return; 
+            const ctx = canvas.getContext('2d'); 
+            const w = canvas.width; 
+            const h = canvas.height; 
+            ctx.clearRect(0, 0, w, h); 
+            
+            ctx.strokeStyle = '#1e293b'; 
+            ctx.lineWidth = 1; 
+            for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); } 
+            for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); } 
+            
+            const edgeX = 350; 
+            const edgeY = 160; 
+            const rad = state.angle * (Math.PI / 180); 
+            const slopeLength = 220; 
+            const targetX = edgeX + Math.cos(rad) * slopeLength; 
+            const targetY = edgeY + Math.sin(rad) * slopeLength; 
+            
+            ctx.fillStyle = '#1e293b'; 
+            ctx.strokeStyle = '#64748b'; 
+            ctx.lineWidth = 4; 
+            ctx.beginPath(); 
+            ctx.moveTo(0, edgeY); 
+            ctx.lineTo(edgeX, edgeY); 
+            ctx.lineTo(targetX, targetY); 
+            ctx.lineTo(targetX, h); 
+            ctx.lineTo(0, h); 
+            ctx.closePath(); 
+            ctx.fill(); 
+            ctx.stroke(); 
+            
+            const anchorX = 120; 
+            const anchorY = edgeY; 
+            if (state.anchorType === 'tree') {
+                ctx.fillStyle = '#8B4513'; ctx.fillRect(anchorX - 10, anchorY - 45, 20, 45); 
+                ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(anchorX, anchorY - 55, 30, 0, Math.PI * 2); ctx.fill(); 
+            } else if (state.anchorType === 'vehicle') {
+                ctx.fillStyle = '#ef4444'; ctx.fillRect(anchorX - 35, anchorY - 25, 60, 20); ctx.fillRect(anchorX - 20, anchorY - 40, 35, 15); 
+                ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(anchorX - 20, anchorY - 5, 8, 0, Math.PI * 2); ctx.arc(anchorX + 15, anchorY - 5, 8, 0, Math.PI * 2); ctx.fill(); 
+            } else {
+                ctx.fillStyle = '#38bdf8'; ctx.fillRect(anchorX - 20, anchorY - 25, 40, 25); 
+            } 
+            ctx.fillStyle = '#f8fafc'; ctx.font = 'bold 12px sans-serif'; 
+            ctx.fillText(`Anchor (${state.anchorType.toUpperCase()})`, anchorX - 35, anchorY - 70); 
+            
+            ctx.fillStyle = '#38bdf8'; 
+            ctx.fillRect(edgeX - 15, edgeY - 45, 12, 45); 
+            ctx.fillText(state.highDir === 'vortex' ? 'AZ Vortex' : 'High Dir', edgeX - 45, anchorY - 50); 
+            
+            ctx.strokeStyle = state.ropeType === 'static' ? '#38bdf8' : '#f59e0b'; 
+            ctx.lineWidth = 3; 
+            ctx.beginPath(); 
+            ctx.moveTo(anchorX, anchorY - 10); 
+            ctx.lineTo(edgeX, edgeY - 25); 
+            ctx.lineTo(targetX, targetY); 
+            ctx.stroke(); 
+            
+            const midX = edgeX + (targetX - edgeX) * 0.45; 
+            const midY = edgeY + (targetY - edgeY) * 0.45; 
+            if (state.numRescuers > 0) {
+                ctx.fillStyle = '#f97316'; ctx.beginPath(); ctx.arc(midX, midY - 15, 6, 0, Math.PI * 2); ctx.fill(); 
+                ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(midX, midY - 9); ctx.lineTo(midX, midY + 8); ctx.stroke(); 
+                ctx.fillText(`Rescuer (${state.numRescuers})`, midX + 10, midY); 
+            } 
+            
+            ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3; 
+            ctx.strokeRect(targetX - 25, targetY - 12, 50, 24); 
+            ctx.beginPath(); 
+            ctx.moveTo(targetX - 15, targetY - 12); ctx.lineTo(targetX - 15, targetY + 12); 
+            ctx.moveTo(targetX + 15, targetY - 12); ctx.lineTo(targetX + 15, targetY + 12); 
+            ctx.stroke(); 
+            
+            if (state.numPatients > 0) {
+                ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(targetX, targetY, 5, 0, Math.PI * 2); ctx.fill(); 
+            } 
+            ctx.fillStyle = '#f8fafc'; ctx.fillText(`Rescue Basket / Litter (${state.numPatients} P)`, targetX - 60, targetY + 35); 
+            
+            ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; 
+            ctx.beginPath(); ctx.arc(edgeX, edgeY, 35, 0, rad); ctx.stroke(); 
+            ctx.fillStyle = '#ef4444'; ctx.fillText(`${state.angle}° Slope`, edgeX + 45, edgeY + 25); 
+        } 
+    </script>
 </body>
 </html>
