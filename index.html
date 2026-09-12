@@ -85,13 +85,18 @@
         .glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; }
         .glossary-item { background-color: rgba(9, 13, 22, 0.5); padding: 0.9rem; border-radius: 8px; border: 1px solid var(--border-color); }
         .glossary-item strong { color: var(--accent-cyan); display: block; margin-bottom: 0.3rem; }
-        .flowchart-step { background-color: rgba(9, 13, 22, 0.5); border-left: 4px solid var(--accent-green); padding: 0.9rem; margin-bottom: 0.6rem; border-radius: 6px; font-size: 0.9rem; }
-        .flowchart-step span { color: var(--accent-green); font-weight: bold; }
         .resource-link { color: var(--accent-cyan); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
         .resource-link:hover { text-decoration: underline; }
 
         .module-svg { width: 100%; height: 110px; background: rgba(9, 13, 22, 0.4); border-radius: 8px; margin-bottom: 0.8rem; border: 1px solid rgba(56, 189, 248, 0.15); display: flex; align-items: center; justify-content: center; }
         .search-input { width: 100%; padding: 0.6rem; background: rgba(9, 13, 22, 0.8); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-size: 0.9rem; margin-bottom: 0.8rem; }
+        
+        .knot-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .knot-card { background: rgba(9, 13, 22, 0.6); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; }
+        .knot-card h4 { color: var(--accent-cyan); margin-bottom: 0.4rem; font-size: 1rem; display: flex; justify-content: space-between; }
+        .knot-phases { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 0.6rem; }
+        .knot-phase-box { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 6px; padding: 6px; text-align: center; }
+        .knot-phase-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -107,7 +112,8 @@
     <nav id="ropeNavTabs" class="screen-tabs">
         <button class="tab-btn active" onclick="switchRopeTab('screen-inputs', event)">1. Operations & Inputs</button>
         <button class="tab-btn" onclick="switchRopeTab('screen-analysis', event)">2. Load & Shock Margin</button>
-        <button class="tab-btn" onclick="switchRopeTab('screen-diagram', event)">3. Lay Diagram</button>
+        <button class="tab-btn" onclick="switchRopeTab('screen-knots', event)">3. Knot Efficiency Matrix</button>
+        <button class="tab-btn" onclick="switchRopeTab('screen-diagram', event)">4. Lay Diagram</button>
     </nav>
 
     <main>
@@ -128,8 +134,8 @@
                                 <line x1="60" y1="30" x2="60" y2="60" stroke="#22c55e" stroke-width="3"/>
                             </svg>
                         </div>
-                        <h3>Rope Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Twin tension systems, MA hauling systems, safety factors, slope trigonometry, and worst-case dynamic shock load math.</p>
+                        <h3>Rope Rescue & Knots <span style="color: var(--accent-cyan);">→</span></h3>
+                        <p>Twin tension systems, MA hauling, friction loss estimators, worst-case dynamic shock math, and 3-phase knot efficiency graphics.</p>
                     </div>
                     <span class="hub-badge badge-active">CSA Standard</span>
                 </div>
@@ -144,7 +150,7 @@
                             </svg>
                         </div>
                         <h3>Heavy Vehicle & ERG <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Commercial vehicle types, axle weight distribution, heavy lifting struts, and built-in Transport Canada ERG 2024 database.</p>
+                        <p>Commercial vehicles, bus stabilization diagrams, EV orange cable high-voltage protocols, and built-in ERG 2024 database.</p>
                     </div>
                     <span class="hub-badge badge-active">TC / ERG 2024</span>
                 </div>
@@ -162,7 +168,7 @@
                             </svg>
                         </div>
                         <h3>Advanced Collapse & Shoring <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>T-Stops, Double T-Stops, flying rakers, standard rakers, wood member failure points, and Paratech metal strut metrics.</p>
+                        <p>T-Stops, Double T-Stops, flying rakers, rapid wall assessment matrix, Paratech metal strut capacities, and breaching timelines.</p>
                     </div>
                     <span class="hub-badge badge-active">Advanced Tech</span>
                 </div>
@@ -177,7 +183,7 @@
                             </svg>
                         </div>
                         <h3>Swift Water Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>River classifications, hazard glossaries, whistle signals, tension diagonals, and Alberta Rivers hydrometric flow links.</p>
+                        <p>Entrapment mitigations, live-bait tether safety, downstream safety cells, whistle signals, and Alberta Rivers hydrometric links.</p>
                     </div>
                     <span class="hub-badge badge-active">Provincial Gov</span>
                 </div>
@@ -192,7 +198,7 @@
                             </svg>
                         </div>
                         <h3>Surface Water & Boat Ops <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Grid search patterns, body recovery protocols, boat handling in current, and rescuer personal boating safety.</p>
+                        <p>Grid searches, body recovery, boat handling in current, night operations, decontamination, and helicopter hoist signals.</p>
                     </div>
                     <span class="hub-badge badge-active">Operational</span>
                 </div>
@@ -207,7 +213,7 @@
                             </svg>
                         </div>
                         <h3>Confined Space Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Atmospheric monitoring limits (O2, LEL, H2S, CO), air exchange ventilation rates, and tripod retrieval load safety.</p>
+                        <p>Atmospheric monitoring limits (O2, LEL, H2S, CO), permit checklists, 4-minute extraction timelines, and tripod systems.</p>
                     </div>
                     <span class="hub-badge badge-active">OHS Compliant</span>
                 </div>
@@ -222,7 +228,7 @@
                             </svg>
                         </div>
                         <h3>Comprehensive Ice Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Extended blue ice thickness matrix, load distribution platforms, slot cutting, thermal survival math, and ice awl tactics.</p>
+                        <p>Blue ice thickness matrix, degradation factors, slot cutting, thermal survival math, and multi-rescuer chain protocols.</p>
                     </div>
                     <span class="hub-badge badge-active">8x Expanded</span>
                 </div>
@@ -236,10 +242,10 @@
                                 <line x1="60" y1="12" x2="60" y2="58" stroke="#fff" stroke-width="4"/>
                             </svg>
                         </div>
-                        <h3>Field Medical Care Plans <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Specialized plans for Hypothermia, Hyperthermia, Drowning, Burns, Harness Hand/Suspension Trauma, and Pain Management.</p>
+                        <h3>Field Medical & Alberta Scopes <span style="color: var(--accent-cyan);">→</span></h3>
+                        <p>Bleeding control kit inventory, TCCC tourniquets, mass-casualty triage, WMA wilderness protocols, and Alberta First Aid to ACP flowcharts.</p>
                     </div>
-                    <span class="hub-badge badge-active">6 Care Plans</span>
+                    <span class="hub-badge badge-active">Alberta HS / WMA</span>
                 </div>
             </div>
         </section>
@@ -265,17 +271,17 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label>Rope Type</label>
+                        <label>Rope Type & Friction Loss</label>
                         <div class="btn-group" data-key="ropeType">
-                            <button class="opt-btn active" onclick="selectOption(this, 'ropeType', 'static')">Static</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'ropeType', 'static')">Static (Low Elongation)</button>
                             <button class="opt-btn" onclick="selectOption(this, 'ropeType', 'dynamic')">Dynamic</button>
                         </div>
                     </div>
                     <div class="field">
-                        <label>Rope Diameter</label>
-                        <div class="btn-group" data-key="ropeDiameter">
-                            <button class="opt-btn" onclick="selectOption(this, 'ropeDiameter', 11)">11mm</button>
-                            <button class="opt-btn active" onclick="selectOption(this, 'ropeDiameter', 12.5)">12.5mm</button>
+                        <label>Edge Friction Estimate</label>
+                        <div class="btn-group" data-key="frictionLoss">
+                            <button class="opt-btn active" onclick="selectOption(this, 'frictionLoss', 10)">Roller (~10% Loss)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'frictionLoss', 30)">Edge Pad (~30% Loss)</button>
                         </div>
                     </div>
                 </div>
@@ -359,7 +365,7 @@
                     <div class="metric-sub" id="res-total-weight-sub">0 kg / 0 kN</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-title">Calculated Rope Load</div>
+                    <div class="metric-title">Calculated Rope Load (+ Friction)</div>
                     <div class="metric-value" id="res-rope-load">0 lbs</div>
                     <div class="metric-sub" id="res-rope-load-sub">0 kg / 0 kN</div>
                 </div>
@@ -384,12 +390,136 @@
                 <ul id="weakestGearList" class="weakest-list"></ul>
             </div>
             <div class="card">
-                <h3>System Structural Breakdown & Shock Math</h3>
+                <h3>System Structural Breakdown & Friction Estimator Notes</h3>
                 <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;" id="res-breakdown-text">Select parameters on the operational tab to evaluate forces.</p>
             </div>
         </section>
 
-        <!-- SCREEN 3: LAY DIAGRAM -->
+        <!-- SCREEN 3: KNOT EFFICIENCY GRAPHICS -->
+        <section id="screen-knots" class="screen">
+            <div style="margin-bottom: 1.2rem;">
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Rescue Knot Efficiency & 3-Phase Formation Graphics</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Visualizing rope bending radius strength retention across Start, Middle weave, and Finished dress phases.</p>
+            </div>
+
+            <div class="knot-card-grid">
+                <div class="knot-card">
+                    <h4>Figure-8 Family <span>~75 - 80% Retained</span></h4>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Standard anchor & tie-in loop. High bending radius stability.</p>
+                    <div class="knot-phases">
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">1. Start</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M10 20 Q 30 5 50 20" stroke="#38bdf8" stroke-width="3" fill="none"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">2. Middle</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M10 10 Q 30 35 50 10" stroke="#eab308" stroke-width="3" fill="none"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">3. Finish</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><circle cx="30" cy="20" r="12" stroke="#22c55e" stroke-width="3" fill="none"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="knot-card">
+                    <h4>Bowline Family <span>~70 - 75% Retained</span></h4>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Non-jamming loop under heavy load. Requires backup knot.</p>
+                    <div class="knot-phases">
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">1. Start</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><circle cx="30" cy="20" r="10" stroke="#38bdf8" stroke-width="3" fill="none"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">2. Middle</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M15 30 L 30 10 L 45 30" stroke="#eab308" stroke-width="3" fill="none"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">3. Finish</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M10 20 C 20 5, 40 35, 50 20" stroke="#22c55e" stroke-width="3" fill="none"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="knot-card">
+                    <h4>Alpine Butterfly <span>~75 - 80% Retained</span></h4>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Midline loadable loop. Excellent multi-directional strength.</p>
+                    <div class="knot-phases">
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">1. Start</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M10 20 L 50 20 M30 10 L 30 30" stroke="#38bdf8" stroke-width="3" fill="none"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">2. Middle</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><circle cx="30" cy="20" r="14" stroke="#eab308" stroke-width="3" fill="none"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">3. Finish</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M15 10 Q 30 35 45 10" stroke="#22c55e" stroke-width="3" fill="none"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="knot-card">
+                    <h4>Prusik Hitch (Friction) <span>~70 - 80% Retained</span></h4>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Binds under load, slides when unloaded. Cord diameter ratio matters.</p>
+                    <div class="knot-phases">
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">1. Start</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><line x1="10" y1="20" x2="50" y2="20" stroke="#38bdf8" stroke-width="3"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">2. Middle</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><circle cx="30" cy="20" r="8" stroke="#eab308" stroke-width="3" fill="none"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">3. Finish</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><ellipse cx="30" cy="20" rx="12" ry="6" stroke="#22c55e" stroke-width="3" fill="none"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="knot-card">
+                    <h4>Double Fisherman's Bend <span>~75 - 85% Retained</span></h4>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Standard for joining ropes or tying cordage into continuous loops.</p>
+                    <div class="knot-phases">
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">1. Start</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M10 15 L 50 25" stroke="#38bdf8" stroke-width="3"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">2. Middle</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M20 10 L 40 30 M20 30 L 40 10" stroke="#eab308" stroke-width="3"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">3. Finish</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><circle cx="30" cy="20" r="10" stroke="#22c55e" stroke-width="3" fill="none"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="knot-card">
+                    <h4>Barrel Knot (Blood Knot) <span>~65 - 70% Retained</span></h4>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Symmetric multi-turn bend for joining two lines.</p>
+                    <div class="knot-phases">
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">1. Start</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><line x1="10" y1="20" x2="50" y2="20" stroke="#38bdf8" stroke-width="3"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">2. Middle</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M15 15 C 25 30, 35 10, 45 25" stroke="#eab308" stroke-width="3" fill="none"/></svg>
+                        </div>
+                        <div class="knot-phase-box">
+                            <div class="knot-phase-title">3. Finish</div>
+                            <svg width="60" height="40" viewBox="0 0 60 40"><rect x="15" y="10" width="30" height="20" rx="4" stroke="#22c55e" stroke-width="3" fill="none"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: LAY DIAGRAM -->
         <section id="screen-diagram" class="screen">
             <div class="canvas-container">
                 <h3 style="color: var(--accent-cyan); margin-bottom: 0.5rem; align-self: flex-start;">Professional Lay Diagram</h3>
@@ -401,7 +531,7 @@
         <section id="screen-swiftwater" class="screen">
             <div style="margin-bottom: 1.2rem;">
                 <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Swift Water Command & Reference Guide</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Operational cheat sheet, river classes, hazard glossaries, standard commands, and provincial flow monitoring.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Entrapment protocols, live-bait tether safety, downstream safety cells, and provincial flow monitoring.</p>
             </div>
 
             <div class="card">
@@ -413,27 +543,11 @@
             </div>
 
             <div class="card">
-                <h3>Tyrolean / Tension Diagonal Calculator</h3>
-                <div class="input-grid" style="margin-bottom: 1rem;">
-                    <div class="field" style="margin-bottom:0;">
-                        <label>River Flow Speed</label>
-                        <div class="btn-group" data-key="swiftFlow">
-                            <button class="opt-btn active" onclick="selectSwiftOption(this, 'flow', 5)">Moderate (5 fps)</button>
-                            <button class="opt-btn" onclick="selectSwiftOption(this, 'flow', 10)">High / Flood (10 fps)</button>
-                        </div>
-                    </div>
-                    <div class="field" style="margin-bottom:0;">
-                        <label>Line Deflection Angle (Sag)</label>
-                        <div class="btn-group" data-key="swiftSag">
-                            <button class="opt-btn" onclick="selectSwiftOption(this, 'sag', 10)">10° (High Force)</button>
-                            <button class="opt-btn active" onclick="selectSwiftOption(this, 'sag', 30)">30° (Standard)</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">Estimated Anchor Load (Diagonal)</div>
-                    <div class="metric-value" id="res-swift-load">0 lbs</div>
-                    <div class="metric-sub">Water force scales exponentially with current velocity</div>
+                <h3>Critical Swiftwater Tactics: Entrapment, Live-Bait & Safety Cells</h3>
+                <div class="glossary-grid">
+                    <div class="glossary-item"><strong>Foot Entrapment Protocols</strong> Never attempt to stand up in moving water faster than knee-deep. Current pressure pins legs instantly. Swimmers must float defensively on their back feet up, angle toward shore, and roll over banks.</div>
+                    <div class="glossary-item"><strong>Live-Bait Tether Safety Mechanics</strong> Rescuer is tethered to a quick-release harness on shore or via a tension diagonal. The handler must maintain absolute visual contact and be ready to deploy the instant-release buckle if the rescuer gets swept underwater or snagged.</div>
+                    <div class="glossary-item"><strong>Downstream Safety Cell Setup</strong> Positioned below any technical rescue or rapid hazard. Equipped with throw bags, rescue watercraft, and backup tethered swimmers to intercept victims who slip past primary operational zones.</div>
                 </div>
             </div>
 
@@ -448,17 +562,6 @@
                     <tr><td><strong>Class V</strong></td><td>15–20+ fps (Violent drops, waves 6+ ft)</td><td><strong>Extreme / Marginal:</strong> High fatality rate for swimmers. In-water contact rescue is extremely high risk.</td></tr>
                     <tr><td><strong>Class VI</strong></td><td>Unpredictable / Flood Stage</td><td><strong>Zero In-Water Entry:</strong> Unrunnable catastrophic debris fields. Shore or aerial recovery only.</td></tr>
                 </table>
-            </div>
-
-            <div class="card">
-                <h3>River Features & Hazards Glossary</h3>
-                <div class="glossary-grid">
-                    <div class="glossary-item"><strong>Eddy</strong> Safe slackwater zone behind obstacles where water flows upstream; vital staging.</div>
-                    <div class="glossary-item"><strong>Pillow</strong> Water piling up on upstream side of boulders, creating a hydraulic cushion.</div>
-                    <div class="glossary-item"><strong>Hydraulic (Hole)</strong> Water plunging over a ledge and recirculating upstream. Keeper holes trap swimmers.</div>
-                    <div class="glossary-item"><strong>Undercut</strong> Rocks or banks hollowed out underneath by current; extreme entrapment risk.</div>
-                    <div class="glossary-item"><strong>Strainer</strong> Obstructions (trees, fences, grates) that let water pass while trapping solid objects and bodies.</div>
-                </div>
             </div>
 
             <div class="input-grid">
@@ -486,8 +589,8 @@
         <!-- SCREEN: HEAVY VEHICLE & ERG -->
         <section id="screen-extrication" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Heavy Vehicle Extrication & Transport Canada ERG 2024</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Commercial vehicle classifications, axle load weight distributions, heavy struts, and built-in dangerous goods lookup.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Heavy Vehicle Extrication, EV Protocols & ERG 2024</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Commercial vehicles, heavy transit bus stabilization graphics, electric vehicle high-voltage orange cables, and ERG lookup.</p>
             </div>
 
             <div class="card">
@@ -505,21 +608,40 @@
             </div>
 
             <div class="card">
-                <h3>Commercial Vehicle Classifications & Axle Weight Distributions</h3>
-                <table class="cheat-table">
-                    <tr><th>Vehicle Class</th><th>Typical Gross Vehicle Weight (GVW)</th><th>Axle Load Distribution & Rescue Focus</th></tr>
-                    <tr><td><strong>Straight Truck (Class 6-8)</strong></td><td>26,000 – 65,000 lbs (11 - 29 tonnes)</td><td>Front Steer Axle: ~12,000 lbs. Rear Drive Axle(s): ~20,000 - 38,000 lbs. High center of gravity when loaded; crib drive wheels immediately.</td></tr>
-                    <tr><td><strong>Tractor-Semi Trailer</strong></td><td>Up to 80,000+ lbs (36+ tonnes max legal provincial limit)</td><td>Steer Axle: 12,000 lbs. Tandem Drive: 34,000 lbs. Tandem Trailer: 34,000 lbs. Kingpin area requires heavy pneumatic strut stabilization.</td></tr>
-                    <tr><td><strong>Highway Motor Coach / Bus</strong></td><td>35,000 – 50,000 lbs (16 - 22 tonnes)</td><td>Rear-engine heavy bias. Baggage compartments underneath passenger deck require shoring before lower-level extrication.</td></tr>
-                </table>
+                <h3>Alternative Fuel Vehicle (EV/Hybrid) & High-Voltage Protocols</h3>
+                <ul class="weakest-list">
+                    <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>High-Voltage Orange Cables:</strong> Never cut, pinch, or crush bright orange HV cables. They carry up to 400V–800V DC.</li>
+                    <li class="weakest-item"><strong>First Responder Disconnects:</strong> Locate 12V auxiliary battery in hood or trunk and cut/disconnect negative terminal first to deactivate contactors.</li>
+                    <li class="weakest-item"><strong>Lithium-Ion Thermal Runaway:</strong> Damaged battery packs can reignite hours later. Apply massive water volumes (up to 3,000+ gallons) for cooling and monitor with thermal imaging cameras.</li>
+                </ul>
             </div>
 
             <div class="card">
-                <h3>Heavy Stabilization & Cribbing Rules</h3>
+                <h3>Heavy Transit Bus Stabilization & Graphics</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">
+                    Transit and highway motor coaches feature heavy rear-engine weight bias and large baggage compartments.
+                </p>
+                <div class="module-svg" style="height: 140px;">
+                    <svg width="340" height="120" viewBox="0 0 340 120">
+                        <!-- Bus Body -->
+                        <rect x="20" y="30" width="300" height="60" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                        <!-- Windshield & Windows -->
+                        <path d="M 280 30 L 310 50 L 310 90 L 280 90 Z" fill="#090d16" stroke="#38bdf8" stroke-width="1"/>
+                        <rect x="40" y="40" width="35" height="25" fill="#334155" rx="2"/>
+                        <rect x="85" y="40" width="35" height="25" fill="#334155" rx="2"/>
+                        <rect x="130" y="40" width="35" height="25" fill="#334155" rx="2"/>
+                        <rect x="175" y="40" width="35" height="25" fill="#334155" rx="2"/>
+                        <!-- Wheels -->
+                        <circle cx="70" cy="90" r="14" fill="#ef4444"/><circle cx="270" cy="90" r="14" fill="#ef4444"/>
+                        <!-- Strut placement indicators -->
+                        <line x1="70" y1="90" x2="70" y2="115" stroke="#eab308" stroke-width="3" stroke-dasharray="3"/>
+                        <line x1="270" y1="90" x2="270" y2="115" stroke="#eab308" stroke-width="3" stroke-dasharray="3"/>
+                        <text x="50" y="20" fill="#38bdf8" font-size="10">Front Axle Strut Point</text>
+                        <text x="220" y="20" fill="#eab308" font-size="10">Rear Engine Weight Bias</text>
+                    </svg>
+                </div>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Hardwood Oak 4x4 Cribbing:</strong> Safe working load capacity ~3,000 lbs per point of intersection.</li>
-                    <li class="weakest-item"><strong>Hardwood Oak 6x6 Cribbing:</strong> Safe working load capacity ~10,000 lbs per point; mandatory for semi axles and loaded trailers.</li>
-                    <li class="weakest-item"><strong>Pneumatic Rescue Struts:</strong> Always back up mechanical/pneumatic struts with conventional wooden box cribs once height is secured.</li>
+                    <li class="weakest-item"><strong>Cribbing & Strut Placement:</strong> Place heavy 6x6 wood cribbing and pneumatic struts directly under front axle and rear wheel wells prior to lower compartment rescue operations.</li>
                 </ul>
             </div>
         </section>
@@ -527,35 +649,34 @@
         <!-- SCREEN: ADVANCED STRUCTURAL COLLAPSE -->
         <section id="screen-collapse" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Advanced Structural Collapse & Shoring</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">T-Stops, Double T-Stops, flying rakers, standard rakers, wood member failure points, and Paratech metal struts.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Advanced Structural Collapse, Shoring & Paratech Metrics</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Rapid wall assessments, Paratech metal strut working loads, and breaching tool timelines.</p>
             </div>
 
             <div class="card">
-                <h3>Advanced Shoring Configurations: T-Stops & Double T-Stops</h3>
-                <div class="glossary-grid">
-                    <div class="glossary-item"><strong>T-Stop Shoring</strong> Installed against leaning or bulging masonry/concrete walls to prevent inward collapse. Combines a vertical wall plate, header, and diagonal bracing struts at a 45° to 60° angle.</div>
-                    <div class="glossary-item"><strong>Double T-Stop Shoring</strong> Features dual vertical posts tied with plywood gussets and cross-bracing. Used for high-load wall stabilization where single posts risk buckling under eccentric seismic or lateral loads.</div>
-                    <div class="glossary-item"><strong>Standard Raker Systems</strong> Applied to unsupported exterior walls. Includes wall plate, shore beam (compression member), sole plate, and diagonal brace tied at a 45° angle.</div>
-                    <div class="glossary-item"><strong>Flying Raker</strong> Suspended raker system used when debris or obstacles prevent ground-level sole plate placement near the base of an unstable wall.</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Wood Construction Material Strengths & Safe Working Loads</h3>
+                <h3>Rapid Wall Assessment Matrix</h3>
                 <table class="cheat-table">
-                    <tr><th>Member Size</th><th>Max Unbraced Height</th><th>Safe Working Compression Load</th><th>Failure Mode</th></tr>
-                    <tr><td><strong>4 x 4 Douglas Fir / Spruce</strong></td><td>8 feet</td><td>~8,000 lbs (reduces as height increases)</td><td>Euler buckling / splitting</td></tr>
-                    <tr><td><strong>6 x 6 Douglas Fir / Spruce</strong></td><td>10 feet</td><td>~20,000 lbs</td><td>Crushing at grain interfaces</td></tr>
-                    <tr><td><strong>2 x 6 Stud Wall (Laced)</strong></td><td>8 feet</td><td>~5,000 lbs per stud pair</td><td>Lateral shear</td></tr>
+                    <tr><th>Wall Construction Type</th><th>Collapse Hazards</th><th>Primary Shoring Solution</th></tr>
+                    <tr><td><strong>Unreinforced Masonry (URM)</strong></td><td>Extreme out-of-plane collapse, falling bricks, pancake floors.</td><td>T-Stops, Double T-Stops, standard exterior rakers spaced every 8 feet.</td></tr>
+                    <tr><td><strong>Tilt-Up Concrete Panels</strong></td><td>Sudden connection failures at roofline, inward tipping.</td><td>Heavy duty Paratech pneumatic rakers with mechanical locking collars.</td></tr>
+                    <tr><td><strong>Wood Frame / Residential</strong></td><td>Leaning walls, ruptured utility lines, roof sag.</td><td>Vertical post shores, Laced post systems, continuous wall bracing.</td></tr>
                 </table>
             </div>
 
             <div class="card">
-                <h3>Paratech Metal Rescue Strut Load Metrics</h3>
+                <h3>Paratech Metal Rescue Strut Load Capacity Matrix</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Mantis / Long Shore Struts:</strong> Safe working load capacity up to 20,000+ lbs (dependent on extension length and pin placement).</li>
-                    <li class="weakest-item"><strong>Extension Limitations:</strong> As metal telescoping struts extend, allowable load decreases. Always utilize extension pins fully engaged through both inner and outer tubes.</li>
+                    <li class="weakest-item"><strong>Short / Medium / Long Shores:</strong> Safe working load capacity ranges from 10,000 to 20,000 lbs depending on extension length.</li>
+                    <li class="weakest-item"><strong>Off-Axis Loading Rule:</strong> Every 5 degrees of off-axis angular load reduces strut working capacity by approximately 10%. Always pin struts securely.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Breaching & Breaking Tool Timelines</h3>
+                <ul class="weakest-list">
+                    <li class="weakest-item"><strong>Rotary Hammer Drills (Concrete/Masonry):</strong> Core drilling/stitch drilling at ~1 to 2 inches per minute in reinforced concrete.</li>
+                    <li class="weakest-item"><strong>Gas/Battery Cut-Off Saws (Steel Rebar / Wood):</strong> Cuts standard 1-inch rebar in 10-15 seconds; structural timber 4x4 in 5-10 seconds.</li>
+                    <li class="weakest-item"><strong>Hydraulic Breakers / Combi Tools:</strong> Rapid displacement of door frames, structural framing, and vehicle pillars in under 30 seconds.</li>
                 </ul>
             </div>
         </section>
@@ -563,33 +684,24 @@
         <!-- SCREEN: SURFACE WATER & BOAT OPS -->
         <section id="screen-surfacewater" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Surface Water Rescue, Boat Handling & Body Recovery</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Search grid patterns, body recovery protocols, boat handling in current, and rescuer personal boating safety.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Surface Water Rescue, Boat Handling & Specialized Ops</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Night search tactics, decontamination protocols, and helicopter hoist rescue signals.</p>
             </div>
 
             <div class="card">
                 <h3>Boat Handling & Navigation in Moving Water</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Ferry Angle (Crossing Current):</strong> To cross a river in a motorized or paddle watercraft, angle the bow upstream at 45° to the current vector. The vector force pushes the boat across safely. Never point straight across (perpendicular) or the current will swamp the transom.</li>
-                    <li class="weakest-item"><strong>Entering & Exiting Eddies:</strong> Always cross the eddy line with the bow pointed upstream at a sharp angle (45° to 60°) to prevent "catch-and-flip" where current grabs the downstream tube/gunwale.</li>
-                    <li class="weakest-item"><strong>Motorized Boat Rescue Approach:</strong> Approach victims from downstream, motoring up into the eddy or backing down slowly with the stern facing away from obstacles. Maintain prop clearance from lines and swimmers.</li>
+                    <li class="weakest-item"><strong>Ferry Angle (Crossing Current):</strong> Angle bow upstream at 45° to the current vector. Vector force pushes boat across safely. Never point straight across.</li>
+                    <li class="weakest-item"><strong>Entering & Exiting Eddies:</strong> Cross eddy line with bow pointed upstream at 45° to 60° to prevent "catch-and-flip".</li>
                 </ul>
             </div>
 
             <div class="card">
-                <h3>Rescuer Boating Safety & Personal PPE</h3>
-                <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Quick-Release Harness:</strong> All boat operators and crew in moving water must wear Type V rescue PFDs equipped with a quick-release chest harness and cowtail. Never tether yourself to a boat in moving water without an instant-release mechanism (entrapment hazard).</li>
-                    <li class="weakest-item"><strong>Flip Recovery:</strong> Crew members must practice immediate boat righting and defensive swimming posture (feet up, pointing downstream, toes surface-level) if watercraft capsizes.</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h3>Surface Water Search Patterns & Body Recovery Protocols</h3>
+                <h3>Night Operations, Decontamination & Helicopter Hoist Signals</h3>
                 <div class="glossary-grid">
-                    <div class="glossary-item"><strong>Expanding Square Search</strong> Best when Last Known Position (LKP) is highly accurate. Expands outward in concentric square legs.</div>
-                    <div class="glossary-item"><strong>Parallel Track Search</strong> Used for broad water bodies. Multiple watercraft sweep in synchronized parallel lines spaced by visibility limits.</div>
-                    <div class="glossary-item"><strong>Subsurface Body Recovery</strong> Bodies typically sink in cold water, settling downstream in catch points (eddies, bridge piers, log jams, deep scour holes). Recovery teams utilize sector searches and underwater sonar / probing.</div>
+                    <div class="glossary-item"><strong>Night / Low-Light Operations</strong> Utilize waterproof tactical lighting, thermal imaging drones/cameras, and acoustic hailing systems. Maintain strict verbal and whistle command redundancy.</div>
+                    <div class="glossary-item"><strong>Contaminated Water Decon</strong> Post-rescue decontamination using disinfectant rinses and PPE disposal for responders exposed to raw sewage, agricultural runoff, or industrial chemical spills.</div>
+                    <div class="glossary-item"><strong>Helicopter Hoist Signals</strong> Arms raised in "Y" means "Yes / Ready for Hoist". Arms extended down in "N" means "No / Do Not Hoist". Keep low profile during rotor-wash approach.</div>
                 </div>
             </div>
         </section>
@@ -598,29 +710,34 @@
         <section id="screen-confined" class="screen">
             <div style="margin-bottom: 1.2rem;">
                 <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Confined Space Rescue Command Hub</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Atmospheric monitoring limits, retrieval tripods, and ventilation timelines.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Permit checklists, atmospheric monitoring limits, 4-minute extraction timelines, and tripod systems.</p>
+            </div>
+
+            <div class="card">
+                <h3>Permit-Required Confined Space Checklist</h3>
+                <ul class="weakest-list">
+                    <li class="weakest-item"><strong>Lockout / Tagout (LOTO):</strong> Verify zero energy state for electrical, hydraulic, and pneumatic lines entering vessel.</li>
+                    <li class="weakest-item"><strong>Continuous Atmospheric Monitoring:</strong> Calibrate and test sensors for O2, LEL, H2S, and CO prior to and during entry.</li>
+                    <li class="weakest-item"><strong>Standby Rescue Team:</strong> Qualified rescue team stationed outside portal with SCBA and retrieval gear ready before entry is authorized.</li>
+                </ul>
             </div>
 
             <div class="card">
                 <h3>IDLH & Acceptable Atmospheric Parameters (OHS Standards)</h3>
                 <table class="cheat-table">
                     <tr><th>Parameter</th><th>Normal Safe Range</th><th>Action Threshold / IDLH Limit</th></tr>
-                    <tr><td><strong>Oxygen (O2)</strong></td><td>20.8% - 21.0%</td><td>&lt; 19.5% (Deficient - Supplied Air Required) or &gt; 23.5% (Enriched - Extreme Fire Hazard)</td></tr>
-                    <tr><td><strong>Flammable Vapors (LEL)</strong></td><td>0% LEL</td><td>&gt; 10% LEL requires immediate evacuation and forced ventilation</td></tr>
-                    <tr><td><strong>Hydrogen Sulfide (H2S)</strong></td><td>0 ppm</td><td>&gt; 10 ppm (Action limit) / 100 ppm (IDLH threshold - instant olfactory nerve paralysis)</td></tr>
-                    <tr><td><strong>Carbon Monoxide (CO)</strong></td><td>0 ppm</td><td>&gt; 25 ppm (Action limit) / 1200 ppm (IDLH threshold)</td></tr>
+                    <tr><td><strong>Oxygen (O2)</strong></td><td>20.8% - 21.0%</td><td>&lt; 19.5% (Deficient) or &gt; 23.5% (Enriched - Fire Hazard)</td></tr>
+                    <tr><td><strong>Flammable Vapors (LEL)</strong></td><td>0% LEL</td><td>&gt; 10% LEL requires immediate evacuation and ventilation</td></tr>
+                    <tr><td><strong>Hydrogen Sulfide (H2S)</strong></td><td>0 ppm</td><td>&gt; 10 ppm (Action) / 100 ppm (IDLH - instant paralysis)</td></tr>
+                    <tr><td><strong>Carbon Monoxide (CO)</strong></td><td>0 ppm</td><td>&gt; 25 ppm (Action) / 1200 ppm (IDLH threshold)</td></tr>
                 </table>
             </div>
 
             <div class="card">
-                <h3>Mechanical Ventilation Air-Change Formulas</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">
-                    To purge a confined space safely, calculate total volume ($V = \pi r^2 h$ or length $\times$ width $\times$ height). Standard protocol requires a minimum of **complete air changes** prior to entry.
+                <h3>Critical 4-Minute Extraction Window</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;">
+                    In an oxygen-deficient or toxic atmosphere (e.g., high H2S), brain hypoxia leads to irreversible damage within 4 to 6 minutes. Rescue teams must prioritize immediate mechanical winch retrieval over complex medical treatment inside the hazard zone.
                 </p>
-                <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Blower Placement:</strong> Position fresh air blowers upwind and away from exhaust fumes or vehicle tailpipes.</li>
-                    <li class="weakest-item"><strong>Retrieval Tripod Systems:</strong> Rated for personnel winching (typically 500 lbs working load limit) with independent mechanical backup belay lines.</li>
-                </ul>
             </div>
         </section>
 
@@ -628,7 +745,7 @@
         <section id="screen-ice" class="screen">
             <div style="margin-bottom: 1.2rem;">
                 <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Comprehensive Ice Rescue & Load Metrics</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Clear solid blue ice weight ratings, load distribution platforms, slot cutting, thermal survival math, and ice awl tactics.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Blue ice thickness ratings, degradation factors, slot cutting, and multi-rescuer chain protocols.</p>
             </div>
 
             <div class="card">
@@ -636,86 +753,71 @@
                 <table class="cheat-table">
                     <tr><th>Ice Thickness (Clear Solid Blue)</th><th>Max Safe Load Capacity</th><th>Operational Guidance & Deployment Profile</th></tr>
                     <tr><td><strong>Under 2 inches</strong></td><td>Keep Off (Unsafe)</td><td>Absolute prohibition for personnel. Zero structural integrity.</td></tr>
-                    <tr><td><strong>2 to 3 inches</strong></td><td>Single Person (Caution)</td><td>Extremely marginal. Requires full flotation suits and full tensioned shore belay.</td></tr>
-                    <tr><td><strong>4 inches</strong></td><td>200 lbs (1 Rescuer)</td><td>Minimum threshold for single rescuer in specialized ice rescue suit with tether.</td></tr>
-                    <tr><td><strong>5 inches</strong></td><td>1,000 lbs</td><td>Group of rescuers spaced out (minimum 15ft intervals) or lightweight rescue sled.</td></tr>
-                    <tr><td><strong>8+ inches</strong></td><td>Passenger Car / ATV (~2 Tons)</td><td>Supported vehicle access for heavy extraction gear and winches.</td></tr>
+                    <tr><td><strong>2 to 3 inches</strong></td><td>Single Person (Caution)</td><td>Extremely marginal. Requires flotation suits and shore belay.</td></tr>
+                    <tr><td><strong>4 inches</strong></td><td>200 lbs (1 Rescuer)</td><td>Minimum threshold for single rescuer in ice rescue suit with tether.</td></tr>
+                    <tr><td><strong>5 inches</strong></td><td>1,000 lbs</td><td>Group of rescuers spaced out (minimum 15ft intervals) or rescue sled.</td></tr>
+                    <tr><td><strong>8+ inches</strong></td><td>Passenger Car / ATV (~2 Tons)</td><td>Supported vehicle access for heavy extraction gear.</td></tr>
                 </table>
             </div>
 
             <div class="card">
-                <h3>Ice Rescue Tactics: Slot Cutting & Load Distribution</h3>
+                <h3>Ice Strength Degradation Factors & Multi-Rescuer Chains</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Load Distribution Platforms:</strong> Deploy rescue boards, ladders, or inflated pontoon boats across weak ice to spread rescuer weight over a large surface area, preventing punch-through.</li>
-                    <li class="weakest-item"><strong>Slot Cutting (Vehicle Recovery):</strong> When a vehicle breaks through thick ice, responders cut an extraction slot in the ice downstream or away from the vehicle to allow the chassis to be pulled back out onto solid sheets without breaking further.</li>
-                    <li class="weakest-item"><strong>Ice Awls / Picks Self-Rescue:</strong> Victims attempting self-rescue must kick horizontally while driving ice awls into solid ice above the lip, pulling forward rather than vertical vertical climbing.</li>
+                    <li class="weakest-item"><strong>Rotten Spring Ice:</strong> Sun-warmed ice loses structural strength rapidly even if thickness appears substantial. Reduce rated capacities by 50% in spring conditions.</li>
+                    <li class="weakest-item"><strong>Multi-Rescuer Tethered Chain Protocol:</strong> For heavy or unresponsive victims, deploy rescuers in a distributed chain connected by webbing lines separated by at least 15 feet to prevent multiple team members from punching through the same breakthrough hole.</li>
                 </ul>
-            </div>
-
-            <div class="card">
-                <h3>Thermal Survival & Cold Water Immersion Curves</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;">
-                    Water temperatures near 0°C to 2°C cause cold shock within 1–3 minutes (gasp reflex, hyperventilation) followed by functional impairment within 30 minutes (swim failure). However, mammalian dive reflex in freezing water can preserve central neurological function longer in select cases. Rescuers must treat all cold-water immersion cardiac arrests aggressively with resuscitation upon extraction.
-                </p>
             </div>
         </section>
 
-        <!-- SCREEN: FIELD MEDICAL CARE PLANS -->
+        <!-- SCREEN: FIELD MEDICAL CARE PLANS & ALBERTA SCOPES -->
         <section id="screen-medical" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Specialized Field Medical Care Plans</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Canadian wilderness medical protocols for hypothermia, hyperthermia, drowning, burns, harness hand, and pain management.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Field Medical, Bleeding Control & Alberta Scope Protocols</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Bleeding control kit bag inventory, TCCC tourniquets, mass-casualty triage, WMA wilderness protocols, and Alberta First Aid to ACP scopes.</p>
             </div>
 
             <div class="card">
-                <h3>1. Hypothermia Care Plan</h3>
+                <h3>Bleeding Control "Kit" Contents Bag Inventory</h3>
+                <div class="glossary-grid">
+                    <div class="glossary-item"><strong>CAT Tourniquets (Qty 2)</strong> Windlass rod strap devices for massive extremity hemorrhage control.</div>
+                    <div class="glossary-item"><strong>Hemostatic Gauze (e.g., QuikClot)</strong> Z-folded gauze impregnated with kaolin for rapid clotting on junctional/wound bleeding.</div>
+                    <div class="glossary-item"><strong>Compressed Waling Gauze & Ace Wraps</strong> For pressure dressings and wound packing.</div>
+                    <div class="glossary-item"><strong>Chest Seals (Vented & Non-Vented)</strong> Treatment for penetrating open pneumothorax (sucking chest wounds).</div>
+                    <div class="glossary-item"><strong>Hypothermic Blanket & Trauma Shears</strong> Mylar thermal wrap and heavy-duty 7.25-inch shears.</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Mass-Casualty Triage (START Algorithm) & WMA Wilderness Protocols</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Gentle Handling (Critical):</strong> Handle patients extremely gently. Rough movement can trigger "after-drop" (cold peripheral blood rushing to the core), causing fatal ventricular fibrillation.</li>
-                    <li class="weakest-item"><strong>Vapor Barrier & Insulation:</strong> Remove wet garments carefully. Wrap in wool/down blankets with an external vapor-barrier wrap (tarp/plastic) to block wind and convective heat loss.</li>
-                    <li class="weakest-item"><strong>Warm Fluids:</strong> If conscious and swallowing reflex is intact, administer warm, sweet liquids. Avoid alcohol and caffeine.</li>
+                    <li class="weakest-item"><strong>BLACK (Expectant / Deceased):</strong> Apneic after manual airway repositioning.</li>
+                    <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>RED (Immediate):</strong> Respirations &gt;30, CRT &gt;2 sec, or unable to follow simple commands.</li>
+                    <li class="weakest-item" style="border-left-color: var(--accent-yellow);"><strong>YELLOW (Delayed):</strong> Serious injuries but stable; does not fit immediate criteria.</li>
+                    <li class="weakest-item" style="border-left-color: var(--accent-green);"><strong>GREEN (Minor / Walking Wounded):</strong> Ambulatory minor injuries.</li>
+                    <li class="weakest-item"><strong>WMA International Wilderness Protocols:</strong> Extended patient assessments for prolonged backcountry evacuations where definitive care exceeds 2–24 hours. Focus on serial vitals tracking and hypothermia prevention.</li>
                 </ul>
             </div>
 
             <div class="card">
-                <h3>2. Hyperthermia Care Plan</h3>
-                <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Active Cooling:</strong> Move patient immediately to shade or air-conditioned/sheltered vehicle. Remove heavy gear and outer clothing.</li>
-                    <li class="weakest-item"><strong>Evaporative & Ice Cooling:</strong> Apply ice packs to high-flow vascular areas (groin, axillae/armpits, neck). Mist skin with tepid water while fanning aggressively.</li>
-                    <li class="weakest-item"><strong>Hydration:</strong> If alert, administer oral electrolyte solutions in small, frequent sips. Evacuate immediately if mental status is altered (heat stroke).</li>
-                </ul>
+                <h3>Alberta Health Services & OHS Scope of Practice Flowchart (First Aid to ACP)</h3>
+                <table class="cheat-table">
+                    <tr><th>Provider Level</th><th>Authorized Modalities & Interventions (Alberta Standards)</th></tr>
+                    <tr><td><strong>Standard First Aid (SFA)</strong></td><td>CPR/AED, basic wound dressing, direct pressure, recovery position, basic splinting.</td></tr>
+                    <tr><td><strong>Advanced First Aid (AFA) / OFR</strong></td><td>O2 administration, Oropharyngeal airways, wound packing, tourniquet application, spinal motion restriction.</td></tr>
+                    <tr><td><strong>Primary Care Paramedic (PCP)</strong></td><td>Advanced airway management (supraglottic), IV cannulation, limited symptom relief medications (ASA, nitroglycerin, salbutamol, epinephrine, glucagon, naloxone).</td></tr>
+                    <tr><td><strong>Advanced Care Paramedic (ACP)</strong></td><td>Advanced cardiac life support, endotracheal intubation, IV/IO pharmacotherapy (analgesics, sedatives, paralytics, advanced vasopressors), needle thoracostomy.</td></tr>
+                </table>
             </div>
 
             <div class="card">
-                <h3>3. Drowning Care Plan</h3>
+                <h3>Core Care Plans (Hypothermia, Hyperthermia, Drowning, Burns, Harness Hand, Pain)</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Airway & Breathing (ABCs):</strong> Clear airway immediately. Initiate rescue breathing / CPR instantly if pulseless or apneic. Do not waste time attempting to "drain" water from lungs.</li>
-                    <li class="weakest-item"><strong>Spinal Precautions:</strong> Assume cervical spine injury if mechanism involves diving into shallow water or striking submerged obstacles.</li>
-                    <li class="weakest-item"><strong>Oxygen & Rewarming:</strong> Administer high-flow supplemental oxygen if available and initiate concurrent hypothermia insulation protocols.</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h3>4. Burns Care Plan</h3>
-                <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Stop the Burning Process:</strong> Cool thermal burns with clean, cool (not freezing) water for 10–20 minutes. Remove constrictive jewelry/rings before swelling begins.</li>
-                    <li class="weakest-item"><strong>Sterile Dressings:</strong> Cover burn areas loosely with dry, sterile, non-adherent dressings. Never apply ointments, butter, or ice directly to severe burns.</li>
-                    <li class="weakest-item"><strong>Inhalation Assessment:</strong> Monitor closely for facial burns, singed nasal hairs, or hoarseness indicating airway edema.</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h3>5. Harness Hand / Suspension Trauma (Orthostatic Intolerance) Care Plan</h3>
-                <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Immediate Relief:</strong> Rescue suspended patient from vertical harness immediately. Deploy anti-trauma foot loops or leg stirrups if hanging is prolonged.</li>
-                    <li class="weakest-item"><strong>Post-Rescue Position (Crucial):</strong> Once rescued, keep patient in a sitting or semi-recumbent position for at least 30 minutes. <strong>Never lay a suspension trauma patient flat</strong> on their back instantly, as pooled venous blood rushing to the heart can cause cardiac overload and sudden death.</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h3>6. Pain Management Care Plan</h3>
-                <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Immobilization & Splinting:</strong> Prioritize proper anatomical splinting and traction splints to reduce muscular spasm and fracture site movement.</li>
-                    <li class="weakest-item"><strong>Triage & Vital Monitoring:</strong> Assess pain via standard scales (1–10). Monitor vital signs continuously before administering authorized field analgesics or entonox (nitrous oxide) per provincial paramedic scope of practice.</li>
+                    <li class="weakest-item"><strong>Hypothermia:</strong> Gentle handling to prevent after-drop ventricular fibrillation; vapor-barrier wrap.</li>
+                    <li class="weakest-item"><strong>Hyperthermia:</strong> Active cooling with ice packs to groin/axillae; electrolyte rehydration.</li>
+                    <li class="weakest-item"><strong>Drowning:</strong> Immediate airway clearance and CPR; treat concurrent hypothermia.</li>
+                    <li class="weakest-item"><strong>Burns:</strong> Cool water irrigation (10-20 min); sterile dry dressings; no ointments or ice.</li>
+                    <li class="weakest-item"><strong>Harness Hand / Suspension Trauma:</strong> Immediate vertical rescue; keep patient in semi-recumbent sitting position post-rescue (never lay flat instantly).</li>
+                    <li class="weakest-item"><strong>Pain Management:</strong> Anatomical splinting, vitals monitoring, and authorized analgesic administration per Alberta EMS scope.</li>
                 </ul>
             </div>
         </section>
@@ -725,11 +827,11 @@
         const state = {
             riggingStrategy: 'tts', maSystem: 1, ropeType: 'static', ropeDiameter: 12.5, 
             highDir: 'vortex', useLitter: true, numPatients: 1, 
-            numRescuers: 1, haulTeam: 4, avgWeight: 220, angle: 90, anchorType: 'tree'
+            numRescuers: 1, haulTeam: 4, avgWeight: 220, angle: 90, anchorType: 'tree',
+            frictionLoss: 10
         }; 
         const anchorStrengths = { industrial: 6000, tree: 4000, vehicle: 2500 }; 
 
-        // Built-in Transport Canada ERG Mini Database
         const ergDatabase = {
             "1203": { name: "Gasoline / Motor Fuel", guide: "128", hazard: "Flammable liquid. Vapors may form explosive mixtures with air.", action: "Keep ignition sources away. Isolate spill 50m in all directions. Use foam or dry chemical." },
             "1075": { name: "Liquefied Petroleum Gas (Propane)", guide: "115", hazard: "Extremely flammable gas. Containers may explode when heated.", action: "Evacuate 1.6 km (1 mile) in all directions if tank fire is involved. Eliminate ignition sources." },
@@ -771,21 +873,20 @@
             if (moduleName === 'rope') {
                 document.getElementById('screen-inputs').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'flex';
-                document.getElementById('headerSubtitle').innerText = 'Rope Rescue Mechanical Advantage & Safety Calculator';
+                document.getElementById('headerSubtitle').innerText = 'Rope Rescue & Knot Efficiency Hub';
                 calculate();
             } else if (moduleName === 'swiftwater') {
                 document.getElementById('screen-swiftwater').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
                 document.getElementById('headerSubtitle').innerText = 'Swift Water Rescue & Alberta Rivers Data Hub';
-                calculateSwiftWater();
             } else if (moduleName === 'extrication') {
                 document.getElementById('screen-extrication').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Heavy Vehicle Extrication & ERG 2024 Hub';
+                document.getElementById('headerSubtitle').innerText = 'Heavy Vehicle Extrication, EV & ERG 2024 Hub';
             } else if (moduleName === 'collapse') {
                 document.getElementById('screen-collapse').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Advanced Structural Collapse & Shoring Guide';
+                document.getElementById('headerSubtitle').innerText = 'Advanced Structural Collapse & Shoring Hub';
             } else if (moduleName === 'surfacewater') {
                 document.getElementById('screen-surfacewater').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
@@ -801,7 +902,7 @@
             } else if (moduleName === 'medical') {
                 document.getElementById('screen-medical').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Specialized Field Medical Care Plans Hub';
+                document.getElementById('headerSubtitle').innerText = 'Field Medical Care & Alberta Scopes Hub';
             }
         }
 
@@ -814,7 +915,7 @@
         }
 
         function switchRopeTab(tabId, evt) {
-            document.querySelectorAll('#screen-inputs, #screen-analysis, #screen-diagram').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#screen-inputs, #screen-analysis, #screen-knots, #screen-diagram').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('#ropeNavTabs .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             if (evt && evt.currentTarget) {
@@ -842,23 +943,6 @@
             calculate();
         }
 
-        const swiftState = { flow: 5, sag: 30 };
-        function selectSwiftOption(btn, key, value) {
-            const parent = btn.parentElement;
-            parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            swiftState[key] = value;
-            calculateSwiftWater();
-        }
-
-        function calculateSwiftWater() {
-            const baseForce = swiftState.flow * 120; 
-            const angleFactor = 1 / Math.sin(swiftState.sag * (Math.PI / 180));
-            const totalForce = baseForce * angleFactor;
-            const resSwiftLoad = document.getElementById('res-swift-load');
-            if (resSwiftLoad) resSwiftLoad.innerText = `${totalForce.toFixed(0)} lbs`;
-        }
-
         function calculate() {
             const personnelWeight = (state.numPatients + state.numRescuers) * state.avgWeight; 
             const litterWeight = state.useLitter ? 30 : 0; 
@@ -868,21 +952,17 @@
             const rad = state.angle * (Math.PI / 180); 
             const slopeForceLbs = totalWeightLbs * Math.sin(rad); 
             
-            const effectiveLoadPerLine = state.riggingStrategy === 'tts' ? slopeForceLbs / 2 : slopeForceLbs; 
-            
-            // Worst-case dynamic shock load math (Factor 1 fall simulation spike approx 1.8x - 2x multiplier)
+            // Apply friction loss estimator multiplier
+            const frictionMultiplier = 1 + (state.frictionLoss / 100);
+            const adjustedSlopeForce = slopeForceLbs * frictionMultiplier;
+
+            const effectiveLoadPerLine = state.riggingStrategy === 'tts' ? adjustedSlopeForce / 2 : adjustedSlopeForce; 
             const shockLoadLbs = effectiveLoadPerLine * 1.85;
 
-            const efficiency = Math.pow(0.9, state.maSystem > 1 ? state.maSystem : 0);
-            const grossHaulForce = effectiveLoadPerLine / (state.maSystem * efficiency);
-            const haulEffortLbs = state.haulTeam > 0 ? grossHaulForce / state.haulTeam : grossHaulForce; 
-            
-            const haulEffortKg = haulEffortLbs * 0.453592; 
-            const haulEffortKn = haulEffortLbs * 0.00444822; 
             const ropeMbsLbs = (state.ropeDiameter >= 12.5) ? 9000 : 6000; 
             const safetyFactor = effectiveLoadPerLine > 0 ? (ropeMbsLbs / effectiveLoadPerLine).toFixed(1) : "N/A"; 
             const anchorValLbs = anchorStrengths[state.anchorType] || 4000; 
-            const highDirMbsLbs = state.highDir === 'vortex' ? 8000 : 5000; 
+            const highDirMbsLbs = 8000; 
 
             if (document.getElementById('res-total-weight')) {
                 document.getElementById('res-total-weight').innerText = `${totalWeightLbs.toFixed(0)} lbs`; 
@@ -910,9 +990,9 @@
             const components = [
                 { name: `Anchor Point (${state.anchorType.toUpperCase()})`, capacity: anchorValLbs }, 
                 { name: `Main Line Rope (${state.ropeDiameter}mm ${state.ropeType})`, capacity: ropeMbsLbs }, 
-                { name: `High Directional (${state.highDir.toUpperCase()})`, capacity: highDirMbsLbs }, 
-                { name: `General Use (G) Connectors (~40 kN)`, capacity: 8992 }, 
-                { name: `Technical Use (T) Hardware (~25 kN)`, capacity: 5620 } 
+                { name: `High Directional`, capacity: highDirMbsLbs }, 
+                { name: `General Use Connectors (~40 kN)`, capacity: 8992 }, 
+                { name: `Technical Use Hardware (~25 kN)`, capacity: 5620 } 
             ]; 
             components.sort((a, b) => (a.capacity / effectiveLoadPerLine) - (b.capacity / effectiveLoadPerLine)); 
             
@@ -929,8 +1009,8 @@
             if (breakdownText) {
                 breakdownText.innerHTML = `
                     <strong>Strategy:</strong> ${state.riggingStrategy === 'tts' ? 'Twin Tension System (Shared Load)' : 'Main & Belay System'}<br/>
-                    <strong>Mechanical Advantage:</strong> ${state.maSystem}:1 System (${state.maSystem > 1 ? 'Pulley friction accounted for' : 'Direct pull'})<br/>
-                    <strong>Basket / Litter:</strong> ${state.useLitter ? 'Included Metal Basket (+30 lbs)' : 'Not included'}<br/>
+                    <strong>Mechanical Advantage:</strong> ${state.maSystem}:1 System<br/>
+                    <strong>Friction Loss Estimate:</strong> +${state.frictionLoss}% applied for edge/sheave friction.<br/>
                     <strong>Slope Angle Multiplier:</strong> sin(${state.angle}°) = ${Math.sin(rad).toFixed(2)}<br/>
                     <strong>Worst-Case Dynamic Shock Factor:</strong> 1.85x peak load spike (${shockLoadLbs.toFixed(0)} lbs) evaluated for margin check.
                 `; 
@@ -942,7 +1022,7 @@
             const litterWeight = state.useLitter ? 30 : 0;
             const totalWeightLbs = personnelWeight + litterWeight;
             const rad = state.angle * (Math.PI / 180);
-            const slopeForceLbs = totalWeightLbs * Math.sin(rad);
+            const slopeForceLbs = totalWeightLbs * Math.sin(rad) * (1 + state.frictionLoss / 100);
             const effectiveLoadPerLine = state.riggingStrategy === 'tts' ? slopeForceLbs / 2 : slopeForceLbs;
             const ropeMbsLbs = (state.ropeDiameter >= 12.5) ? 9000 : 6000;
             const safetyFactor = (ropeMbsLbs / effectiveLoadPerLine).toFixed(1);
@@ -951,6 +1031,7 @@
 Timestamp: ${new Date().toLocaleString()}
 Strategy: ${state.riggingStrategy.toUpperCase()} (${state.maSystem}:1 MA)
 Rope Spec: ${state.ropeDiameter}mm ${state.ropeType}
+Edge Friction Loss: +${state.frictionLoss}%
 Slope Angle: ${state.angle}°
 Total Suspended Mass: ${totalWeightLbs} lbs (${(totalWeightLbs * 0.453592).toFixed(0)} kg)
 Calculated Line Load: ${effectiveLoadPerLine.toFixed(0)} lbs per line
