@@ -45,7 +45,7 @@
         .badge-active { background-color: rgba(56, 189, 248, 0.2); color: var(--accent-cyan); }
         .badge-pending { background-color: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
 
-        /* Existing Inputs & Layout Styles */
+        /* Inputs & Layout Styles */
         .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
         .card { background-color: var(--panel-bg); padding: 1.2rem; border-radius: 8px; border: 1px solid var(--border-color); }
         .card h3 { color: var(--accent-cyan); margin-bottom: 0.8rem; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem; }
@@ -89,9 +89,9 @@
 
     <!-- Rope Rescue Sub-navigation Tabs -->
     <nav id="ropeNavTabs" class="screen-tabs">
-        <button class="tab-btn active" onclick="switchTab('screen-inputs')">1. Operations & Inputs</button>
-        <button class="tab-btn" onclick="switchTab('screen-analysis')">2. Load Analysis & Safety</button>
-        <button class="tab-btn" onclick="switchTab('screen-diagram')">3. Lay Diagram</button>
+        <button class="tab-btn active" onclick="switchRopeTab('screen-inputs')">1. Operations & Inputs</button>
+        <button class="tab-btn" onclick="switchRopeTab('screen-analysis')">2. Load Analysis & Safety</button>
+        <button class="tab-btn" onclick="switchRopeTab('screen-diagram')">3. Lay Diagram</button>
     </nav>
 
     <main>
@@ -118,7 +118,7 @@
                         <h3>Heavy Vehicle Extrication</h3>
                         <p>Stabilization calculations, heavy lift/shift capacities, cribbing loads, and semi-truck/bus incident management.</p>
                     </div>
-                    <span class="hub-badge badge-pending">Module Ready</span>
+                    <span class="hub-badge badge-pending">Queued Next</span>
                 </div>
 
                 <!-- Structural Collapse Rescue -->
@@ -127,16 +127,16 @@
                         <h3>Structural Collapse Rescue</h3>
                         <p>Shoring calculations (vertical posts, window/door shores), pancake/lean-to load estimates, and void search metrics.</p>
                     </div>
-                    <span class="hub-badge badge-pending">Module Ready</span>
+                    <span class="hub-badge badge-pending">Queued</span>
                 </div>
 
                 <!-- Swift Water Rescue -->
-                <div class="hub-card coming-soon" onclick="launchPlaceholder('Swift Water Rescue')">
+                <div class="hub-card active-module" onclick="launchModule('swiftwater')">
                     <div>
-                        <h3>Swift Water Rescue</h3>
+                        <h3>Swift Water Rescue <span style="color: var(--accent-cyan);">→</span></h3>
                         <p>CFR tension diagonal calculations, throw-bag metrics, hydraulic hazard identification, and boat tether load charts.</p>
                     </div>
-                    <span class="hub-badge badge-pending">Module Ready</span>
+                    <span class="hub-badge badge-active">Operational</span>
                 </div>
 
                 <!-- Surface Water Rescue -->
@@ -145,7 +145,7 @@
                         <h3>Surface Water Rescue</h3>
                         <p>Search grid patterns, drift vector estimators, thermal exposure calculators, and shore-based team tracking.</p>
                     </div>
-                    <span class="hub-badge badge-pending">Module Ready</span>
+                    <span class="hub-badge badge-pending">Queued</span>
                 </div>
 
                 <!-- Confined Space Rescue -->
@@ -154,7 +154,7 @@
                         <h3>Confined Space Rescue</h3>
                         <p>Atmospheric monitoring logs, retrieval tripod load tracking, IDLH entry time logs, and ventilation air-change rates.</p>
                     </div>
-                    <span class="hub-badge badge-pending">Module Ready</span>
+                    <span class="hub-badge badge-pending">Queued</span>
                 </div>
 
                 <!-- Ice Rescue -->
@@ -163,7 +163,7 @@
                         <h3>Ice Rescue</h3>
                         <p>Ice thickness safety ratings, load distribution platform calculations, and reach-pole/boat deployment metrics.</p>
                     </div>
-                    <span class="hub-badge badge-pending">Module Ready</span>
+                    <span class="hub-badge badge-pending">Queued</span>
                 </div>
 
                 <!-- Remote Medical -->
@@ -172,7 +172,7 @@
                         <h3>Remote Medical</h3>
                         <p>Prolonged field care logs, fluid resuscitation rates, casualty evacuation (CASEVAC) timelines, and SOAP notes.</p>
                     </div>
-                    <span class="hub-badge badge-pending">Module Ready</span>
+                    <span class="hub-badge badge-pending">Queued</span>
                 </div>
             </div>
         </section>
@@ -180,7 +180,6 @@
         <!-- SCREEN 1: ROPE INPUTS -->
         <section id="screen-inputs" class="screen">
             <div class="input-grid">
-                <!-- System Architecture & Rigging -->
                 <div class="card">
                     <h3>System Architecture</h3>
                     <div class="field">
@@ -213,7 +212,6 @@
                     </div>
                 </div>
 
-                <!-- Load & Personnel Steppers -->
                 <div class="card">
                     <h3>Load & Personnel</h3>
                     <div class="field">
@@ -249,7 +247,6 @@
                     </div>
                 </div>
 
-                <!-- Geometry & Anchors -->
                 <div class="card">
                     <h3>Environment & Anchors</h3>
                     <div class="field">
@@ -326,6 +323,46 @@
                 <canvas id="diagramCanvas" width="900" height="450"></canvas>
             </div>
         </section>
+
+        <!-- SCREEN: SWIFT WATER RESCUE -->
+        <section id="screen-swiftwater" class="screen">
+            <div style="margin-bottom: 1.2rem;">
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Swift Water Operations & Calculations</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Tension diagonal (Tyrolean) force estimates and throw-bag hydraulic metrics.</p>
+            </div>
+            
+            <div class="input-grid">
+                <div class="card">
+                    <h3>Tyrolean / Tension Diagonal Inputs</h3>
+                    <div class="field">
+                        <label>River Flow Speed</label>
+                        <div class="btn-group" data-key="swiftFlow">
+                            <button class="opt-btn active" onclick="selectSwiftOption(this, 'flow', 5)">Moderate (5 fps)</button>
+                            <button class="opt-btn" onclick="selectSwiftOption(this, 'flow', 10)">High / Flood (10 fps)</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Line Deflection Angle (Sag)</label>
+                        <div class="btn-group" data-key="swiftSag">
+                            <button class="opt-btn" onclick="selectSwiftOption(this, 'sag', 10)">10° (High Force)</button>
+                            <button class="opt-btn active" onclick="selectSwiftOption(this, 'sag', 30)">30° (Standard)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Calculated Water Forces</h3>
+                    <div class="metric-card" style="margin-bottom: 1rem;">
+                        <div class="metric-title">Estimated Anchor Load (Diagonal)</div>
+                        <div class="metric-value" id="res-swift-load">0 lbs</div>
+                        <div class="metric-sub">Based on current flow & sag</div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">
+                        <em>Note:</em> Water force scales exponentially with velocity against submerged cross-sectional surface areas. Always maintain rapid-release mechanisms on anchor tethers.
+                    </p>
+                </div>
+            </div>
+        </section>
     </main>
 
     <script>
@@ -337,18 +374,24 @@
         const anchorStrengths = { industrial: 6000, tree: 4000, vehicle: 2500 }; 
 
         function launchModule(moduleName) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById('hubBackBtn').style.display = 'block';
+
             if (moduleName === 'rope') {
-                document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
                 document.getElementById('screen-inputs').classList.add('active');
                 document.getElementById('ropeNavTabs').style.display = 'flex';
-                document.getElementById('hubBackBtn').style.display = 'block';
                 document.getElementById('headerSubtitle').innerText = 'Rope Rescue Command Engine';
                 calculate();
+            } else if (moduleName === 'swiftwater') {
+                document.getElementById('screen-swiftwater').classList.add('active');
+                document.getElementById('ropeNavTabs').style.display = 'none';
+                document.getElementById('headerSubtitle').innerText = 'Swift Water Rescue Module';
+                calculateSwiftWater();
             }
         }
 
         function launchPlaceholder(moduleName) {
-            alert(`${moduleName} module template is queued for deployment. Click 'Rope Rescue' to access the active calculator.`);
+            alert(`${moduleName} module is queued next for development! Which discipline would you like to build out after Swift Water?`);
         }
 
         function returnToHub() {
@@ -373,13 +416,29 @@
             calculate(); 
         } 
 
-        function switchTab(tabId) {
+        function switchRopeTab(tabId) {
             document.querySelectorAll('#screen-inputs, #screen-analysis, #screen-diagram').forEach(el => el.classList.remove('active')); 
-            document.querySelectorAll('.screen-tabs .tab-btn').forEach(el => el.classList.remove('active')); 
+            document.querySelectorAll('#ropeNavTabs .tab-btn').forEach(el => el.classList.remove('active')); 
             document.getElementById(tabId).classList.add('active'); 
             event.currentTarget.classList.add('active'); 
             if(tabId === 'screen-diagram') { drawDiagram(); } 
         } 
+
+        const swiftState = { flow: 5, sag: 30 };
+        function selectSwiftOption(btn, key, value) {
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            swiftState[key] = value;
+            calculateSwiftWater();
+        }
+
+        function calculateSwiftWater() {
+            const baseForce = swiftState.flow * 120; 
+            const angleFactor = 1 / Math.sin(swiftState.sag * (Math.PI / 180));
+            const totalForce = baseForce * angleFactor;
+            document.getElementById('res-swift-load').innerText = `${totalForce.toFixed(0)} lbs`;
+        }
 
         function calculate() {
             const personnelWeight = (state.numPatients + state.numRescuers) * state.avgWeight; 
@@ -443,7 +502,6 @@
                 <strong>Slope Angle Multiplier:</strong> sin(${state.angle}°) = ${Math.sin(rad).toFixed(2)}<br/>
                 <strong>Haul Team Status:</strong> ${state.haulTeam} Haulers active on scene.
             `; 
-            drawDiagram(); 
         } 
 
         function drawDiagram() {
