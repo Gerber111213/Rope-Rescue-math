@@ -82,7 +82,7 @@
 
         .module-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
             gap: 1.25rem;
         }
         @media (max-width: 500px) {
@@ -143,16 +143,22 @@
         }
 
         .hero-render-box {
-            background: radial-gradient(circle at 50% 30%, #132238 0%, #060b14 80%);
-            border: 1px solid rgba(148, 163, 184, 0.22);
+            background: radial-gradient(circle at 50% 35%, #182a45 0%, #050a12 85%);
+            border: 1px solid rgba(148, 163, 184, 0.25);
             border-radius: 10px;
-            padding: 0.55rem;
+            padding: 0.5rem;
             text-align: center;
+        }
+        .hero-canvas {
+            width: 100%;
+            height: 185px;
+            display: block;
+            border-radius: 6px;
         }
         .hero-render-caption {
             font-size: 0.74rem;
             color: #94a3b8;
-            margin-top: 0.25rem;
+            margin-top: 0.3rem;
         }
 
         .phases-3 {
@@ -166,28 +172,35 @@
             }
         }
         .phase-card {
-            background: rgba(9, 13, 22, 0.72);
+            background: rgba(9, 13, 22, 0.75);
             border: 1px solid rgba(148, 163, 184, 0.2);
             border-radius: 8px;
-            padding: 0.55rem;
+            padding: 0.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
         }
         .phase-tag {
-            font-size: 0.7rem;
+            font-size: 0.69rem;
             font-weight: 800;
             text-transform: uppercase;
             color: var(--accent-cyan);
             margin-bottom: 0.25rem;
             letter-spacing: 0.4px;
         }
+        .phase-canvas {
+            width: 100%;
+            height: 108px;
+            display: block;
+            border-radius: 5px;
+            background: radial-gradient(circle at 50% 30%, #142238 0%, #060b14 90%);
+        }
         .phase-text {
-            font-size: 0.76rem;
+            font-size: 0.75rem;
             color: #e2e8f0;
             line-height: 1.35;
-            margin-top: 0.3rem;
+            margin-top: 0.35rem;
         }
 
         .rigging-note {
@@ -220,13 +233,13 @@
             <div>
                 <h2 style="color: var(--accent-cyan); font-size: 1.38rem;">Rope Diagrams &amp; 3-Phase Tying Lessons</h2>
                 <p style="color: var(--text-muted); font-size: 0.89rem;">
-                    Figure-8 family, Alpine Butterfly, Double Fisherman's, Bowlines (including Portuguese litter bridle), and CMC rescue anchors.
+                    Shaded kernmantle rope renders with over/under weave depth, 3-phase tying lessons, and CMC rescue anchors.
                 </p>
             </div>
             <div class="legend-strip">
-                <span><i class="swatch" style="background:#38bdf8;"></i>Standing / Main Strand</span>
-                <span><i class="swatch" style="background:#f59e0b;"></i>Working / Secondary Strand</span>
-                <span><i class="swatch" style="background:#22c55e;"></i>Dressed / Load-Bearing Loop</span>
+                <span><i class="swatch" style="background:#38bdf8;"></i>Standing / Main Rope</span>
+                <span><i class="swatch" style="background:#f59e0b;"></i>Working / Secondary Rope</span>
+                <span><i class="swatch" style="background:#22c55e;"></i>Dressed / Load-Bearing</span>
             </div>
         </div>
 
@@ -245,102 +258,773 @@
     </main>
 
     <script>
-        /*
-         * Photo-style kernmantle rope renderer:
-         * Draws a dark outline shadow, a rich base sheath stroke, and a specular
-         * highlight strip along the top/left edge so strands look rounded and tactile.
-         */
-        function ropeSegment(d, colorHex, highlightHex, width = 9, dash = '') {
-            const dashAttr = dash ? ` stroke-dasharray="${dash}"` : '';
-            return `
-                <g stroke-linecap="round" stroke-linejoin="round" fill="none"${dashAttr}>
-                    <path d="${d}" stroke="#020617" stroke-width="${width + 3.4}" opacity="0.9"/>
-                    <path d="${d}" stroke="${colorHex}" stroke-width="${width}"/>
-                    <path d="${d}" stroke="${highlightHex}" stroke-width="${Math.max(1.4, width * 0.24)}" opacity="0.55" transform="translate(-0.8,-1.1)"/>
-                </g>
-            `;
+        const PALETTES = {
+            blue:   { dark: '#032c47', base: '#0ea5e9', light: '#bae6fd', braid: '#0284c7' },
+            amber:  { dark: '#451a03', base: '#f59e0b', light: '#fef08a', braid: '#d97706' },
+            green:  { dark: '#052e16', base: '#22c55e', light: '#bbf7d0', braid: '#16a34a' },
+            slate:  { dark: '#1e293b', base: '#94a3b8', light: '#f1f5f9', braid: '#64748b' }
+        };
+
+        // Evaluates a cubic Bézier curve at t in [0, 1]
+        function cubicPt(p0, p1, p2, p3, t) {
+            const u = 1 - t;
+            const tt = t * t, uu = u * u;
+            const uuu = uu * u, ttt = tt * t;
+            return {
+                x: uuu * p0[0] + 3 * uu * t * p1[0] + 3 * u * tt * p2[0] + ttt * p3[0],
+                y: uuu * p0[1] + 3 * uu * t * p1[1] + 3 * u * tt * p2[1] + ttt * p3[1]
+            };
         }
 
-        function blueRope(d, w = 9, dash = '') {
-            return ropeSegment(d, '#0284c7', '#bae6fd', w, dash);
+        // Converts a list of cubic Bézier segments into dense polyline points with depth z
+        function sampleSplines(segments, stepsPerSeg = 28) {
+            const pts = [];
+            segments.forEach(seg => {
+                const zStart = seg.z0 ?? 0;
+                const zEnd = seg.z1 ?? zStart;
+                for (let i = 0; i <= stepsPerSeg; i++) {
+                    const t = i / stepsPerSeg;
+                    const p = cubicPt(seg.p0, seg.p1, seg.p2, seg.p3, t);
+                    pts.push({ x: p.x, y: p.y, z: zStart + (zEnd - zStart) * t });
+                }
+            });
+            return pts;
         }
 
-        function amberRope(d, w = 9, dash = '') {
-            return ropeSegment(d, '#d97706', '#fde68a', w, dash);
+        function lineToSeg(x1, y1, x2, y2, z0 = 0, z1 = z0) {
+            return {
+                p0: [x1, y1],
+                p1: [x1 + (x2 - x1) / 3, y1 + (y2 - y1) / 3],
+                p2: [x1 + (2 * (x2 - x1)) / 3, y1 + (2 * (y2 - y1)) / 3],
+                p3: [x2, y2],
+                z0,
+                z1
+            };
         }
 
-        function greenRope(d, w = 9, dash = '') {
-            return ropeSegment(d, '#16a34a', '#bbf7d0', w, dash);
+        function circleSegs(cx, cy, rx, ry, startRad, endRad, z0 = 0, z1 = z0, pieces = 4) {
+            const segs = [];
+            const total = endRad - startRad;
+            for (let i = 0; i < pieces; i++) {
+                const a0 = startRad + (total * i) / pieces;
+                const a1 = startRad + (total * (i + 1)) / pieces;
+                const da = a1 - a0;
+                const k = (4 / 3) * Math.tan(da / 4);
+                const x0 = cx + rx * Math.cos(a0), y0 = cy + ry * Math.sin(a0);
+                const x3 = cx + rx * Math.cos(a1), y3 = cy + ry * Math.sin(a1);
+                const x1 = x0 - k * rx * Math.sin(a0), y1 = y0 + k * ry * Math.cos(a0);
+                const x2 = x3 + k * rx * Math.sin(a1), y2 = y3 - k * ry * Math.cos(a1);
+                segs.push({
+                    p0: [x0, y0], p1: [x1, y1], p2: [x2, y2], p3: [x3, y3],
+                    z0: z0 + ((z1 - z0) * i) / pieces,
+                    z1: z0 + ((z1 - z0) * (i + 1)) / pieces
+                });
+            }
+            return segs;
         }
 
-        function treeAnchorSvg(x, y, h = 120) {
-            return `
-                <g>
-                    <rect x="${x - 14}" y="${y - h}" width="28" height="${h}" rx="5" fill="#451a03" stroke="#78350f" stroke-width="2"/>
-                    <line x1="${x - 5}" y1="${y - h + 6}" x2="${x - 5}" y2="${y - 6}" stroke="#92400e" stroke-width="1.5"/>
-                    <line x1="${x + 5}" y1="${y - h + 10}" x2="${x + 5}" y2="${y - 6}" stroke="#92400e" stroke-width="1.5"/>
-                </g>
-            `;
+        // Draws shaded 3D cylindrical kernmantle rope segments sorted back-to-front by z
+        function drawTubularRopes(ctx, strands, scaleX = 1, scaleY = 1) {
+            const chunks = [];
+            strands.forEach(strand => {
+                const pal = PALETTES[strand.color] || PALETTES.blue;
+                const radius = (strand.width || 9) * 0.5 * Math.min(scaleX, scaleY);
+                const pts = strand.pts.map(p => ({ x: p.x * scaleX, y: p.y * scaleY, z: p.z || 0 }));
+
+                for (let i = 0; i < pts.length - 1; i++) {
+                    const a = pts[i], b = pts[i + 1];
+                    const dx = b.x - a.x, dy = b.y - a.y;
+                    const len = Math.hypot(dx, dy);
+                    if (len < 0.25) continue;
+                    const nx = -dy / len, ny = dx / len;
+                    const zMid = (a.z + b.z) * 0.5;
+                    chunks.push({ a, b, nx, ny, len, radius, pal, idx: i, z: zMid });
+                }
+            });
+
+            chunks.sort((u, v) => u.z - v.z);
+
+            chunks.forEach(c => {
+                const { a, b, nx, ny, radius, pal, idx } = c;
+                ctx.lineCap = 'round';
+
+                // 1. Contact drop shadow / dark edge sheath
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.strokeStyle = '#020617';
+                ctx.lineWidth = radius * 2 + 2.6;
+                ctx.stroke();
+
+                // 2. Dark core/edge tone
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.strokeStyle = pal.dark;
+                ctx.lineWidth = radius * 2;
+                ctx.stroke();
+
+                // 3. Main colored kernmantle sheath
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.strokeStyle = pal.base;
+                ctx.lineWidth = radius * 1.56;
+                ctx.stroke();
+
+                // 4. Specular highlight along top-left lit side of the cylinder
+                const hOff = radius * 0.34;
+                ctx.beginPath();
+                ctx.moveTo(a.x + nx * hOff - hOff * 0.4, a.y + ny * hOff - hOff * 0.4);
+                ctx.lineTo(b.x + nx * hOff - hOff * 0.4, b.y + ny * hOff - hOff * 0.4);
+                ctx.strokeStyle = pal.light;
+                ctx.lineWidth = Math.max(1.2, radius * 0.42);
+                ctx.stroke();
+
+                // 5. Subtle diagonal braided sheath ticks every few steps
+                if (idx % 3 === 0) {
+                    const mx = (a.x + b.x) * 0.5, my = (a.y + b.y) * 0.5;
+                    const tx = (b.x - a.x) / c.len, ty = (b.y - a.y) / c.len;
+                    const rx = tx * 0.55 + nx * 0.83;
+                    const ry = ty * 0.55 + ny * 0.83;
+                    ctx.beginPath();
+                    ctx.moveTo(mx - rx * radius * 0.72, my - ry * radius * 0.72);
+                    ctx.lineTo(mx + rx * radius * 0.72, my + ry * radius * 0.72);
+                    ctx.strokeStyle = pal.braid;
+                    ctx.lineWidth = Math.max(1, radius * 0.24);
+                    ctx.stroke();
+                }
+            });
         }
 
-        function carabinerSvg(x, y, angleDeg = 0) {
-            return `
-                <g transform="translate(${x},${y}) rotate(${angleDeg})">
-                    <rect x="-11" y="-17" width="22" height="34" rx="9" fill="none" stroke="#cbd5e1" stroke-width="3.6"/>
-                    <line x1="11" y1="-8" x2="11" y2="9" stroke="#facc15" stroke-width="2.4"/>
-                </g>
-            `;
+        function drawWoodPost(ctx, x, y, w, h, sx, sy) {
+            const px = x * sx, py = y * sy, pw = w * sx, ph = h * sy;
+            const grad = ctx.createLinearGradient(px, py, px + pw, py);
+            grad.addColorStop(0, '#291004');
+            grad.addColorStop(0.35, '#78350f');
+            grad.addColorStop(0.75, '#451a03');
+            grad.addColorStop(1, '#1c0a02');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.roundRect(px, py, pw, ph, 5 * Math.min(sx, sy));
+            ctx.fill();
+            ctx.strokeStyle = '#92400e';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
         }
+
+        function drawLockingBiner(ctx, x, y, sx, sy) {
+            const bx = x * sx, by = y * sy, r = Math.min(sx, sy);
+            ctx.save();
+            ctx.translate(bx, by);
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 3.2 * r;
+            ctx.beginPath();
+            ctx.roundRect(-9 * r, -14 * r, 18 * r, 28 * r, 7 * r);
+            ctx.stroke();
+            ctx.strokeStyle = '#facc15';
+            ctx.lineWidth = 2 * r;
+            ctx.beginPath();
+            ctx.moveTo(9 * r, -6 * r);
+            ctx.lineTo(9 * r, 6 * r);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawStopperBall(ctx, x, y, color, sx, sy) {
+            const pal = PALETTES[color] || PALETTES.green;
+            const bx = x * sx, by = y * sy, rad = 6.5 * Math.min(sx, sy);
+            const g = ctx.createRadialGradient(bx - rad * 0.35, by - rad * 0.35, rad * 0.15, bx, by, rad);
+            g.addColorStop(0, pal.light);
+            g.addColorStop(0.55, pal.base);
+            g.addColorStop(1, pal.dark);
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(bx, by, rad, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#020617';
+            ctx.lineWidth = 1.6;
+            ctx.stroke();
+        }
+
+        // Parametric knot builders (coordinates in a 400x185 logical space)
+        const knotBuilders = {
+            // 1. Figure-8 on a Bight
+            'fig8-bight': {
+                hero(ctx, sx, sy) {
+                    drawTubularRopes(ctx, [
+                        { color: 'blue', width: 11, pts: sampleSplines([lineToSeg(25, 136, 130, 96, 1)]) },
+                        { color: 'amber', width: 11, pts: sampleSplines([lineToSeg(25, 48, 130, 88, 1)]) },
+                        // Lower loop of figure-8 (under crossing at x=165, y=92)
+                        { color: 'green', width: 11, pts: sampleSplines([
+                            ...circleSegs(166, 114, 28, 22, Math.PI * 0.9, Math.PI * 2.15, 0, 2, 6)
+                        ])},
+                        // Upper loop of figure-8 (over crossing)
+                        { color: 'green', width: 11, pts: sampleSplines([
+                            ...circleSegs(166, 70, 28, 22, -Math.PI * 0.15, Math.PI * 1.1, 3, 1, 6)
+                        ])},
+                        // Bight exit loop to right
+                        { color: 'green', width: 11, pts: sampleSplines([
+                            lineToSeg(194, 76, 338, 76, 2, 2),
+                            ...circleSegs(338, 94, 22, 18, -Math.PI * 0.5, Math.PI * 0.5, 2, 2, 5),
+                            lineToSeg(338, 112, 194, 112, 2, 2)
+                        ])}
+                    ], sx, sy);
+                },
+                phases: [
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(18, 128, 115, 92, 1)]) },
+                        { color: 'amber', width: 9, pts: sampleSplines([lineToSeg(18, 56, 115, 92, 1)]) },
+                        { color: 'amber', width: 9, pts: sampleSplines(circleSegs(162, 92, 34, 34, Math.PI, Math.PI * 2.75, 0, 3, 6)) }
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(18, 126, 115, 92, 1)]) },
+                        { color: 'amber', width: 9, pts: sampleSplines([lineToSeg(18, 58, 115, 92, 1)]) },
+                        { color: 'green', width: 9, pts: sampleSplines([
+                            ...circleSegs(165, 112, 26, 20, Math.PI * 0.9, Math.PI * 2.1, 0, 2, 5),
+                            ...circleSegs(165, 72, 26, 20, -Math.PI * 0.1, Math.PI * 1.1, 3, 1, 5)
+                        ])}
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(18, 124, 118, 92, 1)]) },
+                        { color: 'amber', width: 9, pts: sampleSplines([lineToSeg(18, 60, 118, 92, 1)]) },
+                        { color: 'green', width: 9, pts: sampleSplines([
+                            ...circleSegs(168, 112, 26, 19, Math.PI * 0.9, Math.PI * 2.1, 0, 2, 5),
+                            ...circleSegs(168, 72, 26, 19, -Math.PI * 0.1, Math.PI * 1.1, 3, 1, 5),
+                            lineToSeg(194, 80, 340, 80, 2, 2),
+                            ...circleSegs(340, 93, 16, 13, -Math.PI * 0.5, Math.PI * 0.5, 2, 2, 4),
+                            lineToSeg(340, 106, 194, 106, 2, 2)
+                        ])}
+                    ], sx, sy)
+                ]
+            },
+
+            // 2. Figure-8 Follow-Through (Rewoven)
+            'fig8-follow': {
+                hero(ctx, sx, sy) {
+                    // Anchor ring on left
+                    ctx.strokeStyle = '#94a3b8';
+                    ctx.lineWidth = 6 * Math.min(sx, sy);
+                    ctx.beginPath();
+                    ctx.arc(62 * sx, 92 * sy, 24 * Math.min(sx, sy), 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    drawTubularRopes(ctx, [
+                        { color: 'blue', width: 11, pts: sampleSplines([lineToSeg(365, 92, 215, 92, 1)]) },
+                        // Rewoven figure-8 body
+                        { color: 'green', width: 11, pts: sampleSplines([
+                            ...circleSegs(185, 112, 25, 19, Math.PI * 0.9, Math.PI * 2.1, 0, 2, 5),
+                            ...circleSegs(185, 72, 25, 19, -Math.PI * 0.1, Math.PI * 1.1, 3, 1, 5)
+                        ])},
+                        // Retracing amber strand running parallel inside
+                        { color: 'amber', width: 8, pts: sampleSplines([
+                            lineToSeg(185, 76, 84, 76, 3, 3),
+                            ...circleSegs(84, 92, 18, 16, -Math.PI * 0.5, Math.PI * 0.5, 3, 3, 5),
+                            lineToSeg(84, 108, 185, 108, 3, 3),
+                            lineToSeg(210, 102, 275, 132, 3, 3)
+                        ])}
+                    ], sx, sy);
+                    drawStopperBall(ctx, 278, 134, 'green', sx, sy);
+                },
+                phases: [
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(350, 92, 175, 92, 1)]) },
+                        { color: 'blue', width: 9, pts: sampleSplines([
+                            ...circleSegs(150, 110, 22, 17, Math.PI * 0.9, Math.PI * 2.1, 0, 2, 4),
+                            ...circleSegs(150, 74, 22, 17, -Math.PI * 0.1, Math.PI * 1.1, 3, 1, 4),
+                            lineToSeg(128, 80, 45, 128, 2, 2)
+                        ])}
+                    ], sx, sy),
+                    (ctx, sx, sy) => {
+                        ctx.strokeStyle = '#94a3b8';
+                        ctx.lineWidth = 4.5 * Math.min(sx, sy);
+                        ctx.beginPath();
+                        ctx.arc(62 * sx, 92 * sy, 18 * Math.min(sx, sy), 0, Math.PI * 2);
+                        ctx.stroke();
+                        drawTubularRopes(ctx, [
+                            { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(350, 92, 185, 92, 1)]) },
+                            { color: 'green', width: 9, pts: sampleSplines([
+                                ...circleSegs(160, 110, 22, 17, Math.PI * 0.9, Math.PI * 2.1, 0, 2, 4),
+                                ...circleSegs(160, 74, 22, 17, -Math.PI * 0.1, Math.PI * 1.1, 3, 1, 4)
+                            ])},
+                            { color: 'amber', width: 7, pts: sampleSplines([
+                                lineToSeg(80, 92, 160, 78, 3, 3),
+                                lineToSeg(182, 96, 255, 132, 3, 3)
+                            ])}
+                        ], sx, sy);
+                    },
+                    (ctx, sx, sy) => {
+                        ctx.strokeStyle = '#94a3b8';
+                        ctx.lineWidth = 4.5 * Math.min(sx, sy);
+                        ctx.beginPath();
+                        ctx.arc(62 * sx, 92 * sy, 18 * Math.min(sx, sy), 0, Math.PI * 2);
+                        ctx.stroke();
+                        drawTubularRopes(ctx, [
+                            { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(350, 92, 185, 92, 1)]) },
+                            { color: 'green', width: 9, pts: sampleSplines([
+                                ...circleSegs(160, 110, 22, 17, Math.PI * 0.9, Math.PI * 2.1, 0, 2, 4),
+                                ...circleSegs(160, 74, 22, 17, -Math.PI * 0.1, Math.PI * 1.1, 3, 1, 4)
+                            ])},
+                            { color: 'amber', width: 7, pts: sampleSplines([lineToSeg(80, 92, 160, 78, 3, 3), lineToSeg(182, 96, 250, 128, 3, 3)])}
+                        ], sx, sy);
+                        drawStopperBall(ctx, 254, 130, 'green', sx, sy);
+                    }
+                ]
+            },
+
+            // 3. Figure-8 Bend (Flemish Bend)
+            'fig8-bend': {
+                hero(ctx, sx, sy) {
+                    drawTubularRopes(ctx, [
+                        { color: 'blue', width: 11, pts: sampleSplines([
+                            lineToSeg(25, 92, 165, 92, 1, 1),
+                            ...circleSegs(186, 112, 24, 18, Math.PI, Math.PI * 2.2, 0, 2, 5)
+                        ])},
+                        { color: 'amber', width: 11, pts: sampleSplines([
+                            lineToSeg(375, 92, 235, 92, 1, 1),
+                            ...circleSegs(214, 72, 24, 18, 0, Math.PI * 1.2, 3, 1, 5)
+                        ])},
+                        { color: 'green', width: 10, pts: sampleSplines([lineToSeg(172, 92, 228, 92, 2, 2)])}
+                    ], sx, sy);
+                },
+                phases: [
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([
+                            lineToSeg(20, 92, 155, 92, 1, 1),
+                            ...circleSegs(176, 110, 22, 17, Math.PI, Math.PI * 2.2, 0, 2, 4)
+                        ])}
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([
+                            lineToSeg(20, 92, 155, 92, 1, 1),
+                            ...circleSegs(176, 110, 22, 17, Math.PI, Math.PI * 2.2, 0, 2, 4)
+                        ])},
+                        { color: 'amber', width: 9, pts: sampleSplines([
+                            lineToSeg(360, 92, 225, 92, 1, 1),
+                            ...circleSegs(204, 74, 22, 17, 0, Math.PI * 1.2, 3, 1, 4)
+                        ])}
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(20, 92, 168, 92, 1, 1)])},
+                        { color: 'amber', width: 9, pts: sampleSplines([lineToSeg(360, 92, 232, 92, 1, 1)])},
+                        { color: 'green', width: 10, pts: sampleSplines([lineToSeg(168, 92, 232, 92, 2, 2)])}
+                    ], sx, sy)
+                ]
+            },
+
+            // 4. Double Figure-8 Loop
+            'fig8-double': {
+                hero(ctx, sx, sy) {
+                    drawTubularRopes(ctx, [
+                        { color: 'blue', width: 11, pts: sampleSplines([lineToSeg(25, 134, 132, 92, 1)]) },
+                        { color: 'amber', width: 11, pts: sampleSplines([lineToSeg(25, 50, 132, 92, 1)]) },
+                        { color: 'green', width: 11, pts: sampleSplines([
+                            ...circleSegs(164, 112, 26, 19, Math.PI * 0.9, Math.PI * 2.1, 0, 2, 5),
+                            ...circleSegs(164, 72, 26, 19, -Math.PI * 0.1, Math.PI * 1.1, 3, 1, 5)
+                        ])},
+                        // Upper loop
+                        { color: 'green', width: 10, pts: sampleSplines([
+                            lineToSeg(190, 78, 336, 52, 2, 2),
+                            ...circleSegs(336, 66, 18, 14, -Math.PI * 0.5, Math.PI * 0.5, 2, 2, 4),
+                            lineToSeg(336, 80, 190, 86, 2, 2)
+                        ])},
+                        // Lower loop
+                        { color: 'amber', width: 10, pts: sampleSplines([
+                            lineToSeg(190, 98, 336, 116, 2, 2),
+                            ...circleSegs(336, 130, 18, 14, -Math.PI * 0.5, Math.PI * 0.5, 2, 2, 4),
+                            lineToSeg(336, 144, 190, 106, 2, 2)
+                        ])}
+                    ], sx, sy);
+                },
+                phases: [
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(18, 126, 120, 92, 1)]) },
+                        { color: 'amber', width: 9, pts: sampleSplines([lineToSeg(18, 58, 120, 92, 1)]) },
+                        { color: 'green', width: 9, pts: sampleSplines([
+                            ...circleSegs(155, 110, 22, 17, Math.PI * 0.9, Math.PI * 2.1, 0, 2, 4),
+                            ...circleSegs(155, 74, 22, 17, -Math.PI * 0.1, Math.PI * 1.1, 3, 1, 4)
+                        ])}
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(18, 122, 120, 92, 1)]) },
+                        { color: 'green', width: 9, pts: sampleSplines([
+                            ...circleSegs(155, 92, 25, 25, 0, Math.PI * 2, 1, 1, 5),
+                            lineToSeg(180, 82, 335, 55, 2, 2)
+                        ])},
+                        { color: 'amber', width: 9, pts: sampleSplines([lineToSeg(180, 102, 335, 128, 2, 2)])}
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(18, 122, 120, 92, 1)]) },
+                        { color: 'green', width: 9, pts: sampleSplines([
+                            ...circleSegs(155, 92, 25, 25, 0, Math.PI * 2, 1, 1, 5),
+                            lineToSeg(180, 82, 335, 62, 2, 2)
+                        ])},
+                        { color: 'amber', width: 9, pts: sampleSplines([lineToSeg(180, 102, 335, 122, 2, 2)])}
+                    ], sx, sy)
+                ]
+            },
+
+            // 5. Alpine Butterfly Loop
+            'butterfly': {
+                hero(ctx, sx, sy) {
+                    drawTubularRopes(ctx, [
+                        { color: 'blue', width: 11, pts: sampleSplines([lineToSeg(25, 126, 375, 126, 1, 1)]) },
+                        // Midline loop rising up
+                        { color: 'green', width: 11, pts: sampleSplines([
+                            { p0: [172, 126], p1: [164, 42], p2: [236, 42], p3: [228, 126], z0: 0, z1: 3 }
+                        ])},
+                        // Collar twist in center
+                        { color: 'amber', width: 10, pts: sampleSplines([
+                            ...circleSegs(200, 114, 24, 16, 0, Math.PI * 2, 2, 2, 6)
+                        ])}
+                    ], sx, sy);
+                },
+                phases: [
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(18, 110, 350, 110, 1, 1)]) },
+                        { color: 'amber', width: 8.5, pts: sampleSplines([
+                            ...circleSegs(165, 110, 18, 26, 0, Math.PI * 2, 0, 2, 5),
+                            ...circleSegs(195, 110, 18, 26, 0, Math.PI * 2, 1, 3, 5)
+                        ])}
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(18, 112, 350, 112, 1, 1)]) },
+                        { color: 'amber', width: 8.5, pts: sampleSplines(circleSegs(182, 112, 26, 22, 0, Math.PI * 2, 1, 2, 5))},
+                        { color: 'green', width: 8.5, pts: sampleSplines([
+                            { p0: [182, 112], p1: [175, 58], p2: [215, 58], p3: [208, 95], z0: 0, z1: 3 }
+                        ])}
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 9, pts: sampleSplines([lineToSeg(18, 116, 350, 116, 1, 1)]) },
+                        { color: 'green', width: 9, pts: sampleSplines([
+                            { p0: [165, 116], p1: [160, 44], p2: [216, 44], p3: [206, 116], z0: 0, z1: 3 }
+                        ])},
+                        { color: 'amber', width: 9, pts: sampleSplines(circleSegs(186, 106, 20, 13, 0, Math.PI * 2, 2, 2, 5))}
+                    ], sx, sy)
+                ]
+            },
+
+            // 6. Double Fisherman's Bend
+            'double-fishermans': {
+                hero(ctx, sx, sy) {
+                    drawTubularRopes(ctx, [
+                        { color: 'blue', width: 11, pts: sampleSplines([lineToSeg(25, 92, 155, 92, 1, 1)]) },
+                        { color: 'amber', width: 11, pts: sampleSplines([lineToSeg(375, 92, 245, 92, 1, 1)]) },
+                        // Left double overhand turns
+                        { color: 'green', width: 11, pts: sampleSplines([
+                            ...circleSegs(170, 92, 18, 26, 0, Math.PI * 2, 0, 3, 6),
+                            ...circleSegs(192, 92, 18, 26, 0, Math.PI * 2, 1, 3, 6)
+                        ])},
+                        // Right double overhand turns
+                        { color: 'green', width: 11, pts: sampleSplines([
+                            ...circleSegs(214, 92, 18, 26, 0, Math.PI * 2, 0, 3, 6),
+                            ...circleSegs(234, 92, 18, 26, 0, Math.PI * 2, 1, 3, 6)
+                        ])}
+                    ], sx, sy);
+                },
+                phases: [
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(20, 74, 240, 74, 1, 1)]) },
+                        { color: 'amber', width: 8.5, pts: sampleSplines([lineToSeg(110, 110, 345, 110, 1, 1)]) }
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 8.5, pts: sampleSplines([
+                            lineToSeg(20, 92, 130, 92, 1, 1),
+                            ...circleSegs(146, 92, 16, 23, 0, Math.PI * 2, 0, 3, 5)
+                        ])},
+                        { color: 'amber', width: 8.5, pts: sampleSplines([
+                            lineToSeg(345, 92, 235, 92, 1, 1),
+                            ...circleSegs(218, 92, 16, 23, 0, Math.PI * 2, 0, 3, 5)
+                        ])}
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(20, 92, 152, 92, 1, 1)]) },
+                        { color: 'green', width: 9.5, pts: sampleSplines([
+                            ...circleSegs(166, 92, 15, 22, 0, Math.PI * 2, 1, 3, 5),
+                            ...circleSegs(196, 92, 15, 22, 1, 3, 5)
+                        ])},
+                        { color: 'amber', width: 8.5, pts: sampleSplines([lineToSeg(212, 92, 345, 92, 1, 1)]) }
+                    ], sx, sy)
+                ]
+            },
+
+            // 7. Bowline + Stopper Backup
+            'bowline': {
+                hero(ctx, sx, sy) {
+                    drawTubularRopes(ctx, [
+                        // Standing line
+                        { color: 'blue', width: 11, pts: sampleSplines([lineToSeg(165, 168, 165, 22, 1, 1)]) },
+                        // Bowline loop on right
+                        { color: 'green', width: 11, pts: sampleSplines([
+                            { p0: [165, 76], p1: [275, 42], p2: [275, 128], p3: [165, 102], z0: 0, z1: 2 }
+                        ])},
+                        // Collar & tail tuck down standing leg
+                        { color: 'amber', width: 10, pts: sampleSplines([
+                            ...circleSegs(176, 89, 20, 15, -Math.PI * 0.5, Math.PI * 0.5, 2, 3, 5),
+                            lineToSeg(165, 94, 165, 146, 3, 3)
+                        ])}
+                    ], sx, sy);
+                    drawStopperBall(ctx, 165, 152, 'green', sx, sy);
+                },
+                phases: [
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(140, 108, 140, 18, 1, 1)]) },
+                        { color: 'amber', width: 8.5, pts: sampleSplines(circleSegs(154, 72, 22, 17, 0, Math.PI * 2, 0, 2, 5)) }
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(140, 108, 140, 18, 1, 1)]) },
+                        { color: 'amber', width: 8.5, pts: sampleSplines([
+                            { p0: [245, 106], p1: [245, 52], p2: [118, 52], p3: [142, 82], z0: 0, z1: 3 }
+                        ])}
+                    ], sx, sy),
+                    (ctx, sx, sy) => {
+                        drawTubularRopes(ctx, [
+                            { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(140, 108, 140, 18, 1, 1)]) },
+                            { color: 'green', width: 8.5, pts: sampleSplines([
+                                { p0: [140, 68], p1: [250, 44], p2: [250, 104], p3: [140, 88], z0: 0, z1: 2 }
+                            ])},
+                            { color: 'amber', width: 8, pts: sampleSplines([lineToSeg(140, 82, 140, 104, 3, 3)]) }
+                        ], sx, sy);
+                        drawStopperBall(ctx, 140, 108, 'green', sx, sy);
+                    }
+                ]
+            },
+
+            // 8. Portuguese Bowline to a Litter
+            'portuguese-bowline-litter': {
+                hero(ctx, sx, sy) {
+                    drawTubularRopes(ctx, [
+                        { color: 'blue', width: 11, pts: sampleSplines([lineToSeg(200, 14, 200, 62, 1, 1)]) },
+                        // Left bowline leg to head of litter
+                        { color: 'green', width: 10, pts: sampleSplines([
+                            ...circleSegs(182, 74, 18, 14, 0, Math.PI * 2, 0, 2, 5),
+                            lineToSeg(172, 86, 95, 134, 2, 2)
+                        ])},
+                        // Right bowline leg to foot of litter
+                        { color: 'amber', width: 10, pts: sampleSplines([
+                            ...circleSegs(218, 74, 18, 14, 0, Math.PI * 2, 0, 2, 5),
+                            lineToSeg(228, 86, 305, 134, 2, 2)
+                        ])}
+                    ], sx, sy);
+
+                    // Stokes basket frame
+                    const lx = 68 * sx, ly = 134 * sy, lw = 264 * sx, lh = 26 * sy;
+                    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+                    ctx.strokeStyle = '#e2e8f0';
+                    ctx.lineWidth = 3.2;
+                    ctx.beginPath();
+                    ctx.roundRect(lx, ly, lw, lh, 10);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#f8fafc';
+                    ctx.font = `bold ${Math.round(11 * Math.min(sx, sy))}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('STOKES LITTER BRIDLE', 200 * sx, ly + lh * 0.65);
+                },
+                phases: [
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(175, 14, 175, 52, 1, 1)]) },
+                        { color: 'green', width: 8, pts: sampleSplines(circleSegs(156, 66, 17, 15, 0, Math.PI * 2, 0, 2, 4)) },
+                        { color: 'amber', width: 8, pts: sampleSplines(circleSegs(194, 66, 17, 15, 0, Math.PI * 2, 0, 2, 4)) }
+                    ], sx, sy),
+                    (ctx, sx, sy) => drawTubularRopes(ctx, [
+                        { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(175, 14, 175, 52, 1, 1)]) },
+                        { color: 'green', width: 8, pts: sampleSplines([
+                            ...circleSegs(156, 66, 17, 15, 0, Math.PI * 2, 0, 2, 4),
+                            lineToSeg(146, 78, 70, 104, 2, 2)
+                        ])},
+                        { color: 'amber', width: 8, pts: sampleSplines([
+                            ...circleSegs(194, 66, 17, 15, 0, Math.PI * 2, 0, 2, 4),
+                            lineToSeg(204, 78, 280, 104, 2, 2)
+                        ])}
+                    ], sx, sy),
+                    (ctx, sx, sy) => {
+                        drawTubularRopes(ctx, [
+                            { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(175, 14, 175, 52, 1, 1)]) },
+                            { color: 'green', width: 8, pts: sampleSplines([lineToSeg(164, 66, 70, 96, 2, 2)]) },
+                            { color: 'amber', width: 8, pts: sampleSplines([lineToSeg(186, 66, 280, 96, 2, 2)]) }
+                        ], sx, sy);
+                        ctx.strokeStyle = '#e2e8f0';
+                        ctx.lineWidth = 2.6;
+                        ctx.beginPath();
+                        ctx.roundRect(56 * sx, 96 * sy, 238 * sx, 14 * sy, 6);
+                        ctx.stroke();
+                    }
+                ]
+            },
+
+            // 9. CMC Tensionless Hitch Anchor
+            'cmc-tensionless': {
+                hero(ctx, sx, sy) {
+                    drawWoodPost(ctx, 118, 16, 36, 152, sx, sy);
+                    drawTubularRopes(ctx, [
+                        // Wrap 1 (front over = z:3, back under = z:0)
+                        { color: 'blue', width: 11, pts: sampleSplines([
+                            ...circleSegs(136, 56, 26, 12, Math.PI, Math.PI * 2, 3, 3, 5),
+                            ...circleSegs(136, 56, 26, 12, 0, Math.PI, 0, 0, 5)
+                        ])},
+                        // Wrap 2
+                        { color: 'amber', width: 11, pts: sampleSplines([
+                            ...circleSegs(136, 82, 26, 12, Math.PI, Math.PI * 2, 3, 3, 5),
+                            ...circleSegs(136, 82, 26, 12, 0, Math.PI, 0, 0, 5)
+                        ])},
+                        // Wrap 3 + load line pulling right
+                        { color: 'green', width: 11, pts: sampleSplines([
+                            ...circleSegs(136, 108, 26, 12, Math.PI, Math.PI * 2, 3, 3, 5),
+                            ...circleSegs(136, 108, 26, 12, 0, Math.PI, 0, 0, 5),
+                            lineToSeg(162, 112, 375, 112, 3, 3)
+                        ])}
+                    ], sx, sy);
+                },
+                phases: [
+                    (ctx, sx, sy) => {
+                        drawWoodPost(ctx, 130, 14, 34, 155, sx, sy);
+                        drawTubularRopes(ctx, [{
+                            color: 'blue', width: 9, pts: sampleSplines([
+                                ...circleSegs(147, 68, 25, 12, Math.PI, Math.PI * 2, 3, 3, 4),
+                                ...circleSegs(147, 68, 25, 12, 0, Math.PI, 0, 0, 4)
+                            ])
+                        }], sx, sy);
+                    },
+                    (ctx, sx, sy) => {
+                        drawWoodPost(ctx, 130, 14, 34, 155, sx, sy);
+                        drawTubularRopes(ctx, [
+                            { color: 'blue', width: 9, pts: sampleSplines(circleSegs(147, 56, 25, 11, Math.PI, Math.PI * 2, 3, 3, 4)) },
+                            { color: 'amber', width: 9, pts: sampleSplines(circleSegs(147, 80, 25, 11, Math.PI, Math.PI * 2, 3, 3, 4)) },
+                            { color: 'green', width: 9, pts: sampleSplines(circleSegs(147, 104, 25, 11, Math.PI, Math.PI * 2, 3, 3, 4)) }
+                        ], sx, sy);
+                    },
+                    (ctx, sx, sy) => {
+                        drawWoodPost(ctx, 130, 14, 34, 155, sx, sy);
+                        drawTubularRopes(ctx, [{
+                            color: 'green', width: 9.5, pts: sampleSplines([
+                                ...circleSegs(147, 84, 25, 22, Math.PI, Math.PI * 2, 3, 3, 5),
+                                lineToSeg(172, 96, 355, 96, 3, 3)
+                            ])
+                        }], sx, sy);
+                    }
+                ]
+            },
+
+            // 10. CMC Load-Sharing Y-Hang Anchor
+            'cmc-y-hang': {
+                hero(ctx, sx, sy) {
+                    drawWoodPost(ctx, 88, 12, 28, 76, sx, sy);
+                    drawWoodPost(ctx, 284, 12, 28, 76, sx, sy);
+                    drawTubularRopes(ctx, [
+                        { color: 'blue', width: 11, pts: sampleSplines([lineToSeg(116, 54, 200, 116, 1, 1)]) },
+                        { color: 'amber', width: 11, pts: sampleSplines([lineToSeg(284, 54, 200, 116, 1, 1)]) },
+                        { color: 'green', width: 11, pts: sampleSplines([
+                            ...circleSegs(200, 122, 16, 13, 0, Math.PI * 2, 2, 2, 5),
+                            lineToSeg(200, 135, 200, 176, 2, 2)
+                        ])}
+                    ], sx, sy);
+                    drawLockingBiner(ctx, 200, 124, sx, sy);
+                },
+                phases: [
+                    (ctx, sx, sy) => {
+                        drawWoodPost(ctx, 65, 12, 24, 62, sx, sy);
+                        drawWoodPost(ctx, 260, 12, 24, 62, sx, sy);
+                        drawTubularRopes(ctx, [
+                            { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(89, 44, 145, 95, 1, 1)]) },
+                            { color: 'amber', width: 8.5, pts: sampleSplines([lineToSeg(260, 44, 205, 95, 1, 1)]) }
+                        ], sx, sy);
+                    },
+                    (ctx, sx, sy) => {
+                        drawWoodPost(ctx, 65, 12, 24, 62, sx, sy);
+                        drawWoodPost(ctx, 260, 12, 24, 62, sx, sy);
+                        drawTubularRopes(ctx, [
+                            { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(89, 44, 175, 112, 1, 1)]) },
+                            { color: 'amber', width: 8.5, pts: sampleSplines([lineToSeg(260, 44, 175, 112, 1, 1)]) }
+                        ], sx, sy);
+                    },
+                    (ctx, sx, sy) => {
+                        drawWoodPost(ctx, 65, 12, 24, 62, sx, sy);
+                        drawWoodPost(ctx, 260, 12, 24, 62, sx, sy);
+                        drawTubularRopes(ctx, [
+                            { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(89, 44, 175, 108, 1, 1)]) },
+                            { color: 'amber', width: 8.5, pts: sampleSplines([lineToSeg(260, 44, 175, 108, 1, 1)]) },
+                            { color: 'green', width: 9, pts: sampleSplines([lineToSeg(175, 116, 175, 166, 2, 2)]) }
+                        ], sx, sy);
+                        drawLockingBiner(ctx, 175, 112, sx, sy);
+                    }
+                ]
+            },
+
+            // 11. CMC Load-Distributing / Self-Equalizing Anchor
+            'cmc-load-distributing': {
+                hero(ctx, sx, sy) {
+                    drawWoodPost(ctx, 76, 12, 28, 76, sx, sy);
+                    drawWoodPost(ctx, 296, 12, 28, 76, sx, sy);
+                    drawTubularRopes(ctx, [
+                        // Continuous horizontal span between anchors
+                        { color: 'blue', width: 11, pts: sampleSplines([lineToSeg(104, 52, 296, 52, 1, 1)]) },
+                        // Sliding / rigged load-distributing V
+                        { color: 'amber', width: 10.5, pts: sampleSplines([
+                            lineToSeg(145, 52, 200, 118, 2, 2),
+                            lineToSeg(255, 52, 200, 118, 2, 2)
+                        ])},
+                        // Master stem
+                        { color: 'green', width: 11, pts: sampleSplines([lineToSeg(200, 126, 200, 176, 2, 2)]) }
+                    ], sx, sy);
+                    drawStopperBall(ctx, 132, 52, 'blue', sx, sy);
+                    drawStopperBall(ctx, 268, 52, 'blue', sx, sy);
+                    drawLockingBiner(ctx, 200, 122, sx, sy);
+                },
+                phases: [
+                    (ctx, sx, sy) => {
+                        drawWoodPost(ctx, 60, 12, 24, 62, sx, sy);
+                        drawWoodPost(ctx, 265, 12, 24, 62, sx, sy);
+                        drawTubularRopes(ctx, [{
+                            color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(84, 42, 265, 42, 1, 1)])
+                        }], sx, sy);
+                    },
+                    (ctx, sx, sy) => {
+                        drawWoodPost(ctx, 60, 12, 24, 62, sx, sy);
+                        drawWoodPost(ctx, 265, 12, 24, 62, sx, sy);
+                        drawTubularRopes(ctx, [
+                            { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(84, 42, 265, 42, 1, 1)]) },
+                            { color: 'amber', width: 8.5, pts: sampleSplines([
+                                lineToSeg(125, 42, 176, 108, 2, 2),
+                                lineToSeg(225, 42, 176, 108, 2, 2)
+                            ])}
+                        ], sx, sy);
+                        drawStopperBall(ctx, 112, 42, 'blue', sx, sy);
+                        drawStopperBall(ctx, 238, 42, 'blue', sx, sy);
+                    },
+                    (ctx, sx, sy) => {
+                        drawWoodPost(ctx, 60, 12, 24, 62, sx, sy);
+                        drawWoodPost(ctx, 265, 12, 24, 62, sx, sy);
+                        drawTubularRopes(ctx, [
+                            { color: 'blue', width: 8.5, pts: sampleSplines([lineToSeg(84, 42, 265, 42, 1, 1)]) },
+                            { color: 'amber', width: 8.5, pts: sampleSplines([
+                                lineToSeg(125, 42, 176, 106, 2, 2),
+                                lineToSeg(225, 42, 176, 106, 2, 2)
+                            ])},
+                            { color: 'green', width: 9, pts: sampleSplines([lineToSeg(176, 114, 176, 166, 2, 2)]) }
+                        ], sx, sy);
+                        drawLockingBiner(ctx, 176, 110, sx, sy);
+                    }
+                ]
+            }
+        };
 
         const lessons = [
-            // --- FIGURE-8 FAMILY (4) ---
             {
                 id: 'fig8-bight',
                 group: 'fig8',
                 tag: 'Figure-8 Family',
                 badgeClass: '',
                 title: '1. Figure-8 on a Bight',
-                summary: 'High-strength primary anchor and rigging loop (~75–80% strength retention) that stays easy to inspect after loading.',
-                heroCaption: 'Finished Figure-8 on a Bight — parallel dressed turns & clean loop',
-                heroSvg: `
-                    ${blueRope('M 45 145 L 120 95', 10)}
-                    ${amberRope('M 45 45 L 120 95', 10)}
-                    ${greenRope('M 120 95 C 155 72, 155 118, 120 95', 10)}
-                    ${greenRope('M 145 76 C 175 55, 175 135, 145 114 C 122 98, 170 68, 195 82 C 218 95, 218 118, 195 128 C 172 138, 122 105, 145 76', 10)}
-                    ${greenRope('M 206 105 L 330 105 A 26 26 0 1 1 330 53 L 206 53', 10)}
-                `,
-                note: 'Dress the knot so no strands cross over themselves inside the figure-8 body; leave a generous tail (~6 in / 15 cm).',
+                summary: 'High-strength primary anchor and rigging loop (~75–80% strength retention) with clean visual inspection.',
+                heroCaption: 'Shaded Kernmantle Figure-8 on a Bight — parallel turns & bight loop',
+                note: 'Dress the "8" so strands lay parallel without twisting or overlapping inside the knot body.',
                 critical: false,
-                phases: [
-                    {
-                        title: 'Phase 1: Bight & Twist',
-                        text: 'Form a bight, pass it over the standing lines, and complete a full 360° twist.',
-                        svg: `
-                            ${blueRope('M 16 86 L 56 56', 7.5)}
-                            ${amberRope('M 16 24 L 56 56', 7.5)}
-                            ${amberRope('M 56 56 C 84 36, 84 76, 56 56', 7.5)}
-                            ${greenRope('M 74 42 C 98 26, 98 86, 74 70', 7.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 2: Tuck Bight',
-                        text: 'Bring the bight back up and tuck it down through the upper eye.',
-                        svg: `
-                            ${blueRope('M 14 84 L 52 56', 7.5)}
-                            ${amberRope('M 14 26 L 52 56', 7.5)}
-                            ${amberRope('M 52 56 C 96 24, 96 88, 52 56', 7.5)}
-                            ${greenRope('M 74 34 L 96 48 L 74 64', 7.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 3: Dress & Set',
-                        text: 'Align strands side-by-side in parallel and pull firm to set the knot.',
-                        svg: `
-                            ${blueRope('M 14 82 L 58 54', 7.5)}
-                            ${amberRope('M 14 28 L 58 54', 7.5)}
-                            ${greenRope('M 58 54 C 82 32, 102 36, 102 54 C 102 72, 82 76, 58 54', 7.5)}
-                        `
-                    }
+                phaseTexts: [
+                    'Form a bight, pass over standing legs, and make a 360° twist.',
+                    'Bring the bight back up and tuck down through the upper eye.',
+                    'Dress strands side-by-side and pull snug to set the knot.'
                 ]
             },
             {
@@ -349,48 +1033,14 @@
                 tag: 'Figure-8 Family',
                 badgeClass: '',
                 title: '2. Figure-8 Follow-Through (Rewoven)',
-                summary: 'Ties a rope end directly around an anchor object, ring, or harness tie-in point when a bight cannot pass through.',
-                heroCaption: 'Rewoven Figure-8 — working end faithfully retraces standing strand',
-                heroSvg: `
-                    <rect x="295" y="54" width="56" height="56" rx="14" fill="none" stroke="#94a3b8" stroke-width="6"/>
-                    ${blueRope('M 40 82 L 155 82', 10)}
-                    ${greenRope('M 155 82 C 178 52, 212 52, 212 82 C 212 112, 178 112, 155 82', 10)}
-                    ${amberRope('M 155 82 C 178 58, 206 58, 206 82 C 206 106, 178 106, 155 82', 8.5, '8 4')}
-                    ${amberRope('M 212 82 L 295 82', 9)}
-                    ${amberRope('M 351 82 L 382 82', 9)}
-                    <circle cx="386" cy="82" r="7" fill="#22c55e" stroke="#020617" stroke-width="2.5"/>
-                `,
-                note: 'Never skip a turn when retracing; finish with a stopper knot on the tail.',
+                summary: 'Ties a line end directly around an anchor ring, tree, or harness point when a bight cannot pass through.',
+                heroCaption: 'Rewoven Figure-8 — working strand retraces standing path to stopper tail',
+                note: 'Retrace every turn faithfully without crossing strands; finish with a backed-up stopper tail.',
                 critical: false,
-                phases: [
-                    {
-                        title: 'Phase 1: Loose Fig-8',
-                        text: 'Tie a loose figure-8 in the rope with plenty of tail left for the anchor.',
-                        svg: `
-                            ${blueRope('M 14 56 L 54 56', 7.5)}
-                            ${blueRope('M 54 56 C 72 34, 94 34, 94 56 C 94 78, 72 78, 54 56', 7.5)}
-                            ${amberRope('M 94 56 L 110 56', 7.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 2: Pass & Trace',
-                        text: 'Route tail around anchor/ring and feed it backward along the exact path.',
-                        svg: `
-                            ${blueRope('M 14 56 L 56 56', 7.5)}
-                            ${greenRope('M 56 56 C 74 34, 94 34, 94 56 C 94 78, 74 78, 56 56', 7.5)}
-                            ${amberRope('M 56 56 C 74 40, 88 40, 88 56', 6.5, '5 3')}
-                        `
-                    },
-                    {
-                        title: 'Phase 3: Dress + Stopper',
-                        text: 'Pull all slack out so strands run parallel and tie a stopper knot.',
-                        svg: `
-                            ${blueRope('M 14 56 L 56 56', 7.5)}
-                            ${greenRope('M 56 56 C 74 34, 94 34, 94 56 C 94 78, 74 78, 56 56', 7.5)}
-                            ${amberRope('M 94 56 L 106 56', 7.5)}
-                            <circle cx="108" cy="56" r="5" fill="#22c55e" stroke="#020617" stroke-width="2"/>
-                        `
-                    }
+                phaseTexts: [
+                    'Tie a loose figure-8 in the rope leaving enough tail to reach the anchor.',
+                    'Pass tail around anchor/ring and feed backward through the knot.',
+                    'Pull slack out so strands run parallel and add a stopper knot.'
                 ]
             },
             {
@@ -399,44 +1049,14 @@
                 tag: 'Figure-8 Family',
                 badgeClass: '',
                 title: '3. Figure-8 Bend (Flemish Bend)',
-                summary: 'Joins two separate rope ends end-to-end with a compact, low-profile figure-8 geometry.',
-                heroCaption: 'Figure-8 Bend — blue & amber ends interlocked in a dressed figure-8',
-                heroSvg: `
-                    ${blueRope('M 35 82 L 155 82', 10)}
-                    ${amberRope('M 365 82 L 245 82', 10)}
-                    ${blueRope('M 155 82 C 180 50, 210 50, 210 82 C 210 112, 175 112, 165 88', 10)}
-                    ${amberRope('M 245 82 C 220 114, 190 114, 190 82 C 190 52, 225 52, 235 76', 10)}
-                    ${greenRope('M 168 82 L 232 82', 9)}
-                `,
-                note: 'Ensure both tails exit on opposite ends of the knot with adequate tail length (~12–18 in / 30–45 cm for major lines).',
+                summary: 'Joins two separate rope ends end-to-end with a compact, symmetrical figure-8 knot.',
+                heroCaption: 'Figure-8 Bend — blue & amber ends interlocked with opposite exit tails',
+                note: 'Keep generous tails exiting both sides and cinch firmly before applying tension.',
                 critical: false,
-                phases: [
-                    {
-                        title: 'Phase 1: Overhand in A',
-                        text: 'Tie a loose overhand knot near the end of the blue rope.',
-                        svg: `
-                            ${blueRope('M 14 56 L 62 56', 7.5)}
-                            ${blueRope('M 62 56 C 78 36, 96 36, 96 56 C 96 74, 76 74, 68 60', 7.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 2: Re-entry B',
-                        text: 'Feed the amber rope end into the knot from the opposite direction.',
-                        svg: `
-                            ${blueRope('M 14 56 L 56 56', 7.5)}
-                            ${greenRope('M 56 56 C 74 36, 92 36, 92 56 C 92 76, 74 76, 56 56', 7.5)}
-                            ${amberRope('M 110 56 L 74 56', 7.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 3: Dress Tight',
-                        text: 'Work slack through both sides until parallel and cinch firmly.',
-                        svg: `
-                            ${blueRope('M 14 56 L 52 56', 7.5)}
-                            ${greenRope('M 52 56 C 68 38, 84 38, 84 56 C 84 74, 68 74, 52 56', 7.5)}
-                            ${amberRope('M 110 56 L 76 56', 7.5)}
-                        `
-                    }
+                phaseTexts: [
+                    'Tie a loose overhand near the end of the first (blue) rope.',
+                    'Feed the second (amber) rope end into the knot from the opposite side.',
+                    'Dress both sides evenly and pull firm to set the bend.'
                 ]
             },
             {
@@ -445,95 +1065,30 @@
                 tag: 'Figure-8 Family',
                 badgeClass: '',
                 title: '4. Double Figure-8 Loop (Two-Loop Figure-8)',
-                summary: 'Forms two distinct loops from a bight for equalizing two attachment points or rigging a balanced bridle.',
-                heroCaption: 'Double Figure-8 Loop — twin load loops exiting a dressed figure-8',
-                heroSvg: `
-                    ${blueRope('M 35 125 L 135 82', 10)}
-                    ${amberRope('M 35 39 L 135 82', 10)}
-                    ${greenRope('M 135 82 C 160 54, 196 54, 196 82 C 196 110, 160 110, 135 82', 10)}
-                    ${greenRope('M 196 72 L 325 46 A 20 20 0 1 1 325 82 L 196 82', 9.5)}
-                    ${amberRope('M 196 92 L 325 118 A 20 20 0 1 1 325 148 L 196 92', 9.5)}
-                `,
-                note: 'Adjust both loops carefully before loading so tension is shared evenly across both points.',
+                summary: 'Creates two loops from a bight for rigging twin anchor legs or balanced bridle attachments.',
+                heroCaption: 'Double Figure-8 Loop — dual load loops emerging from a dressed figure-8',
+                note: 'Equalize loop lengths before loading so both attachment points share tension evenly.',
                 critical: false,
-                phases: [
-                    {
-                        title: 'Phase 1: Bight & Wrap',
-                        text: 'Take a long bight, form a figure-8, and bring the bight back up.',
-                        svg: `
-                            ${blueRope('M 16 84 L 54 56', 7.5)}
-                            ${amberRope('M 16 28 L 54 56', 7.5)}
-                            ${greenRope('M 54 56 C 76 36, 94 36, 94 56 C 94 76, 76 76, 54 56', 7.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 2: Split Loops',
-                        text: 'Pass the loop over the figure-8 and open two separate bight loops.',
-                        svg: `
-                            ${blueRope('M 16 80 L 52 56', 7.5)}
-                            ${greenRope('M 52 56 C 72 38, 86 38, 86 56', 7.5)}
-                            ${amberRope('M 86 48 L 106 36 A 10 10 0 1 1 106 54 L 86 54', 7)}
-                            ${amberRope('M 86 58 L 106 72 A 10 10 0 1 1 106 88 L 86 62', 7)}
-                        `
-                    },
-                    {
-                        title: 'Phase 3: Equalize & Dress',
-                        text: 'Dress the figure-8 collar and adjust loop lengths to match.',
-                        svg: `
-                            ${blueRope('M 16 80 L 52 56', 7.5)}
-                            ${greenRope('M 52 56 C 70 40, 82 40, 82 56 C 82 72, 70 72, 52 56', 7.5)}
-                            ${greenRope('M 82 48 L 106 42', 7)}
-                            ${amberRope('M 82 64 L 106 72', 7)}
-                        `
-                    }
+                phaseTexts: [
+                    'Start a bight, twist into a figure-8, and bring the bight over.',
+                    'Open two separate loops exiting the knot body.',
+                    'Dress the figure-8 collar and adjust both loops to match.'
                 ]
             },
-
-            // --- ALPINE BUTTERFLY & DOUBLE FISHERMAN'S (2) ---
             {
                 id: 'butterfly',
                 group: 'bends-loops',
                 tag: 'Midline Loop',
                 badgeClass: '',
                 title: '5. Alpine Butterfly Loop',
-                summary: 'Secure midline loop (~75–80% strength retention) that can be loaded in-line or from either direction without slipping.',
-                heroCaption: 'Alpine Butterfly — clean midline loop with parallel base strands',
-                heroSvg: `
-                    ${blueRope('M 30 112 L 370 112', 10)}
-                    ${greenRope('M 165 112 C 165 45, 235 45, 235 112', 10)}
-                    ${amberRope('M 176 112 C 176 88, 224 88, 224 112', 9)}
-                    ${greenRope('M 162 104 L 238 104', 9.5)}
-                `,
-                note: 'Dress the central collar and side legs neatly so the knot cinches cleanly under load.',
+                summary: 'Strong midline loop (~75–80% retention) that resists slipping under in-line or directional pull.',
+                heroCaption: 'Alpine Butterfly — midline loop with dressed central collar',
+                note: 'Keep the base collar neat and even so the knot locks cleanly under load.',
                 critical: false,
-                phases: [
-                    {
-                        title: 'Phase 1: Two Turns',
-                        text: 'Wrap two turns around your hand/fingers on the standing line.',
-                        svg: `
-                            ${blueRope('M 12 56 L 106 56', 7.5)}
-                            ${amberRope('M 42 56 C 42 32, 62 32, 62 56 C 62 80, 42 80, 42 56', 7)}
-                            ${amberRope('M 56 56 C 56 32, 76 32, 76 56 C 76 80, 56 80, 56 56', 7)}
-                        `
-                    },
-                    {
-                        title: 'Phase 2: Fold Bight',
-                        text: 'Take the back bight across the front turn and tuck it through the center.',
-                        svg: `
-                            ${blueRope('M 12 56 L 106 56', 7.5)}
-                            ${amberRope('M 46 56 C 46 34, 72 34, 72 56 C 72 78, 46 78, 46 56', 7)}
-                            ${greenRope('M 60 56 C 60 22, 82 22, 82 44', 7)}
-                        `
-                    },
-                    {
-                        title: 'Phase 3: Pull & Dress',
-                        text: 'Pull the bight through to form the loop and tighten the base.',
-                        svg: `
-                            ${blueRope('M 12 64 L 106 64', 7.5)}
-                            ${greenRope('M 46 64 C 46 24, 74 24, 74 64', 7.5)}
-                            ${greenRope('M 42 58 L 78 58', 7)}
-                        `
-                    }
+                phaseTexts: [
+                    'Wrap two turns around your hand along the standing line.',
+                    'Fold the back bight across and tuck through the center.',
+                    'Pull the loop through and cinch the collar firmly.'
                 ]
             },
             {
@@ -542,93 +1097,30 @@
                 tag: 'Bend / Cord Loop',
                 badgeClass: '',
                 title: "6. Double Fisherman's Bend (Grapevine)",
-                summary: 'Compact, high-grip bend for joining two cord/line ends or tying continuous prusik/anchor cord loops.',
-                heroCaption: "Double Fisherman's Bend — twin double-overhands snugged together",
-                heroSvg: `
-                    ${blueRope('M 30 82 L 165 82', 10)}
-                    ${amberRope('M 370 82 L 235 82', 10)}
-                    ${blueRope('M 165 82 C 185 52, 210 52, 210 82 C 210 110, 185 110, 165 82', 10)}
-                    ${amberRope('M 235 82 C 215 112, 190 112, 190 82 C 190 54, 215 54, 235 82', 10)}
-                    <rect x="166" y="64" width="32" height="36" rx="8" fill="none" stroke="#22c55e" stroke-width="5"/>
-                    <rect x="202" y="64" width="32" height="36" rx="8" fill="none" stroke="#22c55e" stroke-width="5"/>
-                `,
-                note: 'Slide both knots together until they lock tightly against each other and leave plenty of tail on both ends.',
+                summary: 'Compact, high-holding bend for joining cords/lines or tying continuous prusik/anchor loops.',
+                heroCaption: "Double Fisherman's Bend — twin double-overhands snugged flush",
+                note: 'Slide both double-overhands tightly together and leave sufficient tail on each end.',
                 critical: false,
-                phases: [
-                    {
-                        title: 'Phase 1: Parallel Ends',
-                        text: 'Lay the blue and amber rope ends side-by-side pointing in opposite directions.',
-                        svg: `
-                            ${blueRope('M 12 46 L 84 46', 7)}
-                            ${amberRope('M 28 66 L 100 66', 7)}
-                        `
-                    },
-                    {
-                        title: 'Phase 2: Double Wraps',
-                        text: 'Wrap each end twice around the opposing line and tuck through both turns.',
-                        svg: `
-                            ${blueRope('M 12 56 L 96 56', 6.5)}
-                            ${blueRope('M 34 56 C 34 36, 54 36, 54 56 C 54 76, 34 76, 34 56', 6.5)}
-                            ${amberRope('M 62 56 C 62 36, 82 36, 82 56 C 82 76, 62 76, 62 56', 6.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 3: Lock Together',
-                        text: 'Cinch both knots down and slide them flush against each other.',
-                        svg: `
-                            ${blueRope('M 12 56 L 42 56', 7)}
-                            <rect x="42" y="42" width="14" height="28" rx="4" fill="#22c55e" stroke="#020617" stroke-width="2"/>
-                            <rect x="58" y="42" width="14" height="28" rx="4" fill="#22c55e" stroke="#020617" stroke-width="2"/>
-                            ${amberRope('M 72 56 L 102 56', 7)}
-                        `
-                    }
+                phaseTexts: [
+                    'Lay both rope ends side-by-side in opposite directions.',
+                    'Wrap two turns around the opposing line and tuck through.',
+                    'Cinch both knots down and slide them flush together.'
                 ]
             },
-
-            // --- BOWLINES & PORTUGUESE LITTER BRIDLE (2) ---
             {
                 id: 'bowline',
                 group: 'bowlines',
                 tag: 'Bowline + Backup',
                 badgeClass: '',
                 title: '7. Bowline (+ Stopper Backup)',
-                summary: 'Forms a loop that resists jamming under heavy tension; must always be backed up with a stopper knot.',
+                summary: 'Forms a loop that resists jamming under load; must always be backed up with a stopper knot.',
                 heroCaption: 'Bowline with Stopper Backup — collar, standing leg, and backed-up tail',
-                heroSvg: `
-                    ${blueRope('M 175 155 L 175 45', 10)}
-                    ${greenRope('M 175 82 C 205 64, 240 64, 240 94 C 240 124, 205 124, 175 102', 10)}
-                    ${amberRope('M 235 88 L 175 94 L 175 138', 9.5)}
-                    <circle cx="175" cy="144" r="7.5" fill="#22c55e" stroke="#020617" stroke-width="2.5"/>
-                `,
-                note: 'CRITICAL: Bowlines can loosen when unloaded or shaken—always tie a double overhand or figure-8 stopper on the tail.',
+                note: 'CRITICAL: Always tie a stopper knot on the tail—bowlines can work loose when unloaded.',
                 critical: true,
-                phases: [
-                    {
-                        title: 'Phase 1: Overhand Loop',
-                        text: 'Form a small overhand loop in the standing line ("rabbit hole").',
-                        svg: `
-                            ${blueRope('M 42 96 L 42 56', 7.5)}
-                            ${amberRope('M 42 56 C 42 32, 74 32, 74 52 C 74 68, 52 68, 42 56', 7.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 2: Around & Down',
-                        text: 'Bring working end up through the loop, around the standing line, and back down.',
-                        svg: `
-                            ${blueRope('M 42 96 L 42 46', 7.5)}
-                            ${amberRope('M 68 92 L 68 48 C 68 32, 34 32, 34 52 L 54 62', 7.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 3: Dress + Stopper',
-                        text: 'Set the collar and tie a stopper knot on the tail.',
-                        svg: `
-                            ${blueRope('M 42 96 L 42 48', 7.5)}
-                            ${greenRope('M 42 52 C 56 36, 76 38, 76 56 C 76 74, 56 76, 42 62', 7.5)}
-                            ${amberRope('M 64 56 L 64 86', 7)}
-                            <circle cx="64" cy="90" r="5" fill="#22c55e" stroke="#020617" stroke-width="2"/>
-                        `
-                    }
+                phaseTexts: [
+                    'Form a small overhand loop in the standing line.',
+                    'Pass working end up through the loop, around the line, and back down.',
+                    'Dress the collar and tie a stopper knot on the tail.'
                 ]
             },
             {
@@ -637,96 +1129,30 @@
                 tag: 'Litter Bridle',
                 badgeClass: 'litter',
                 title: '8. Portuguese Bowline to a Litter',
-                summary: 'Creates a two-loop bridle from a single line to attach cleanly to head and foot litter points with balanced geometry.',
+                summary: 'Creates a two-loop bridle from a single rope to rig to head and foot litter attachment points.',
                 heroCaption: 'Portuguese Bowline Litter Bridle — twin loops rigged to Stokes litter',
-                heroSvg: `
-                    ${blueRope('M 200 22 L 200 62', 10)}
-                    ${greenRope('M 200 62 C 175 62, 165 82, 185 96 L 110 132', 9.5)}
-                    ${amberRope('M 200 62 C 225 62, 235 82, 215 96 L 290 132', 9.5)}
-                    <rect x="75" y="132" width="250" height="26" rx="11" fill="rgba(15,23,42,0.85)" stroke="#e2e8f0" stroke-width="3.5"/>
-                    <line x1="110" y1="132" x2="110" y2="158" stroke="#38bdf8" stroke-width="3"/>
-                    <line x1="290" y1="132" x2="290" y2="158" stroke="#f59e0b" stroke-width="3"/>
-                    <text x="200" y="149" fill="#f8fafc" font-size="11" font-weight="bold" text-anchor="middle">STOKES LITTER</text>
-                `,
-                note: 'Verify head/foot leg lengths and litter trim before lifting; back up any free tail ends and clip locking hardware.',
+                note: 'Check litter trim, clip locking carabiners/shackles properly, and back up any free ends.',
                 critical: true,
-                phases: [
-                    {
-                        title: 'Phase 1: Twin Loops',
-                        text: 'Form two interlocked loops/bights in the line to establish the twin bridle legs.',
-                        svg: `
-                            ${blueRope('M 58 24 L 58 50', 7)}
-                            ${greenRope('M 58 50 A 14 14 0 1 0 44 68', 7)}
-                            ${amberRope('M 58 50 A 14 14 0 1 1 72 68', 7)}
-                        `
-                    },
-                    {
-                        title: 'Phase 2: Form Bowlines',
-                        text: 'Pass bights through and around the standing legs to lock both bowline collars.',
-                        svg: `
-                            ${blueRope('M 58 22 L 58 52', 7)}
-                            ${greenRope('M 58 52 L 32 82', 7)}
-                            ${amberRope('M 58 52 L 84 82', 7)}
-                        `
-                    },
-                    {
-                        title: 'Phase 3: Clip Litter',
-                        text: 'Connect both loops to litter bridle points, check trim, and backup tails.',
-                        svg: `
-                            ${blueRope('M 58 22 L 58 52', 7)}
-                            ${greenRope('M 58 52 L 26 84', 7)}
-                            ${amberRope('M 58 52 L 90 84', 7)}
-                            <rect x="20" y="84" width="76" height="10" rx="4" fill="none" stroke="#e2e8f0" stroke-width="2.5"/>
-                        `
-                    }
+                phaseTexts: [
+                    'Form two interlocked bights in the rope to set the twin bridle legs.',
+                    'Lock both bowline collars around the standing/bridle legs.',
+                    'Attach to litter head/foot points, verify trim, and secure tails.'
                 ]
             },
-
-            // --- CMC RESCUE MANUAL ANCHORS (3) ---
             {
                 id: 'cmc-tensionless',
                 group: 'anchors',
                 tag: 'CMC Anchor',
                 badgeClass: 'anchor',
                 title: '9. CMC Tensionless Hitch Anchor',
-                summary: 'High-efficiency wrap anchor on a large diameter object (tree/post) that uses surface friction to preserve line strength.',
-                heroCaption: 'Tensionless Hitch — multiple snug wraps around a solid trunk/post',
-                heroSvg: `
-                    ${treeAnchorSvg(135, 165, 130)}
-                    ${blueRope('M 149 62 C 115 62, 115 80, 149 80', 10)}
-                    ${amberRope('M 149 80 C 115 80, 115 98, 149 98', 10)}
-                    ${greenRope('M 149 98 C 115 98, 115 116, 149 116', 10)}
-                    ${greenRope('M 149 116 L 355 116', 10)}
-                `,
-                note: 'Avoid sharp edges; make sufficient wraps with no overlapping turns so friction holds the load without sharp knot bends.',
+                summary: 'Wrap-around anchor on a large diameter object that uses friction to retain high rope strength.',
+                heroCaption: 'Tensionless Hitch — multiple clean wraps around a solid trunk/post',
+                note: 'Use a suitable diameter object with edge protection; lay wraps cleanly without crossing over.',
                 critical: false,
-                phases: [
-                    {
-                        title: 'Phase 1: First Wrap',
-                        text: 'Pass the line around the anchor object and lay the first turn cleanly.',
-                        svg: `
-                            <rect x="44" y="18" width="20" height="78" rx="4" fill="#451a03" stroke="#78350f" stroke-width="2"/>
-                            ${blueRope('M 64 46 C 32 46, 32 62, 64 62', 7)}
-                        `
-                    },
-                    {
-                        title: 'Phase 2: Add Wraps',
-                        text: 'Add side-by-side wraps along the object without crossing over previous wraps.',
-                        svg: `
-                            <rect x="44" y="18" width="20" height="78" rx="4" fill="#451a03" stroke="#78350f" stroke-width="2"/>
-                            ${blueRope('M 64 42 C 32 42, 32 54, 64 54', 6.5)}
-                            ${amberRope('M 64 54 C 32 54, 32 66, 64 66', 6.5)}
-                            ${greenRope('M 64 66 C 32 66, 32 78, 64 78', 6.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 3: Lock & Load',
-                        text: 'Pinch/secure the tail against the standing line and apply gradual tension.',
-                        svg: `
-                            <rect x="44" y="18" width="20" height="78" rx="4" fill="#451a03" stroke="#78350f" stroke-width="2"/>
-                            ${greenRope('M 64 42 C 32 42, 32 78, 64 78 L 106 78', 7)}
-                        `
-                    }
+                phaseTexts: [
+                    'Pass the rope around the anchor object and set the first wrap.',
+                    'Add side-by-side wraps along the object without overlapping.',
+                    'Control the tail and apply gradual tension to lock the wraps.'
                 ]
             },
             {
@@ -735,50 +1161,14 @@
                 tag: 'CMC Anchor',
                 badgeClass: 'anchor',
                 title: '10. CMC Load-Sharing Y-Hang Anchor',
-                summary: 'Connects two independent anchor points to a central master point with a narrow included angle to keep leg forces low.',
-                heroCaption: 'Load-Sharing Y-Hang — keep leg angle tight (< 90°, ideally ≤ 60°)',
-                heroSvg: `
-                    ${treeAnchorSvg(105, 95, 70)}
-                    ${treeAnchorSvg(295, 95, 70)}
-                    ${blueRope('M 119 52 L 200 122', 10)}
-                    ${amberRope('M 281 52 L 200 122', 10)}
-                    ${greenRope('M 200 122 L 200 172', 10)}
-                    ${carabinerSvg(200, 126, 0)}
-                `,
-                note: 'Watch the angle between legs: wide angles multiply force on both anchors—keep legs as tight/in-line as terrain allows.',
+                summary: 'Joins two independent anchor points to a central master point; keep the included angle narrow.',
+                heroCaption: 'Load-Sharing Y-Hang — narrow leg angle keeps anchor loads manageable',
+                note: 'Wide angles between legs dramatically increase force on both anchors—keep legs tight.',
                 critical: true,
-                phases: [
-                    {
-                        title: 'Phase 1: Anchor Legs',
-                        text: 'Secure a line or sling to each anchor point with rated knots/hitches.',
-                        svg: `
-                            <rect x="26" y="16" width="14" height="44" rx="3" fill="#451a03"/>
-                            <rect x="74" y="16" width="14" height="44" rx="3" fill="#451a03"/>
-                            ${blueRope('M 40 34 L 56 68', 6.5)}
-                            ${amberRope('M 74 34 L 64 68', 6.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 2: Adjust Angle',
-                        text: 'Shorten or lengthen legs so the master point sits centered with a narrow angle.',
-                        svg: `
-                            <rect x="26" y="16" width="14" height="44" rx="3" fill="#451a03"/>
-                            <rect x="74" y="16" width="14" height="44" rx="3" fill="#451a03"/>
-                            ${blueRope('M 40 32 L 60 72', 6.5)}
-                            ${amberRope('M 74 32 L 60 72', 6.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 3: Master Point',
-                        text: 'Tie/clip the master point loop and connect the main system.',
-                        svg: `
-                            <rect x="26" y="16" width="14" height="44" rx="3" fill="#451a03"/>
-                            <rect x="74" y="16" width="14" height="44" rx="3" fill="#451a03"/>
-                            ${blueRope('M 40 32 L 60 68', 6.5)}
-                            ${amberRope('M 74 32 L 60 68', 6.5)}
-                            ${greenRope('M 60 68 L 60 98', 7)}
-                        `
-                    }
+                phaseTexts: [
+                    'Secure a line or sling to each anchor point using rated knots.',
+                    'Adjust leg lengths so the master point sits centered with a tight angle.',
+                    'Connect the locking carabiner/master point and attach the main line.'
                 ]
             },
             {
@@ -787,49 +1177,14 @@
                 tag: 'CMC Anchor',
                 badgeClass: 'anchor',
                 title: '11. CMC Load-Distributing / Self-Equalizing Anchor',
-                summary: 'Uses a continuous line between two anchors with a sliding/rigged attachment or limiters so load shifts if an anchor settles.',
-                heroCaption: 'Load-Distributing Anchor — continuous span with central load attachment',
-                heroSvg: `
-                    ${treeAnchorSvg(95, 95, 70)}
-                    ${treeAnchorSvg(305, 95, 70)}
-                    ${blueRope('M 109 52 L 291 52', 10)}
-                    ${amberRope('M 145 52 L 200 124 L 255 52', 9.5)}
-                    ${greenRope('M 200 124 L 200 172', 10)}
-                    ${carabinerSvg(200, 126, 0)}
-                `,
-                note: 'Include limiter knots/stoppers where appropriate so a single anchor failure does not cause a long shock drop.',
+                summary: 'Spans between two anchors with a central load attachment and limiters to shift load if one point moves.',
+                heroCaption: 'Load-Distributing Anchor — horizontal span with limiters & central apex',
+                note: 'Include limiter knots/stoppers so anchor slip or failure does not create a long shock drop.',
                 critical: true,
-                phases: [
-                    {
-                        title: 'Phase 1: Span Between',
-                        text: 'Anchor both ends of a continuous line/sling to two solid anchor points.',
-                        svg: `
-                            <rect x="22" y="18" width="14" height="42" rx="3" fill="#451a03"/>
-                            <rect x="78" y="18" width="14" height="42" rx="3" fill="#451a03"/>
-                            ${blueRope('M 36 34 L 78 34', 6.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 2: Rig Mid-Point',
-                        text: 'Attach bight/pulley/hitch along the span and add limiters if required.',
-                        svg: `
-                            <rect x="22" y="18" width="14" height="42" rx="3" fill="#451a03"/>
-                            <rect x="78" y="18" width="14" height="42" rx="3" fill="#451a03"/>
-                            ${blueRope('M 36 34 L 78 34', 6.5)}
-                            ${amberRope('M 46 34 L 57 70 L 68 34', 6.5)}
-                        `
-                    },
-                    {
-                        title: 'Phase 3: Test & Load',
-                        text: 'Inspect knots, limiters, and leg angles before applying full rescue load.',
-                        svg: `
-                            <rect x="22" y="18" width="14" height="42" rx="3" fill="#451a03"/>
-                            <rect x="78" y="18" width="14" height="42" rx="3" fill="#451a03"/>
-                            ${blueRope('M 36 34 L 78 34', 6.5)}
-                            ${amberRope('M 48 34 L 57 68 L 66 34', 6.5)}
-                            ${greenRope('M 57 68 L 57 98', 7)}
-                        `
-                    }
+                phaseTexts: [
+                    'Rig a continuous line or sling between two solid anchor points.',
+                    'Add limiter stoppers and attach the load V/pulley along the span.',
+                    'Inspect knots, limiters, and angle before loading the system.'
                 ]
             }
         ];
@@ -841,6 +1196,35 @@
             document.querySelectorAll('#sectionTabs .pill-btn').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
             renderLessons();
+        }
+
+        function paintCanvas(canvas, drawFn, logicalW, logicalH) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            const cssW = rect.width || logicalW;
+            const cssH = rect.height || logicalH;
+            canvas.width = Math.round(cssW * dpr);
+            canvas.height = Math.round(cssH * dpr);
+
+            const ctx = canvas.getContext('2d');
+            ctx.save();
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, cssW, cssH);
+
+            // Subtle studio grid
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.06)';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < cssW; x += 24) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, cssH); ctx.stroke();
+            }
+            for (let y = 0; y < cssH; y += 24) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cssW, y); ctx.stroke();
+            }
+
+            const sx = cssW / logicalW;
+            const sy = cssH / logicalH;
+            drawFn(ctx, sx, sy);
+            ctx.restore();
         }
 
         function renderLessons() {
@@ -871,20 +1255,16 @@
                     <p class="lesson-summary">${item.summary}</p>
 
                     <div class="hero-render-box">
-                        <svg width="100%" height="180" viewBox="0 0 400 180" role="img" aria-label="${item.title} diagram">
-                            ${item.heroSvg}
-                        </svg>
+                        <canvas class="hero-canvas" id="hero-${item.id}" aria-label="${item.title} diagram"></canvas>
                         <div class="hero-render-caption">${item.heroCaption}</div>
                     </div>
 
                     <div class="phases-3">
-                        ${item.phases.map(p => `
+                        ${item.phaseTexts.map((txt, idx) => `
                             <div class="phase-card">
-                                <div class="phase-tag">${p.title}</div>
-                                <svg width="116" height="106" viewBox="0 0 116 106" role="img" aria-label="${item.title} ${p.title}">
-                                    ${p.svg}
-                                </svg>
-                                <div class="phase-text">${p.text}</div>
+                                <div class="phase-tag">Phase ${idx + 1}</div>
+                                <canvas class="phase-canvas" id="phase-${item.id}-${idx}" aria-label="${item.title} Phase ${idx + 1}"></canvas>
+                                <div class="phase-text">${txt}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -892,7 +1272,25 @@
                     <div class="rigging-note ${item.critical ? 'critical' : ''}">${item.note}</div>
                 </article>
             `).join('');
+
+            requestAnimationFrame(() => {
+                filtered.forEach(item => {
+                    const b = knotBuilders[item.id];
+                    if (!b) return;
+                    const heroCanvas = document.getElementById(`hero-${item.id}`);
+                    if (heroCanvas) paintCanvas(heroCanvas, b.hero, 400, 185);
+                    b.phases.forEach((pFn, idx) => {
+                        const pCanvas = document.getElementById(`phase-${item.id}-${idx}`);
+                        if (pCanvas) paintCanvas(pCanvas, pFn, 360, 140);
+                    });
+                });
+            });
         }
+
+        window.addEventListener('resize', () => {
+            clearTimeout(window.__knotResizeTimer);
+            window.__knotResizeTimer = setTimeout(renderLessons, 120);
+        });
 
         renderLessons();
     </script>
