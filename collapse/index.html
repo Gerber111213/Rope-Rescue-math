@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Collapse &amp; Shoring — Canadian Technical Rescue Hub</title>
+    <link rel="stylesheet" href="../shared/hub.css">
+    <style>
+        .cheat-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.84rem; }
+        .cheat-table th, .cheat-table td { padding: 0.7rem; border: 1px solid var(--border-color); text-align: left; vertical-align: top; line-height: 1.4; }
+        .cheat-table th { background-color: rgba(9, 13, 22, 0.85); color: var(--accent-cyan); }
+        .weakest-list { list-style-type: none; margin-top: 0.5rem; }
+        .weakest-item { padding: 0.7rem; margin-bottom: 0.45rem; background-color: rgba(9, 13, 22, 0.55); border-left: 3px solid var(--accent-yellow); border-radius: 6px; font-size: 0.88rem; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="../index.html">Canadian Technical Rescue Hub</a></h1>
+        <div class="header-nav">
+            <a class="nav-pill" href="../index.html">← Rescue Hub</a>
+            <span style="font-size: 0.82rem; color: var(--accent-cyan); font-weight: 600;">Collapse &amp; Shoring</span>
+        </div>
+    </header>
+
+    <main>
+        <div style="margin-bottom: 1.2rem;">
+            <h2 style="color: var(--accent-cyan); font-size: 1.32rem;">Advanced Structural Collapse &amp; Shoring</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Rapid wall assessment, strut load considerations, and breaching timelines.</p>
+        </div>
+
+        <div class="card">
+            <h3>Wall Assessment Matrix</h3>
+            <table class="cheat-table">
+                <tr><th>Structure Type</th><th>Primary Hazards</th><th>Typical Shoring Approach</th></tr>
+                <tr><td><strong>Unreinforced Masonry (URM)</strong></td><td>Out-of-plane wall failure, falling brick/debris</td><td>Rakers, T-stops, or wall bracing per structural assessment.</td></tr>
+                <tr><td><strong>Tilt-Up Concrete</strong></td><td>Panel connection/brace failure, sudden inward/outward movement</td><td>Heavy rakers/struts with positive mechanical locking.</td></tr>
+                <tr><td><strong>Wood Frame</strong></td><td>Sagging floors/roofs, shifting load paths, utilities</td><td>Post shores, laced posts, and lateral bracing.</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>Strut &amp; Breaching Reference</h3>
+            <ul class="weakest-list">
+                <li class="weakest-item"><strong>Axial vs. Off-Axis Loads:</strong> Keep struts aligned axially and locked; off-axis angles reduce capacity quickly.</li>
+                <li class="weakest-item"><strong>Breaching Benchmarks:</strong> Rotary hammer stitch drilling in concrete is slow (~1–2 in/min depending on aggregate/rebar); rebar/timber cutting is fast (~5–15 sec per member).</li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>
