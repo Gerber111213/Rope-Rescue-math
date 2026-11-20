@@ -44,7 +44,7 @@
         .weakest-item { padding: 0.7rem; margin-bottom: 0.45rem; background-color: rgba(9, 13, 22, 0.55); border-left: 3px solid var(--accent-yellow); border-radius: 6px; font-size: 0.88rem; line-height: 1.4; }
 
         .canvas-container { background: var(--panel-bg); backdrop-filter: blur(12px); border: 1px solid var(--panel-border); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; align-items: center; }
-        canvas { background-color: #03060a; border-radius: 6px; width: 100%; max-width: 900px; height: auto; aspect-ratio: 900 / 460; border: 1px solid var(--border-color); display: block; }
+        canvas { background-color: #03060a; border-radius: 6px; width: 100%; max-width: 920px; height: auto; aspect-ratio: 920 / 480; border: 1px solid var(--border-color); display: block; }
 
         .action-btn { background: linear-gradient(135deg, var(--accent-cyan), #0284c7); color: #090d16; border: none; padding: 0.68rem 1.15rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.28); }
         .action-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
@@ -76,6 +76,13 @@
                         <div class="btn-group" data-key="riggingStrategy">
                             <button class="opt-btn active" onclick="selectOption(this, 'riggingStrategy', 'tts')">Twin Tension (TTS)</button>
                             <button class="opt-btn" onclick="selectOption(this, 'riggingStrategy', 'mb')">Main &amp; Belay</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>High Point (High Directional Frame)</label>
+                        <div class="btn-group" data-key="highPoint">
+                            <button class="opt-btn active" onclick="selectOption(this, 'highPoint', true)">High Point (Elevated HD)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'highPoint', false)">None (Edge Roller Only)</button>
                         </div>
                     </div>
                     <div class="field">
@@ -225,17 +232,26 @@
 
         <section id="pane-diagram" class="pane">
             <div class="canvas-container">
-                <h3 style="color: var(--accent-cyan); margin-bottom: 0.6rem; align-self: flex-start;">Slope, Overhang &amp; Rigging Lay Diagram</h3>
-                <canvas id="diagramCanvas" width="900" height="460"></canvas>
+                <h3 style="color: var(--accent-cyan); margin-bottom: 0.6rem; align-self: flex-start;">Detailed Lay Diagram (High Point, Slope / Overhang &amp; Litter Rigging)</h3>
+                <canvas id="diagramCanvas" width="920" height="480"></canvas>
             </div>
         </section>
     </main>
 
     <script>
         const DEFAULT_STATE = {
-            riggingStrategy: 'tts', maSystem: 2, ropeType: 'static125',
-            useLitter: true, numPatients: 1, numRescuers: 1, haulTeam: 4,
-            avgWeight: 220, angle: 90, anchorType: 'tree', frictionLoss: 10
+            riggingStrategy: 'tts',
+            highPoint: true,
+            maSystem: 2,
+            ropeType: 'static125',
+            useLitter: true,
+            numPatients: 1,
+            numRescuers: 1,
+            haulTeam: 4,
+            avgWeight: 220,
+            angle: 90,
+            anchorType: 'tree',
+            frictionLoss: 10
         };
         let state = { ...DEFAULT_STATE };
 
@@ -299,7 +315,9 @@
         function calculate() {
             const totalWeightLbs = ((state.numPatients + state.numRescuers) * state.avgWeight) + (state.useLitter ? 30 : 0);
             const effectiveAngleRad = Math.min(state.angle, 90) * (Math.PI / 180);
-            const adjustedSlopeForce = totalWeightLbs * Math.sin(effectiveAngleRad) * (1 + state.frictionLoss / 100);
+            // High point reduces sharp edge drag slightly compared to an edge-only lip
+            const effectiveFrictionPct = state.highPoint ? Math.max(5, state.frictionLoss - 5) : state.frictionLoss;
+            const adjustedSlopeForce = totalWeightLbs * Math.sin(effectiveAngleRad) * (1 + effectiveFrictionPct / 100);
             const isTTS = state.riggingStrategy === 'tts';
             const workingLineLoadLbs = isTTS ? adjustedSlopeForce / 2 : adjustedSlopeForce;
 
@@ -358,7 +376,7 @@
             const components = [
                 { name: `Anchor (${state.anchorType.toUpperCase()})`, capacity: anchorStrengths[state.anchorType] || 4000 },
                 { name: `${spec.label} (Knot-Dressed ~75%)`, capacity: effectiveRopeMbs },
-                { name: 'High Directional System', capacity: 8000 },
+                { name: state.highPoint ? 'High Point Frame / Head Sheave' : 'Edge Roller / Lip Protection', capacity: state.highPoint ? 8000 : 5620 },
                 { name: 'General Use Hardware (~40 kN)', capacity: 8992 },
                 { name: 'Technical Use Hardware (~25 kN)', capacity: 5620 }
             ];
@@ -370,9 +388,9 @@
 
             const angleLabel = state.angle > 90 ? `${state.angle}° (Overhang)` : `${state.angle}°`;
             document.getElementById('res-breakdown-text').innerHTML = `
-                <strong>Strategy:</strong> ${isTTS ? 'Twin Tension System (SF checked against single-line governing load)' : 'Main & Belay System'}<br/>
+                <strong>Strategy:</strong> ${isTTS ? 'Twin Tension System (SF checked against single-line governing load)' : 'Main & Belay System'} | <strong>High Point:</strong> ${state.highPoint ? 'Yes (Elevated HD)' : 'None (Edge Roller Only)'}<br/>
                 <strong>MA Selection:</strong> ${maDescriptions[ma]} (${(maEfficiency * 100).toFixed(0)}% efficiency)<br/>
-                <strong>Slope &amp; Friction:</strong> ${angleLabel} | +${state.frictionLoss}% friction loss<br/>
+                <strong>Slope &amp; Friction:</strong> ${angleLabel} | Effective friction ~${effectiveFrictionPct}% applied<br/>
                 <strong>Governing Force:</strong> ${adjustedSlopeForce.toFixed(0)} lbs (${(adjustedSlopeForce * 0.00444822).toFixed(2)} kN)
             `;
         }
@@ -380,16 +398,17 @@
         function exportIncidentReport() {
             const totalWeightLbs = ((state.numPatients + state.numRescuers) * state.avgWeight) + (state.useLitter ? 30 : 0);
             const effectiveAngleRad = Math.min(state.angle, 90) * (Math.PI / 180);
-            const adjustedSlopeForce = totalWeightLbs * Math.sin(effectiveAngleRad) * (1 + state.frictionLoss / 100);
+            const effectiveFrictionPct = state.highPoint ? Math.max(5, state.frictionLoss - 5) : state.frictionLoss;
+            const adjustedSlopeForce = totalWeightLbs * Math.sin(effectiveAngleRad) * (1 + effectiveFrictionPct / 100);
             const spec = ropeSpecs[state.ropeType] || ropeSpecs.static125;
             const sf = adjustedSlopeForce > 0 ? ((spec.rawMbs * 0.75) / adjustedSlopeForce).toFixed(1) : 'N/A';
 
             const text = [
                 '=== CANADIAN TECHNICAL RESCUE INCIDENT SUMMARY ===',
                 `Timestamp: ${new Date().toLocaleString()}`,
-                `Strategy: ${state.riggingStrategy.toUpperCase()} | MA: ${state.maSystem}:1`,
+                `Strategy: ${state.riggingStrategy.toUpperCase()} | High Point: ${state.highPoint ? 'YES' : 'NO'} | MA: ${state.maSystem}:1`,
                 `Rope: ${spec.label} | Angle: ${state.angle > 90 ? state.angle + ' deg (Overhang)' : state.angle + ' deg'}`,
-                `Friction Loss: +${state.frictionLoss}% | Total Mass: ${totalWeightLbs} lbs`,
+                `Friction: ~${effectiveFrictionPct}% | Total Mass: ${totalWeightLbs} lbs`,
                 `Governing Load: ${adjustedSlopeForce.toFixed(0)} lbs | SF: ${sf}:1`,
                 `Anchor: ${state.anchorType.toUpperCase()}`,
                 '=================================================='
@@ -411,11 +430,20 @@
             const w = canvas.width, h = canvas.height;
             ctx.clearRect(0, 0, w, h);
 
-            ctx.strokeStyle = '#142033'; ctx.lineWidth = 1;
+            // Subtle tactical grid
+            ctx.strokeStyle = '#111d30';
+            ctx.lineWidth = 1;
             for (let x = 0; x <= w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
             for (let y = 0; y <= h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
 
-            const edgeX = 360, edgeY = 145, ropeLen = 175;
+            // Sky/void depth gradient on right/lower side
+            const voidGrad = ctx.createLinearGradient(350, 150, w, h);
+            voidGrad.addColorStop(0, 'rgba(14, 116, 144, 0.08)');
+            voidGrad.addColorStop(1, 'rgba(2, 6, 23, 0.6)');
+            ctx.fillStyle = voidGrad;
+            ctx.fillRect(350, 0, w - 350, h);
+
+            const edgeX = 365, edgeY = 165, ropeLen = 185;
             let targetX, targetY;
             if (state.angle <= 90) {
                 const rad = state.angle * (Math.PI / 180);
@@ -423,74 +451,206 @@
                 targetY = edgeY + Math.sin(rad) * ropeLen;
             } else {
                 const overhangRad = (state.angle - 90) * (Math.PI / 180);
-                targetX = edgeX - Math.sin(overhangRad) * 65;
+                targetX = edgeX - Math.sin(overhangRad) * 75;
                 targetY = edgeY + Math.cos(overhangRad) * ropeLen;
             }
 
-            ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 3;
-            ctx.beginPath(); ctx.moveTo(0, edgeY); ctx.lineTo(edgeX, edgeY);
+            // Terrain / Cliff body
+            ctx.fillStyle = '#1e293b';
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, edgeY);
+            ctx.lineTo(edgeX, edgeY);
             if (state.angle <= 90) {
                 const rad = state.angle * (Math.PI / 180);
-                ctx.lineTo(edgeX + Math.cos(rad) * 240, edgeY + Math.sin(rad) * 240);
-                ctx.lineTo(edgeX + Math.cos(rad) * 240, h);
+                const fx = edgeX + Math.cos(rad) * 255;
+                const fy = edgeY + Math.sin(rad) * 255;
+                ctx.lineTo(fx, fy);
+                ctx.lineTo(fx, h);
             } else {
-                ctx.lineTo(edgeX - 85, edgeY + 130);
-                ctx.lineTo(edgeX - 40, h);
+                ctx.lineTo(edgeX - 95, edgeY + 135);
+                ctx.lineTo(edgeX - 45, h);
             }
-            ctx.lineTo(0, h); ctx.closePath(); ctx.fill(); ctx.stroke();
+            ctx.lineTo(0, h);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
 
-            ctx.fillStyle = '#eab308'; ctx.beginPath(); ctx.arc(edgeX, edgeY, 5, 0, Math.PI * 2); ctx.fill();
+            // Top turf strip
+            ctx.fillStyle = 'rgba(34, 197, 94, 0.25)';
+            ctx.fillRect(0, edgeY - 5, edgeX - 10, 5);
 
+            // Edge roller / lip protection pad
+            ctx.fillStyle = '#eab308';
+            ctx.fillRect(edgeX - 18, edgeY - 6, 22, 6);
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '10px sans-serif';
+            ctx.fillText('Edge Pad / Roller', edgeX - 68, edgeY + 14);
+
+            // Anchor assembly
             const anchorX = 115, anchorY = edgeY;
             if (state.anchorType === 'tree') {
-                ctx.fillStyle = '#8b4513'; ctx.fillRect(anchorX - 8, anchorY - 40, 16, 40);
-                ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(anchorX, anchorY - 52, 26, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#78350f';
+                ctx.fillRect(anchorX - 9, anchorY - 46, 18, 46);
+                ctx.fillStyle = '#16a34a';
+                ctx.beginPath();
+                ctx.arc(anchorX - 14, anchorY - 56, 20, 0, Math.PI * 2);
+                ctx.arc(anchorX + 14, anchorY - 56, 20, 0, Math.PI * 2);
+                ctx.arc(anchorX, anchorY - 72, 24, 0, Math.PI * 2);
+                ctx.fill();
             } else if (state.anchorType === 'vehicle') {
-                ctx.fillStyle = '#ef4444'; ctx.fillRect(anchorX - 30, anchorY - 22, 60, 16); ctx.fillRect(anchorX - 18, anchorY - 34, 32, 12);
-                ctx.fillStyle = '#090d16'; ctx.beginPath(); ctx.arc(anchorX - 16, anchorY - 5, 6, 0, Math.PI * 2); ctx.arc(anchorX + 16, anchorY - 5, 6, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#dc2626';
+                ctx.fillRect(anchorX - 36, anchorY - 24, 72, 16);
+                ctx.fillRect(anchorX - 20, anchorY - 38, 38, 14);
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillRect(anchorX - 16, anchorY - 35, 14, 9);
+                ctx.fillStyle = '#090d16';
+                ctx.beginPath();
+                ctx.arc(anchorX - 20, anchorY - 6, 7, 0, Math.PI * 2);
+                ctx.arc(anchorX + 20, anchorY - 6, 7, 0, Math.PI * 2);
+                ctx.fill();
             } else {
-                ctx.fillStyle = '#38bdf8'; ctx.fillRect(anchorX - 16, anchorY - 24, 32, 24);
+                ctx.fillStyle = '#0284c7';
+                ctx.strokeStyle = '#7dd3fc';
+                ctx.lineWidth = 2;
+                ctx.fillRect(anchorX - 20, anchorY - 28, 40, 28);
+                ctx.strokeRect(anchorX - 20, anchorY - 28, 40, 28);
+                ctx.fillStyle = '#e0f2fe';
+                ctx.font = 'bold 9px sans-serif';
+                ctx.fillText('6k IND', anchorX - 15, anchorY - 11);
             }
-            ctx.fillStyle = '#f8fafc'; ctx.font = 'bold 12px sans-serif';
-            ctx.fillText(`Anchor (${state.anchorType.toUpperCase()})`, anchorX - 40, anchorY - 84);
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText(`Anchor (${state.anchorType.toUpperCase()})`, anchorX - 42, anchorY - 102);
 
-            ctx.fillStyle = '#38bdf8'; ctx.fillRect(edgeX - 6, edgeY - 38, 12, 38);
-            ctx.fillText('High Directional', edgeX - 42, edgeY - 46);
+            // High Point (Elevated HD Frame) vs Edge-Only
+            let passX = edgeX - 6;
+            let passY = edgeY - 3;
+            if (state.highPoint) {
+                const apexX = edgeX + 12;
+                const apexY = edgeY - 78;
+                // A-frame / Gin legs
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(edgeX - 28, edgeY);
+                ctx.lineTo(apexX, apexY);
+                ctx.moveTo(edgeX + 26, edgeY);
+                ctx.lineTo(apexX, apexY);
+                ctx.stroke();
 
-            ctx.strokeStyle = state.ropeType === 'dynamic11' ? '#f59e0b' : '#38bdf8'; ctx.lineWidth = 3;
-            ctx.beginPath(); ctx.moveTo(anchorX, anchorY - 12); ctx.lineTo(edgeX, edgeY - 24); ctx.lineTo(targetX, targetY); ctx.stroke();
+                // Head sheave pulley
+                ctx.fillStyle = '#0f172a';
+                ctx.strokeStyle = '#eab308';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.arc(apexX, apexY, 8, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#38bdf8';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillText('HIGH POINT (HD)', apexX - 42, apexY - 15);
+                passX = apexX;
+                passY = apexY;
+            } else {
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillText('NO HIGH POINT (Lip Pass)', edgeX - 65, edgeY - 20);
+            }
+
+            // Rigging lines (Anchor -> Pass -> Litter)
+            const ropeColor = state.ropeType === 'dynamic11' ? '#f59e0b' : '#38bdf8';
+            ctx.strokeStyle = ropeColor;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(anchorX, anchorY - 14);
+            ctx.lineTo(passX, passY);
+            ctx.lineTo(targetX, targetY - 12);
+            ctx.stroke();
 
             if (state.riggingStrategy === 'tts') {
-                ctx.strokeStyle = 'rgba(34, 197, 94, 0.85)'; ctx.setLineDash([6, 4]);
-                ctx.beginPath(); ctx.moveTo(anchorX, anchorY - 6); ctx.lineTo(edgeX, edgeY - 18); ctx.lineTo(targetX - 4, targetY); ctx.stroke();
+                ctx.strokeStyle = 'rgba(34, 197, 94, 0.88)';
+                ctx.setLineDash([6, 4]);
+                ctx.beginPath();
+                ctx.moveTo(anchorX, anchorY - 8);
+                ctx.lineTo(passX + (state.highPoint ? 3 : 0), passY + (state.highPoint ? 3 : 2));
+                ctx.lineTo(targetX + 5, targetY - 12);
+                ctx.stroke();
                 ctx.setLineDash([]);
             }
 
+            // Rescuer along line
             if (state.numRescuers > 0) {
-                const rx = edgeX + (targetX - edgeX) * 0.42;
-                const ry = edgeY + (targetY - edgeY) * 0.42;
-                ctx.fillStyle = '#f97316'; ctx.beginPath(); ctx.arc(rx, ry - 10, 6, 0, Math.PI * 2); ctx.fill();
-                ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3.5;
-                ctx.beginPath(); ctx.moveTo(rx, ry - 4); ctx.lineTo(rx, ry + 10); ctx.stroke();
-                ctx.fillStyle = '#f8fafc'; ctx.fillText(`Rescuer (${state.numRescuers})`, rx + 12, ry + 4);
+                const rx = passX + (targetX - passX) * 0.44;
+                const ry = passY + (targetY - passY) * 0.44;
+                ctx.fillStyle = '#f97316';
+                ctx.beginPath();
+                ctx.arc(rx, ry - 12, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.moveTo(rx, ry - 6);
+                ctx.lineTo(rx, ry + 10);
+                ctx.stroke();
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillText(`Rescuer (${state.numRescuers})`, rx + 12, ry + 4);
             }
 
-            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2.5;
-            ctx.strokeRect(targetX - 24, targetY - 10, 48, 20);
+            // Litter bridle + basket + patient
+            ctx.strokeStyle = '#eab308';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(targetX, targetY - 12);
+            ctx.lineTo(targetX - 20, targetY + 4);
+            ctx.moveTo(targetX, targetY - 12);
+            ctx.lineTo(targetX + 20, targetY + 4);
+            ctx.stroke();
+
+            if (state.useLitter) {
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.fillStyle = 'rgba(148, 163, 184, 0.16)';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.roundRect(targetX - 26, targetY + 4, 52, 18, 7);
+                ctx.fill();
+                ctx.stroke();
+            }
+
             if (state.numPatients > 0) {
-                ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(targetX, targetY, 5, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(targetX, targetY + (state.useLitter ? 12 : 6), 5.5, 0, Math.PI * 2);
+                ctx.fill();
             }
-            ctx.fillStyle = '#f8fafc';
-            ctx.fillText(`${state.useLitter ? 'Litter' : 'Load'} (${state.numPatients}P)`, targetX - 32, targetY + 26);
 
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.88)'; ctx.strokeStyle = '#334155'; ctx.lineWidth = 1;
-            ctx.fillRect(610, 20, 265, 92); ctx.strokeRect(610, 20, 265, 92);
-            ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 12px sans-serif';
-            ctx.fillText('RIGGING CONFIGURATION', 622, 40);
-            ctx.fillStyle = '#f8fafc'; ctx.font = '12px sans-serif';
-            ctx.fillText(`Slope: ${state.angle > 90 ? state.angle + '° (Overhang)' : state.angle + '°'}`, 622, 60);
-            ctx.fillText(`MA: ${state.maSystem}:1 | Strategy: ${state.riggingStrategy.toUpperCase()}`, 622, 78);
-            ctx.fillText(`Rope: ${ropeSpecs[state.ropeType].label} (+${state.frictionLoss}% fric.)`, 622, 96);
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillText(`${state.useLitter ? 'Litter' : 'Load'} (${state.numPatients}P)`, targetX - 30, targetY + 38);
+
+            // Configuration HUD panel
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.roundRect(615, 18, 285, 112, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText('SYSTEM LAY SUMMARY', 628, 38);
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = '12px sans-serif';
+            ctx.fillText(`High Point: ${state.highPoint ? 'ENABLED (Elevated HD)' : 'NONE (Edge Roller)'}`, 628, 58);
+            ctx.fillText(`Slope: ${state.angle > 90 ? state.angle + '° (Overhang)' : state.angle + '°'} | MA: ${state.maSystem}:1`, 628, 78);
+            ctx.fillText(`Strategy: ${state.riggingStrategy.toUpperCase()} | Haul: ${state.haulTeam} crew`, 628, 98);
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '11px sans-serif';
+            ctx.fillText(`Rope: ${ropeSpecs[state.ropeType].label}`, 628, 118);
         }
 
         calculate();
