@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knots, Litter Bridles &amp; CMC Anchors — Canadian Technical Rescue Hub</title>
+    <link rel="stylesheet" href="../shared/hub.css">
+    <style>
+        .hero-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+        .legend-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: rgba(9, 13, 22, 0.65);
+            border: 1px solid var(--border-color);
+            padding: 0.55rem 0.85rem;
+            border-radius: 8px;
+        }
+        .swatch {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            vertical-align: -2px;
+            margin-right: 5px;
+        }
+
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.35rem;
+        }
+        .tab-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+        .pill-btn {
+            background: rgba(9, 13, 22, 0.75);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.52rem 0.9rem;
+            border-radius: 7px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .pill-btn:hover {
+            border-color: var(--accent-cyan);
+        }
+        .pill-btn.active {
+            background: var(--accent-cyan);
+            color: #090d16;
+            border-color: var(--accent-cyan);
+        }
+        .filter-input {
+            min-width: 220px;
+            padding: 0.52rem 0.8rem;
+            border-radius: 7px;
+            border: 1px solid var(--border-color);
+            background: rgba(9, 13, 22, 0.75);
+            color: var(--text-main);
+            font-size: 0.85rem;
+        }
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
+            gap: 1.25rem;
+        }
+        @media (max-width: 500px) {
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .lesson-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 1.15rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+        }
+        .lesson-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+        .lesson-title {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 0.22rem 0.55rem;
+            border-radius: 999px;
+            white-space: nowrap;
+            background: rgba(56, 189, 248, 0.14);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+        .badge.anchor {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.35);
+        }
+        .badge.litter {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border-color: rgba(34, 197, 94, 0.35);
+        }
+
+        .lesson-summary {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        .hero-render-box {
+            background: radial-gradient(circle at 50% 30%, #132238 0%, #060b14 80%);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            border-radius: 10px;
+            padding: 0.55rem;
+            text-align: center;
+        }
+        .hero-render-caption {
+            font-size: 0.74rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
+        .phases-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+        }
+        @media (max-width: 680px) {
+            .phases-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+        .phase-card {
+            background: rgba(9, 13, 22, 0.72);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            padding: 0.55rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .phase-tag {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            margin-bottom: 0.25rem;
+            letter-spacing: 0.4px;
+        }
+        .phase-text {
+            font-size: 0.76rem;
+            color: #e2e8f0;
+            line-height: 1.35;
+            margin-top: 0.3rem;
+        }
+
+        .rigging-note {
+            background: rgba(15, 23, 42, 0.88);
+            border-left: 3px solid var(--accent-yellow);
+            border-radius: 6px;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            line-height: 1.4;
+        }
+        .rigging-note.critical {
+            border-left-color: var(--accent-red);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="../index.html">Canadian Technical Rescue Hub</a></h1>
+        <div class="header-nav">
+            <a class="nav-pill" href="../index.html">← Rescue Hub</a>
+            <span style="font-size: 0.82rem; color: var(--accent-cyan); font-weight: 600;">
+                Knots &amp; CMC Anchors
+            </span>
+        </div>
+    </header>
+
+    <main>
+        <div class="hero-bar">
+            <div>
+                <h2 style="color: var(--accent-cyan); font-size: 1.38rem;">Rope Diagrams &amp; 3-Phase Tying Lessons</h2>
+                <p style="color: var(--text-muted); font-size: 0.89rem;">
+                    Figure-8 family, Alpine Butterfly, Double Fisherman's, Bowlines (including Portuguese litter bridle), and CMC rescue anchors.
+                </p>
+            </div>
+            <div class="legend-strip">
+                <span><i class="swatch" style="background:#38bdf8;"></i>Standing / Main Strand</span>
+                <span><i class="swatch" style="background:#f59e0b;"></i>Working / Secondary Strand</span>
+                <span><i class="swatch" style="background:#22c55e;"></i>Dressed / Load-Bearing Loop</span>
+            </div>
+        </div>
+
+        <div class="controls-row">
+            <div class="tab-pills" id="sectionTabs">
+                <button class="pill-btn active" onclick="setFilter('all', this)">All Lessons (11)</button>
+                <button class="pill-btn" onclick="setFilter('fig8', this)">Figure-8 Family (4)</button>
+                <button class="pill-btn" onclick="setFilter('bends-loops', this)">Butterfly &amp; Fisherman's (2)</button>
+                <button class="pill-btn" onclick="setFilter('bowlines', this)">Bowlines &amp; Litter (2)</button>
+                <button class="pill-btn" onclick="setFilter('anchors', this)">CMC Anchors (3)</button>
+            </div>
+            <input type="text" id="searchInput" class="filter-input" placeholder="Filter by knot, litter, anchor..." oninput="renderLessons()">
+        </div>
+
+        <div class="module-grid" id="lessonsGrid"></div>
+    </main>
+
+    <script>
+        /*
+         * Photo-style kernmantle rope renderer:
+         * Draws a dark outline shadow, a rich base sheath stroke, and a specular
+         * highlight strip along the top/left edge so strands look rounded and tactile.
+         */
+        function ropeSegment(d, colorHex, highlightHex, width = 9, dash = '') {
+            const dashAttr = dash ? ` stroke-dasharray="${dash}"` : '';
+            return `
+                <g stroke-linecap="round" stroke-linejoin="round" fill="none"${dashAttr}>
+                    <path d="${d}" stroke="#020617" stroke-width="${width + 3.4}" opacity="0.9"/>
+                    <path d="${d}" stroke="${colorHex}" stroke-width="${width}"/>
+                    <path d="${d}" stroke="${highlightHex}" stroke-width="${Math.max(1.4, width * 0.24)}" opacity="0.55" transform="translate(-0.8,-1.1)"/>
+                </g>
+            `;
+        }
+
+        function blueRope(d, w = 9, dash = '') {
+            return ropeSegment(d, '#0284c7', '#bae6fd', w, dash);
+        }
+
+        function amberRope(d, w = 9, dash = '') {
+            return ropeSegment(d, '#d97706', '#fde68a', w, dash);
+        }
+
+        function greenRope(d, w = 9, dash = '') {
+            return ropeSegment(d, '#16a34a', '#bbf7d0', w, dash);
+        }
+
+        function treeAnchorSvg(x, y, h = 120) {
+            return `
+                <g>
+                    <rect x="${x - 14}" y="${y - h}" width="28" height="${h}" rx="5" fill="#451a03" stroke="#78350f" stroke-width="2"/>
+                    <line x1="${x - 5}" y1="${y - h + 6}" x2="${x - 5}" y2="${y - 6}" stroke="#92400e" stroke-width="1.5"/>
+                    <line x1="${x + 5}" y1="${y - h + 10}" x2="${x + 5}" y2="${y - 6}" stroke="#92400e" stroke-width="1.5"/>
+                </g>
+            `;
+        }
+
+        function carabinerSvg(x, y, angleDeg = 0) {
+            return `
+                <g transform="translate(${x},${y}) rotate(${angleDeg})">
+                    <rect x="-11" y="-17" width="22" height="34" rx="9" fill="none" stroke="#cbd5e1" stroke-width="3.6"/>
+                    <line x1="11" y1="-8" x2="11" y2="9" stroke="#facc15" stroke-width="2.4"/>
+                </g>
+            `;
+        }
+
+        const lessons = [
+            // --- FIGURE-8 FAMILY (4) ---
+            {
+                id: 'fig8-bight',
+                group: 'fig8',
+                tag: 'Figure-8 Family',
+                badgeClass: '',
+                title: '1. Figure-8 on a Bight',
+                summary: 'High-strength primary anchor and rigging loop (~75–80% strength retention) that stays easy to inspect after loading.',
+                heroCaption: 'Finished Figure-8 on a Bight — parallel dressed turns & clean loop',
+                heroSvg: `
+                    ${blueRope('M 45 145 L 120 95', 10)}
+                    ${amberRope('M 45 45 L 120 95', 10)}
+                    ${greenRope('M 120 95 C 155 72, 155 118, 120 95', 10)}
+                    ${greenRope('M 145 76 C 175 55, 175 135, 145 114 C 122 98, 170 68, 195 82 C 218 95, 218 118, 195 128 C 172 138, 122 105, 145 76', 10)}
+                    ${greenRope('M 206 105 L 330 105 A 26 26 0 1 1 330 53 L 206 53', 10)}
+                `,
+                note: 'Dress the knot so no strands cross over themselves inside the figure-8 body; leave a generous tail (~6 in / 15 cm).',
+                critical: false,
+                phases: [
+                    {
+                        title: 'Phase 1: Bight & Twist',
+                        text: 'Form a bight, pass it over the standing lines, and complete a full 360° twist.',
+                        svg: `
+                            ${blueRope('M 16 86 L 56 56', 7.5)}
+                            ${amberRope('M 16 24 L 56 56', 7.5)}
+                            ${amberRope('M 56 56 C 84 36, 84 76, 56 56', 7.5)}
+                            ${greenRope('M 74 42 C 98 26, 98 86, 74 70', 7.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 2: Tuck Bight',
+                        text: 'Bring the bight back up and tuck it down through the upper eye.',
+                        svg: `
+                            ${blueRope('M 14 84 L 52 56', 7.5)}
+                            ${amberRope('M 14 26 L 52 56', 7.5)}
+                            ${amberRope('M 52 56 C 96 24, 96 88, 52 56', 7.5)}
+                            ${greenRope('M 74 34 L 96 48 L 74 64', 7.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 3: Dress & Set',
+                        text: 'Align strands side-by-side in parallel and pull firm to set the knot.',
+                        svg: `
+                            ${blueRope('M 14 82 L 58 54', 7.5)}
+                            ${amberRope('M 14 28 L 58 54', 7.5)}
+                            ${greenRope('M 58 54 C 82 32, 102 36, 102 54 C 102 72, 82 76, 58 54', 7.5)}
+                        `
+                    }
+                ]
+            },
+            {
+                id: 'fig8-follow',
+                group: 'fig8',
+                tag: 'Figure-8 Family',
+                badgeClass: '',
+                title: '2. Figure-8 Follow-Through (Rewoven)',
+                summary: 'Ties a rope end directly around an anchor object, ring, or harness tie-in point when a bight cannot pass through.',
+                heroCaption: 'Rewoven Figure-8 — working end faithfully retraces standing strand',
+                heroSvg: `
+                    <rect x="295" y="54" width="56" height="56" rx="14" fill="none" stroke="#94a3b8" stroke-width="6"/>
+                    ${blueRope('M 40 82 L 155 82', 10)}
+                    ${greenRope('M 155 82 C 178 52, 212 52, 212 82 C 212 112, 178 112, 155 82', 10)}
+                    ${amberRope('M 155 82 C 178 58, 206 58, 206 82 C 206 106, 178 106, 155 82', 8.5, '8 4')}
+                    ${amberRope('M 212 82 L 295 82', 9)}
+                    ${amberRope('M 351 82 L 382 82', 9)}
+                    <circle cx="386" cy="82" r="7" fill="#22c55e" stroke="#020617" stroke-width="2.5"/>
+                `,
+                note: 'Never skip a turn when retracing; finish with a stopper knot on the tail.',
+                critical: false,
+                phases: [
+                    {
+                        title: 'Phase 1: Loose Fig-8',
+                        text: 'Tie a loose figure-8 in the rope with plenty of tail left for the anchor.',
+                        svg: `
+                            ${blueRope('M 14 56 L 54 56', 7.5)}
+                            ${blueRope('M 54 56 C 72 34, 94 34, 94 56 C 94 78, 72 78, 54 56', 7.5)}
+                            ${amberRope('M 94 56 L 110 56', 7.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 2: Pass & Trace',
+                        text: 'Route tail around anchor/ring and feed it backward along the exact path.',
+                        svg: `
+                            ${blueRope('M 14 56 L 56 56', 7.5)}
+                            ${greenRope('M 56 56 C 74 34, 94 34, 94 56 C 94 78, 74 78, 56 56', 7.5)}
+                            ${amberRope('M 56 56 C 74 40, 88 40, 88 56', 6.5, '5 3')}
+                        `
+                    },
+                    {
+                        title: 'Phase 3: Dress + Stopper',
+                        text: 'Pull all slack out so strands run parallel and tie a stopper knot.',
+                        svg: `
+                            ${blueRope('M 14 56 L 56 56', 7.5)}
+                            ${greenRope('M 56 56 C 74 34, 94 34, 94 56 C 94 78, 74 78, 56 56', 7.5)}
+                            ${amberRope('M 94 56 L 106 56', 7.5)}
+                            <circle cx="108" cy="56" r="5" fill="#22c55e" stroke="#020617" stroke-width="2"/>
+                        `
+                    }
+                ]
+            },
+            {
+                id: 'fig8-bend',
+                group: 'fig8',
+                tag: 'Figure-8 Family',
+                badgeClass: '',
+                title: '3. Figure-8 Bend (Flemish Bend)',
+                summary: 'Joins two separate rope ends end-to-end with a compact, low-profile figure-8 geometry.',
+                heroCaption: 'Figure-8 Bend — blue & amber ends interlocked in a dressed figure-8',
+                heroSvg: `
+                    ${blueRope('M 35 82 L 155 82', 10)}
+                    ${amberRope('M 365 82 L 245 82', 10)}
+                    ${blueRope('M 155 82 C 180 50, 210 50, 210 82 C 210 112, 175 112, 165 88', 10)}
+                    ${amberRope('M 245 82 C 220 114, 190 114, 190 82 C 190 52, 225 52, 235 76', 10)}
+                    ${greenRope('M 168 82 L 232 82', 9)}
+                `,
+                note: 'Ensure both tails exit on opposite ends of the knot with adequate tail length (~12–18 in / 30–45 cm for major lines).',
+                critical: false,
+                phases: [
+                    {
+                        title: 'Phase 1: Overhand in A',
+                        text: 'Tie a loose overhand knot near the end of the blue rope.',
+                        svg: `
+                            ${blueRope('M 14 56 L 62 56', 7.5)}
+                            ${blueRope('M 62 56 C 78 36, 96 36, 96 56 C 96 74, 76 74, 68 60', 7.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 2: Re-entry B',
+                        text: 'Feed the amber rope end into the knot from the opposite direction.',
+                        svg: `
+                            ${blueRope('M 14 56 L 56 56', 7.5)}
+                            ${greenRope('M 56 56 C 74 36, 92 36, 92 56 C 92 76, 74 76, 56 56', 7.5)}
+                            ${amberRope('M 110 56 L 74 56', 7.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 3: Dress Tight',
+                        text: 'Work slack through both sides until parallel and cinch firmly.',
+                        svg: `
+                            ${blueRope('M 14 56 L 52 56', 7.5)}
+                            ${greenRope('M 52 56 C 68 38, 84 38, 84 56 C 84 74, 68 74, 52 56', 7.5)}
+                            ${amberRope('M 110 56 L 76 56', 7.5)}
+                        `
+                    }
+                ]
+            },
+            {
+                id: 'fig8-double',
+                group: 'fig8',
+                tag: 'Figure-8 Family',
+                badgeClass: '',
+                title: '4. Double Figure-8 Loop (Two-Loop Figure-8)',
+                summary: 'Forms two distinct loops from a bight for equalizing two attachment points or rigging a balanced bridle.',
+                heroCaption: 'Double Figure-8 Loop — twin load loops exiting a dressed figure-8',
+                heroSvg: `
+                    ${blueRope('M 35 125 L 135 82', 10)}
+                    ${amberRope('M 35 39 L 135 82', 10)}
+                    ${greenRope('M 135 82 C 160 54, 196 54, 196 82 C 196 110, 160 110, 135 82', 10)}
+                    ${greenRope('M 196 72 L 325 46 A 20 20 0 1 1 325 82 L 196 82', 9.5)}
+                    ${amberRope('M 196 92 L 325 118 A 20 20 0 1 1 325 148 L 196 92', 9.5)}
+                `,
+                note: 'Adjust both loops carefully before loading so tension is shared evenly across both points.',
+                critical: false,
+                phases: [
+                    {
+                        title: 'Phase 1: Bight & Wrap',
+                        text: 'Take a long bight, form a figure-8, and bring the bight back up.',
+                        svg: `
+                            ${blueRope('M 16 84 L 54 56', 7.5)}
+                            ${amberRope('M 16 28 L 54 56', 7.5)}
+                            ${greenRope('M 54 56 C 76 36, 94 36, 94 56 C 94 76, 76 76, 54 56', 7.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 2: Split Loops',
+                        text: 'Pass the loop over the figure-8 and open two separate bight loops.',
+                        svg: `
+                            ${blueRope('M 16 80 L 52 56', 7.5)}
+                            ${greenRope('M 52 56 C 72 38, 86 38, 86 56', 7.5)}
+                            ${amberRope('M 86 48 L 106 36 A 10 10 0 1 1 106 54 L 86 54', 7)}
+                            ${amberRope('M 86 58 L 106 72 A 10 10 0 1 1 106 88 L 86 62', 7)}
+                        `
+                    },
+                    {
+                        title: 'Phase 3: Equalize & Dress',
+                        text: 'Dress the figure-8 collar and adjust loop lengths to match.',
+                        svg: `
+                            ${blueRope('M 16 80 L 52 56', 7.5)}
+                            ${greenRope('M 52 56 C 70 40, 82 40, 82 56 C 82 72, 70 72, 52 56', 7.5)}
+                            ${greenRope('M 82 48 L 106 42', 7)}
+                            ${amberRope('M 82 64 L 106 72', 7)}
+                        `
+                    }
+                ]
+            },
+
+            // --- ALPINE BUTTERFLY & DOUBLE FISHERMAN'S (2) ---
+            {
+                id: 'butterfly',
+                group: 'bends-loops',
+                tag: 'Midline Loop',
+                badgeClass: '',
+                title: '5. Alpine Butterfly Loop',
+                summary: 'Secure midline loop (~75–80% strength retention) that can be loaded in-line or from either direction without slipping.',
+                heroCaption: 'Alpine Butterfly — clean midline loop with parallel base strands',
+                heroSvg: `
+                    ${blueRope('M 30 112 L 370 112', 10)}
+                    ${greenRope('M 165 112 C 165 45, 235 45, 235 112', 10)}
+                    ${amberRope('M 176 112 C 176 88, 224 88, 224 112', 9)}
+                    ${greenRope('M 162 104 L 238 104', 9.5)}
+                `,
+                note: 'Dress the central collar and side legs neatly so the knot cinches cleanly under load.',
+                critical: false,
+                phases: [
+                    {
+                        title: 'Phase 1: Two Turns',
+                        text: 'Wrap two turns around your hand/fingers on the standing line.',
+                        svg: `
+                            ${blueRope('M 12 56 L 106 56', 7.5)}
+                            ${amberRope('M 42 56 C 42 32, 62 32, 62 56 C 62 80, 42 80, 42 56', 7)}
+                            ${amberRope('M 56 56 C 56 32, 76 32, 76 56 C 76 80, 56 80, 56 56', 7)}
+                        `
+                    },
+                    {
+                        title: 'Phase 2: Fold Bight',
+                        text: 'Take the back bight across the front turn and tuck it through the center.',
+                        svg: `
+                            ${blueRope('M 12 56 L 106 56', 7.5)}
+                            ${amberRope('M 46 56 C 46 34, 72 34, 72 56 C 72 78, 46 78, 46 56', 7)}
+                            ${greenRope('M 60 56 C 60 22, 82 22, 82 44', 7)}
+                        `
+                    },
+                    {
+                        title: 'Phase 3: Pull & Dress',
+                        text: 'Pull the bight through to form the loop and tighten the base.',
+                        svg: `
+                            ${blueRope('M 12 64 L 106 64', 7.5)}
+                            ${greenRope('M 46 64 C 46 24, 74 24, 74 64', 7.5)}
+                            ${greenRope('M 42 58 L 78 58', 7)}
+                        `
+                    }
+                ]
+            },
+            {
+                id: 'double-fishermans',
+                group: 'bends-loops',
+                tag: 'Bend / Cord Loop',
+                badgeClass: '',
+                title: "6. Double Fisherman's Bend (Grapevine)",
+                summary: 'Compact, high-grip bend for joining two cord/line ends or tying continuous prusik/anchor cord loops.',
+                heroCaption: "Double Fisherman's Bend — twin double-overhands snugged together",
+                heroSvg: `
+                    ${blueRope('M 30 82 L 165 82', 10)}
+                    ${amberRope('M 370 82 L 235 82', 10)}
+                    ${blueRope('M 165 82 C 185 52, 210 52, 210 82 C 210 110, 185 110, 165 82', 10)}
+                    ${amberRope('M 235 82 C 215 112, 190 112, 190 82 C 190 54, 215 54, 235 82', 10)}
+                    <rect x="166" y="64" width="32" height="36" rx="8" fill="none" stroke="#22c55e" stroke-width="5"/>
+                    <rect x="202" y="64" width="32" height="36" rx="8" fill="none" stroke="#22c55e" stroke-width="5"/>
+                `,
+                note: 'Slide both knots together until they lock tightly against each other and leave plenty of tail on both ends.',
+                critical: false,
+                phases: [
+                    {
+                        title: 'Phase 1: Parallel Ends',
+                        text: 'Lay the blue and amber rope ends side-by-side pointing in opposite directions.',
+                        svg: `
+                            ${blueRope('M 12 46 L 84 46', 7)}
+                            ${amberRope('M 28 66 L 100 66', 7)}
+                        `
+                    },
+                    {
+                        title: 'Phase 2: Double Wraps',
+                        text: 'Wrap each end twice around the opposing line and tuck through both turns.',
+                        svg: `
+                            ${blueRope('M 12 56 L 96 56', 6.5)}
+                            ${blueRope('M 34 56 C 34 36, 54 36, 54 56 C 54 76, 34 76, 34 56', 6.5)}
+                            ${amberRope('M 62 56 C 62 36, 82 36, 82 56 C 82 76, 62 76, 62 56', 6.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 3: Lock Together',
+                        text: 'Cinch both knots down and slide them flush against each other.',
+                        svg: `
+                            ${blueRope('M 12 56 L 42 56', 7)}
+                            <rect x="42" y="42" width="14" height="28" rx="4" fill="#22c55e" stroke="#020617" stroke-width="2"/>
+                            <rect x="58" y="42" width="14" height="28" rx="4" fill="#22c55e" stroke="#020617" stroke-width="2"/>
+                            ${amberRope('M 72 56 L 102 56', 7)}
+                        `
+                    }
+                ]
+            },
+
+            // --- BOWLINES & PORTUGUESE LITTER BRIDLE (2) ---
+            {
+                id: 'bowline',
+                group: 'bowlines',
+                tag: 'Bowline + Backup',
+                badgeClass: '',
+                title: '7. Bowline (+ Stopper Backup)',
+                summary: 'Forms a loop that resists jamming under heavy tension; must always be backed up with a stopper knot.',
+                heroCaption: 'Bowline with Stopper Backup — collar, standing leg, and backed-up tail',
+                heroSvg: `
+                    ${blueRope('M 175 155 L 175 45', 10)}
+                    ${greenRope('M 175 82 C 205 64, 240 64, 240 94 C 240 124, 205 124, 175 102', 10)}
+                    ${amberRope('M 235 88 L 175 94 L 175 138', 9.5)}
+                    <circle cx="175" cy="144" r="7.5" fill="#22c55e" stroke="#020617" stroke-width="2.5"/>
+                `,
+                note: 'CRITICAL: Bowlines can loosen when unloaded or shaken—always tie a double overhand or figure-8 stopper on the tail.',
+                critical: true,
+                phases: [
+                    {
+                        title: 'Phase 1: Overhand Loop',
+                        text: 'Form a small overhand loop in the standing line ("rabbit hole").',
+                        svg: `
+                            ${blueRope('M 42 96 L 42 56', 7.5)}
+                            ${amberRope('M 42 56 C 42 32, 74 32, 74 52 C 74 68, 52 68, 42 56', 7.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 2: Around & Down',
+                        text: 'Bring working end up through the loop, around the standing line, and back down.',
+                        svg: `
+                            ${blueRope('M 42 96 L 42 46', 7.5)}
+                            ${amberRope('M 68 92 L 68 48 C 68 32, 34 32, 34 52 L 54 62', 7.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 3: Dress + Stopper',
+                        text: 'Set the collar and tie a stopper knot on the tail.',
+                        svg: `
+                            ${blueRope('M 42 96 L 42 48', 7.5)}
+                            ${greenRope('M 42 52 C 56 36, 76 38, 76 56 C 76 74, 56 76, 42 62', 7.5)}
+                            ${amberRope('M 64 56 L 64 86', 7)}
+                            <circle cx="64" cy="90" r="5" fill="#22c55e" stroke="#020617" stroke-width="2"/>
+                        `
+                    }
+                ]
+            },
+            {
+                id: 'portuguese-bowline-litter',
+                group: 'bowlines',
+                tag: 'Litter Bridle',
+                badgeClass: 'litter',
+                title: '8. Portuguese Bowline to a Litter',
+                summary: 'Creates a two-loop bridle from a single line to attach cleanly to head and foot litter points with balanced geometry.',
+                heroCaption: 'Portuguese Bowline Litter Bridle — twin loops rigged to Stokes litter',
+                heroSvg: `
+                    ${blueRope('M 200 22 L 200 62', 10)}
+                    ${greenRope('M 200 62 C 175 62, 165 82, 185 96 L 110 132', 9.5)}
+                    ${amberRope('M 200 62 C 225 62, 235 82, 215 96 L 290 132', 9.5)}
+                    <rect x="75" y="132" width="250" height="26" rx="11" fill="rgba(15,23,42,0.85)" stroke="#e2e8f0" stroke-width="3.5"/>
+                    <line x1="110" y1="132" x2="110" y2="158" stroke="#38bdf8" stroke-width="3"/>
+                    <line x1="290" y1="132" x2="290" y2="158" stroke="#f59e0b" stroke-width="3"/>
+                    <text x="200" y="149" fill="#f8fafc" font-size="11" font-weight="bold" text-anchor="middle">STOKES LITTER</text>
+                `,
+                note: 'Verify head/foot leg lengths and litter trim before lifting; back up any free tail ends and clip locking hardware.',
+                critical: true,
+                phases: [
+                    {
+                        title: 'Phase 1: Twin Loops',
+                        text: 'Form two interlocked loops/bights in the line to establish the twin bridle legs.',
+                        svg: `
+                            ${blueRope('M 58 24 L 58 50', 7)}
+                            ${greenRope('M 58 50 A 14 14 0 1 0 44 68', 7)}
+                            ${amberRope('M 58 50 A 14 14 0 1 1 72 68', 7)}
+                        `
+                    },
+                    {
+                        title: 'Phase 2: Form Bowlines',
+                        text: 'Pass bights through and around the standing legs to lock both bowline collars.',
+                        svg: `
+                            ${blueRope('M 58 22 L 58 52', 7)}
+                            ${greenRope('M 58 52 L 32 82', 7)}
+                            ${amberRope('M 58 52 L 84 82', 7)}
+                        `
+                    },
+                    {
+                        title: 'Phase 3: Clip Litter',
+                        text: 'Connect both loops to litter bridle points, check trim, and backup tails.',
+                        svg: `
+                            ${blueRope('M 58 22 L 58 52', 7)}
+                            ${greenRope('M 58 52 L 26 84', 7)}
+                            ${amberRope('M 58 52 L 90 84', 7)}
+                            <rect x="20" y="84" width="76" height="10" rx="4" fill="none" stroke="#e2e8f0" stroke-width="2.5"/>
+                        `
+                    }
+                ]
+            },
+
+            // --- CMC RESCUE MANUAL ANCHORS (3) ---
+            {
+                id: 'cmc-tensionless',
+                group: 'anchors',
+                tag: 'CMC Anchor',
+                badgeClass: 'anchor',
+                title: '9. CMC Tensionless Hitch Anchor',
+                summary: 'High-efficiency wrap anchor on a large diameter object (tree/post) that uses surface friction to preserve line strength.',
+                heroCaption: 'Tensionless Hitch — multiple snug wraps around a solid trunk/post',
+                heroSvg: `
+                    ${treeAnchorSvg(135, 165, 130)}
+                    ${blueRope('M 149 62 C 115 62, 115 80, 149 80', 10)}
+                    ${amberRope('M 149 80 C 115 80, 115 98, 149 98', 10)}
+                    ${greenRope('M 149 98 C 115 98, 115 116, 149 116', 10)}
+                    ${greenRope('M 149 116 L 355 116', 10)}
+                `,
+                note: 'Avoid sharp edges; make sufficient wraps with no overlapping turns so friction holds the load without sharp knot bends.',
+                critical: false,
+                phases: [
+                    {
+                        title: 'Phase 1: First Wrap',
+                        text: 'Pass the line around the anchor object and lay the first turn cleanly.',
+                        svg: `
+                            <rect x="44" y="18" width="20" height="78" rx="4" fill="#451a03" stroke="#78350f" stroke-width="2"/>
+                            ${blueRope('M 64 46 C 32 46, 32 62, 64 62', 7)}
+                        `
+                    },
+                    {
+                        title: 'Phase 2: Add Wraps',
+                        text: 'Add side-by-side wraps along the object without crossing over previous wraps.',
+                        svg: `
+                            <rect x="44" y="18" width="20" height="78" rx="4" fill="#451a03" stroke="#78350f" stroke-width="2"/>
+                            ${blueRope('M 64 42 C 32 42, 32 54, 64 54', 6.5)}
+                            ${amberRope('M 64 54 C 32 54, 32 66, 64 66', 6.5)}
+                            ${greenRope('M 64 66 C 32 66, 32 78, 64 78', 6.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 3: Lock & Load',
+                        text: 'Pinch/secure the tail against the standing line and apply gradual tension.',
+                        svg: `
+                            <rect x="44" y="18" width="20" height="78" rx="4" fill="#451a03" stroke="#78350f" stroke-width="2"/>
+                            ${greenRope('M 64 42 C 32 42, 32 78, 64 78 L 106 78', 7)}
+                        `
+                    }
+                ]
+            },
+            {
+                id: 'cmc-y-hang',
+                group: 'anchors',
+                tag: 'CMC Anchor',
+                badgeClass: 'anchor',
+                title: '10. CMC Load-Sharing Y-Hang Anchor',
+                summary: 'Connects two independent anchor points to a central master point with a narrow included angle to keep leg forces low.',
+                heroCaption: 'Load-Sharing Y-Hang — keep leg angle tight (< 90°, ideally ≤ 60°)',
+                heroSvg: `
+                    ${treeAnchorSvg(105, 95, 70)}
+                    ${treeAnchorSvg(295, 95, 70)}
+                    ${blueRope('M 119 52 L 200 122', 10)}
+                    ${amberRope('M 281 52 L 200 122', 10)}
+                    ${greenRope('M 200 122 L 200 172', 10)}
+                    ${carabinerSvg(200, 126, 0)}
+                `,
+                note: 'Watch the angle between legs: wide angles multiply force on both anchors—keep legs as tight/in-line as terrain allows.',
+                critical: true,
+                phases: [
+                    {
+                        title: 'Phase 1: Anchor Legs',
+                        text: 'Secure a line or sling to each anchor point with rated knots/hitches.',
+                        svg: `
+                            <rect x="26" y="16" width="14" height="44" rx="3" fill="#451a03"/>
+                            <rect x="74" y="16" width="14" height="44" rx="3" fill="#451a03"/>
+                            ${blueRope('M 40 34 L 56 68', 6.5)}
+                            ${amberRope('M 74 34 L 64 68', 6.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 2: Adjust Angle',
+                        text: 'Shorten or lengthen legs so the master point sits centered with a narrow angle.',
+                        svg: `
+                            <rect x="26" y="16" width="14" height="44" rx="3" fill="#451a03"/>
+                            <rect x="74" y="16" width="14" height="44" rx="3" fill="#451a03"/>
+                            ${blueRope('M 40 32 L 60 72', 6.5)}
+                            ${amberRope('M 74 32 L 60 72', 6.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 3: Master Point',
+                        text: 'Tie/clip the master point loop and connect the main system.',
+                        svg: `
+                            <rect x="26" y="16" width="14" height="44" rx="3" fill="#451a03"/>
+                            <rect x="74" y="16" width="14" height="44" rx="3" fill="#451a03"/>
+                            ${blueRope('M 40 32 L 60 68', 6.5)}
+                            ${amberRope('M 74 32 L 60 68', 6.5)}
+                            ${greenRope('M 60 68 L 60 98', 7)}
+                        `
+                    }
+                ]
+            },
+            {
+                id: 'cmc-load-distributing',
+                group: 'anchors',
+                tag: 'CMC Anchor',
+                badgeClass: 'anchor',
+                title: '11. CMC Load-Distributing / Self-Equalizing Anchor',
+                summary: 'Uses a continuous line between two anchors with a sliding/rigged attachment or limiters so load shifts if an anchor settles.',
+                heroCaption: 'Load-Distributing Anchor — continuous span with central load attachment',
+                heroSvg: `
+                    ${treeAnchorSvg(95, 95, 70)}
+                    ${treeAnchorSvg(305, 95, 70)}
+                    ${blueRope('M 109 52 L 291 52', 10)}
+                    ${amberRope('M 145 52 L 200 124 L 255 52', 9.5)}
+                    ${greenRope('M 200 124 L 200 172', 10)}
+                    ${carabinerSvg(200, 126, 0)}
+                `,
+                note: 'Include limiter knots/stoppers where appropriate so a single anchor failure does not cause a long shock drop.',
+                critical: true,
+                phases: [
+                    {
+                        title: 'Phase 1: Span Between',
+                        text: 'Anchor both ends of a continuous line/sling to two solid anchor points.',
+                        svg: `
+                            <rect x="22" y="18" width="14" height="42" rx="3" fill="#451a03"/>
+                            <rect x="78" y="18" width="14" height="42" rx="3" fill="#451a03"/>
+                            ${blueRope('M 36 34 L 78 34', 6.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 2: Rig Mid-Point',
+                        text: 'Attach bight/pulley/hitch along the span and add limiters if required.',
+                        svg: `
+                            <rect x="22" y="18" width="14" height="42" rx="3" fill="#451a03"/>
+                            <rect x="78" y="18" width="14" height="42" rx="3" fill="#451a03"/>
+                            ${blueRope('M 36 34 L 78 34', 6.5)}
+                            ${amberRope('M 46 34 L 57 70 L 68 34', 6.5)}
+                        `
+                    },
+                    {
+                        title: 'Phase 3: Test & Load',
+                        text: 'Inspect knots, limiters, and leg angles before applying full rescue load.',
+                        svg: `
+                            <rect x="22" y="18" width="14" height="42" rx="3" fill="#451a03"/>
+                            <rect x="78" y="18" width="14" height="42" rx="3" fill="#451a03"/>
+                            ${blueRope('M 36 34 L 78 34', 6.5)}
+                            ${amberRope('M 48 34 L 57 68 L 66 34', 6.5)}
+                            ${greenRope('M 57 68 L 57 98', 7)}
+                        `
+                    }
+                ]
+            }
+        ];
+
+        let currentGroup = 'all';
+
+        function setFilter(group, btn) {
+            currentGroup = group;
+            document.querySelectorAll('#sectionTabs .pill-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderLessons();
+        }
+
+        function renderLessons() {
+            const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+            const grid = document.getElementById('lessonsGrid');
+
+            const filtered = lessons.filter(item => {
+                const matchGroup = currentGroup === 'all' || item.group === currentGroup;
+                const matchText = !q ||
+                    item.title.toLowerCase().includes(q) ||
+                    item.summary.toLowerCase().includes(q) ||
+                    item.note.toLowerCase().includes(q) ||
+                    item.tag.toLowerCase().includes(q);
+                return matchGroup && matchText;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="card" style="grid-column:1/-1;"><p style="color:var(--text-muted);">No matching lessons found for "${q}".</p></div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => `
+                <article class="lesson-card">
+                    <div class="lesson-header">
+                        <h3 class="lesson-title">${item.title}</h3>
+                        <span class="badge ${item.badgeClass}">${item.tag}</span>
+                    </div>
+                    <p class="lesson-summary">${item.summary}</p>
+
+                    <div class="hero-render-box">
+                        <svg width="100%" height="180" viewBox="0 0 400 180" role="img" aria-label="${item.title} diagram">
+                            ${item.heroSvg}
+                        </svg>
+                        <div class="hero-render-caption">${item.heroCaption}</div>
+                    </div>
+
+                    <div class="phases-3">
+                        ${item.phases.map(p => `
+                            <div class="phase-card">
+                                <div class="phase-tag">${p.title}</div>
+                                <svg width="116" height="106" viewBox="0 0 116 106" role="img" aria-label="${item.title} ${p.title}">
+                                    ${p.svg}
+                                </svg>
+                                <div class="phase-text">${p.text}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="rigging-note ${item.critical ? 'critical' : ''}">${item.note}</div>
+                </article>
+            `).join('');
+        }
+
+        renderLessons();
+    </script>
+</body>
+</html>
