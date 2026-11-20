@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swift Water Rescue — Canadian Technical Rescue Hub</title>
+    <link rel="stylesheet" href="../shared/hub.css">
+    <style>
+        .cheat-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.84rem; }
+        .cheat-table th, .cheat-table td { padding: 0.7rem; border: 1px solid var(--border-color); text-align: left; vertical-align: top; line-height: 1.4; }
+        .cheat-table th { background-color: rgba(9, 13, 22, 0.85); color: var(--accent-cyan); }
+        .weakest-list { list-style-type: none; margin-top: 0.5rem; }
+        .weakest-item { padding: 0.7rem; margin-bottom: 0.45rem; background-color: rgba(9, 13, 22, 0.55); border-left: 3px solid var(--accent-yellow); border-radius: 6px; font-size: 0.88rem; line-height: 1.4; }
+        .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="../index.html">Canadian Technical Rescue Hub</a></h1>
+        <div class="header-nav">
+            <a class="nav-pill" href="../index.html">← Rescue Hub</a>
+            <span style="font-size: 0.82rem; color: var(--accent-cyan); font-weight: 600;">Swift Water Rescue</span>
+        </div>
+    </header>
+
+    <main>
+        <div style="margin-bottom: 1.2rem;">
+            <h2 style="color: var(--accent-cyan); font-size: 1.32rem;">Swift Water Command &amp; Reference Guide</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Entrapment mitigation, live-bait tether safety, downstream safety cells, and provincial flow monitoring.</p>
+        </div>
+
+        <div class="card">
+            <h3>Provincial Hydrometric Data Link</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.7rem;">Verify current discharge rates, flood advisories, and ice jams before moving-water deployment:</p>
+            <a class="resource-link" href="https://rivers.alberta.ca/" target="_blank">🌐 Open Alberta Rivers Data and Advisories Portal (Government of Alberta) ↗</a>
+        </div>
+
+        <div class="card">
+            <h3>Critical Swiftwater Tactics</h3>
+            <div class="glossary-grid">
+                <div class="glossary-item"><strong>Foot Entrapment Protocols</strong> Avoid standing in fast water above knee depth. Adopt defensive swimming posture (on back, feet up and downstream) to negotiate obstacles and eddy out.</div>
+                <div class="glossary-item"><strong>Live-Bait Tether Safety</strong> Use an approved quick-release system with a dedicated tender watching the swimmer continuously and ready to release immediately if pinned or entrapped.</div>
+                <div class="glossary-item"><strong>Downstream Safety Cell</strong> Position spotters, throw bags, and backup rescue assets downstream of the hazard to intercept swimmers or gear swept past the primary site.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>River Difficulty Matrix</h3>
+            <table class="cheat-table">
+                <tr><th>Class</th><th>Conditions</th><th>Operational Profile</th></tr>
+                <tr><td><strong>Class I</strong></td><td>Fast riffles, small waves (&lt;1 ft)</td><td>Straightforward; reach/throw or basic wading with proper PPE.</td></tr>
+                <tr><td><strong>Class II</strong></td><td>Clear rapids, waves up to 2 ft</td><td>Moderate maneuvering; throw bags effective; eddies easy to catch.</td></tr>
+                <tr><td><strong>Class III</strong></td><td>Irregular waves up to 4 ft, eddies/strainers</td><td>Technical maneuvering; cold water/strainer risk; high-side boats or tensioned lines.</td></tr>
+                <tr><td><strong>Class IV</strong></td><td>Powerful rapids, 4–6 ft waves, hydraulics</td><td>High consequence; live-bait/boat technicians required; downstream safety mandatory.</td></tr>
+                <tr><td><strong>Class V</strong></td><td>Violent drops, 6+ ft waves, heavy hazards</td><td>Extreme risk; in-water contact rescue severely limited.</td></tr>
+                <tr><td><strong>Class VI</strong></td><td>Flood stage / unrunnable debris</td><td>Extreme hazard; avoid in-water entry.</td></tr>
+            </table>
+        </div>
+
+        <div class="two-col">
+            <div class="card">
+                <h3>Standard Whistle Commands</h3>
+                <ul class="weakest-list">
+                    <li class="weakest-item"><strong>1 Short Blast:</strong> Stop / Look / Attention</li>
+                    <li class="weakest-item"><strong>2 Short Blasts:</strong> Forward / Move downstream or across</li>
+                    <li class="weakest-item"><strong>3 Short Blasts:</strong> Back up / Reverse</li>
+                    <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>Long Continuous Blast:</strong> 🚨 Emergency / Man Down / Abort</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Rescue Progression</h3>
+                <ul class="weakest-list">
+                    <li class="weakest-item"><strong>1. Reach:</strong> Verbal guidance or pole/line from shore without entering water.</li>
+                    <li class="weakest-item"><strong>2. Throw:</strong> Throw bag to conscious victim.</li>
+                    <li class="weakest-item"><strong>3. Row:</strong> Watercraft approach/rescue.</li>
+                    <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>4. Go:</strong> Tethered/un-tethered technician entry — highest risk option.</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
