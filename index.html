@@ -7,96 +7,107 @@
     <style>
         :root {
             --bg-main: #090d16;
-            --panel-bg: rgba(30, 41, 59, 0.75);
-            --panel-border: rgba(56, 189, 248, 0.2);
+            --panel-bg: rgba(30, 41, 59, 0.78);
+            --panel-border: rgba(56, 189, 248, 0.22);
             --accent-red: #ef4444;
             --accent-cyan: #38bdf8;
             --accent-green: #22c55e;
             --accent-yellow: #eab308;
+            --accent-orange: #f97316;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: radial-gradient(circle at top, #1e293b 0%, #090d16 100%); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
-        
-        header { background-color: rgba(9, 13, 22, 0.9); backdrop-filter: blur(10px); border-bottom: 2px solid var(--accent-red); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        header h1 { font-size: 1.3rem; color: var(--accent-red); text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; text-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
-        .header-nav { display: flex; align-items: center; gap: 1rem; }
-        .hub-back-btn { background-color: rgba(56, 189, 248, 0.1); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: none; transition: all 0.2s; }
-        .hub-back-btn:hover { background-color: var(--accent-cyan); color: #090d16; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
 
-        .screen-tabs { display: none; background-color: rgba(15, 23, 42, 0.8); border-bottom: 1px solid var(--border-color); backdrop-filter: blur(5px); }
+        header { background-color: rgba(9, 13, 22, 0.92); backdrop-filter: blur(10px); border-bottom: 2px solid var(--accent-red); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; gap: 1rem; flex-wrap: wrap; }
+        header h1 { font-size: 1.25rem; color: var(--accent-red); text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; text-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+        .header-nav { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+        .hub-back-btn { background-color: rgba(56, 189, 248, 0.12); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); padding: 0.4rem 0.85rem; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: none; transition: all 0.2s; }
+        .hub-back-btn:hover { background-color: var(--accent-cyan); color: #090d16; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
+        .reset-btn { background-color: rgba(239, 68, 68, 0.12); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5); padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .reset-btn:hover { background-color: var(--accent-red); color: #fff; }
+
+        .screen-tabs { display: none; background-color: rgba(15, 23, 42, 0.88); border-bottom: 1px solid var(--border-color); backdrop-filter: blur(5px); }
         .tab-btn { flex: 1; padding: 0.8rem; background: none; border: none; color: var(--text-muted); font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; font-size: 0.9rem; }
         .tab-btn.active { color: var(--accent-cyan); border-bottom: 3px solid var(--accent-cyan); background-color: rgba(56, 189, 248, 0.08); text-shadow: 0 0 8px rgba(56, 189, 248, 0.3); }
 
-        main { flex: 1; padding: 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .screen { display: none; animation: fadeIn 0.3s ease-in-out; }
+        main { flex: 1; padding: 1.5rem; max-width: 1240px; margin: 0 auto; width: 100%; }
+        .screen { display: none; animation: fadeIn 0.25s ease-in-out; }
         .screen.active { display: block; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-        .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
-        .hub-card { background: var(--panel-bg); backdrop-filter: blur(12px); border: 1px solid var(--panel-border); border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: all 0.25s ease-in-out; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
-        .hub-card:hover { transform: translateY(-4px); border-color: var(--accent-cyan); background: rgba(30, 41, 59, 0.9); box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.2); }
+        .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); gap: 1.2rem; }
+        .hub-card { background: var(--panel-bg); backdrop-filter: blur(12px); border: 1px solid var(--panel-border); border-radius: 12px; padding: 1.4rem; cursor: pointer; transition: all 0.25s ease-in-out; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25); }
+        .hub-card:hover { transform: translateY(-4px); border-color: var(--accent-cyan); background: rgba(30, 41, 59, 0.95); box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.22); }
         .hub-card.active-module { border-left: 4px solid var(--accent-cyan); }
-        .hub-card h3 { color: var(--text-main); font-size: 1.15rem; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; }
-        .hub-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 1rem; }
-        .hub-badge { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: bold; align-self: flex-start; }
+        .hub-card h3 { color: var(--text-main); font-size: 1.1rem; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+        .hub-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.45; margin-bottom: 1rem; }
+        .hub-badge { font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: bold; align-self: flex-start; }
         .badge-active { background-color: rgba(34, 197, 94, 0.15); color: var(--accent-green); border: 1px solid rgba(34, 197, 94, 0.3); }
 
         .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
-        .card { background: var(--panel-bg); backdrop-filter: blur(12px); padding: 1.3rem; border-radius: 12px; border: 1px solid var(--panel-border); margin-bottom: 1.2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
-        .card h3 { color: var(--accent-cyan); margin-bottom: 0.8rem; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem; display: flex; justify-content: space-between; align-items: center; }
-        .field { margin-bottom: 1.2rem; }
-        .field label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600; }
+        .card { background: var(--panel-bg); backdrop-filter: blur(12px); padding: 1.3rem; border-radius: 12px; border: 1px solid var(--panel-border); margin-bottom: 1.2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25); }
+        .card h3 { color: var(--accent-cyan); margin-bottom: 0.8rem; font-size: 1.08rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.45rem; display: flex; justify-content: space-between; align-items: center; }
+        .field { margin-bottom: 1.15rem; }
+        .field label { display: block; font-size: 0.84rem; color: var(--text-muted); margin-bottom: 0.45rem; font-weight: 600; }
         .btn-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-        .opt-btn { flex: 1; min-width: 70px; padding: 0.6rem 0.4rem; background-color: rgba(9, 13, 22, 0.6); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.15s ease-in-out; }
+        .opt-btn { flex: 1; min-width: 74px; padding: 0.58rem 0.45rem; background-color: rgba(9, 13, 22, 0.65); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.15s ease-in-out; }
         .opt-btn:hover { border-color: var(--accent-cyan); }
-        .opt-btn.active { background-color: var(--accent-cyan); color: #090d16; border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
-        
-        .stepper-control { display: flex; align-items: center; justify-content: space-between; background-color: rgba(9, 13, 22, 0.6); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem; }
+        .opt-btn.active { background-color: var(--accent-cyan); color: #090d16; border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(56, 189, 248, 0.35); }
+
+        .stepper-control { display: flex; align-items: center; justify-content: space-between; background-color: rgba(9, 13, 22, 0.65); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem; }
         .step-btn { background-color: var(--panel-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.4rem 0.9rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: all 0.1s; }
         .step-btn:hover { background-color: var(--accent-cyan); color: #090d16; border-color: var(--accent-cyan); }
         .step-value { font-weight: bold; font-size: 1.1rem; color: var(--accent-cyan); }
 
-        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-        .metric-card { background: var(--panel-bg); backdrop-filter: blur(12px); padding: 1.1rem; border-radius: 10px; border: 1px solid var(--panel-border); border-left: 4px solid var(--accent-cyan); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
-        .metric-card.alert { border-left-color: var(--accent-red); background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.3); }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.4rem; }
+        .metric-card { background: var(--panel-bg); backdrop-filter: blur(12px); padding: 1.1rem; border-radius: 10px; border: 1px solid var(--panel-border); border-left: 4px solid var(--accent-cyan); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25); }
+        .metric-card.alert { border-left-color: var(--accent-red); background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.35); }
         .metric-card.good { border-left-color: var(--accent-green); }
-        .metric-title { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-        .metric-value { font-size: 1.4rem; font-weight: bold; margin-top: 0.3rem; text-shadow: 0 0 8px rgba(255,255,255,0.1); }
-        .metric-sub { font-size: 0.8rem; color: var(--accent-cyan); margin-top: 0.2rem; }
+        .metric-title { font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .metric-value { font-size: 1.35rem; font-weight: bold; margin-top: 0.3rem; }
+        .metric-sub { font-size: 0.78rem; color: var(--accent-cyan); margin-top: 0.25rem; }
 
-        .alert-banner { background: rgba(239, 68, 68, 0.12); border: 1px solid var(--accent-red); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: none; backdrop-filter: blur(5px); }
+        .alert-banner { background: rgba(239, 68, 68, 0.12); border: 1px solid var(--accent-red); padding: 1rem; border-radius: 8px; margin-bottom: 1.4rem; display: none; }
         .alert-banner.visible { display: block; }
         .weakest-list { list-style-type: none; margin-top: 0.5rem; }
-        .weakest-item { padding: 0.7rem; margin-bottom: 0.4rem; background-color: rgba(9, 13, 22, 0.5); border-left: 3px solid var(--accent-yellow); border-radius: 6px; font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.03); }
+        .weakest-item { padding: 0.7rem; margin-bottom: 0.45rem; background-color: rgba(9, 13, 22, 0.55); border-left: 3px solid var(--accent-yellow); border-radius: 6px; font-size: 0.88rem; line-height: 1.4; }
 
-        .canvas-container { background: var(--panel-bg); backdrop-filter: blur(12px); border: 1px solid var(--panel-border); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
-        canvas { background-color: #03060a; border-radius: 6px; width: 100%; height: auto; max-width: 900px; border: 1px solid var(--border-color); aspect-ratio: 900 / 450; }
+        .canvas-container { background: var(--panel-bg); backdrop-filter: blur(12px); border: 1px solid var(--panel-border); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; align-items: center; }
+        canvas { background-color: #03060a; border-radius: 6px; width: 100%; max-width: 900px; height: auto; aspect-ratio: 900 / 460; border: 1px solid var(--border-color); display: block; }
 
-        .action-btn { background: linear-gradient(135deg, var(--accent-cyan), #0284c7); color: #090d16; border: none; padding: 0.7rem 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
-        .action-btn:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(56, 189, 248, 0.4); }
+        .action-btn { background: linear-gradient(135deg, var(--accent-cyan), #0284c7); color: #090d16; border: none; padding: 0.68rem 1.15rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.28); }
+        .action-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
 
-        .cheat-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.85rem; }
-        .cheat-table th, .cheat-table td { padding: 0.7rem; border: 1px solid var(--border-color); text-align: left; vertical-align: top; }
-        .cheat-table th { background-color: rgba(9, 13, 22, 0.8); color: var(--accent-cyan); }
-        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; }
-        .glossary-item { background-color: rgba(9, 13, 22, 0.5); padding: 0.9rem; border-radius: 8px; border: 1px solid var(--border-color); }
+        .cheat-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.84rem; }
+        .cheat-table th, .cheat-table td { padding: 0.7rem; border: 1px solid var(--border-color); text-align: left; vertical-align: top; line-height: 1.4; }
+        .cheat-table th { background-color: rgba(9, 13, 22, 0.85); color: var(--accent-cyan); }
+        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.85rem; }
+        .glossary-item { background-color: rgba(9, 13, 22, 0.55); padding: 0.95rem; border-radius: 8px; border: 1px solid var(--border-color); line-height: 1.4; }
         .glossary-item strong { color: var(--accent-cyan); display: block; margin-bottom: 0.3rem; }
-        .resource-link { color: var(--accent-cyan); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .resource-link { color: var(--accent-cyan); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; font-size: 0.84rem; }
         .resource-link:hover { text-decoration: underline; }
 
-        .module-svg { width: 100%; height: 110px; background: rgba(9, 13, 22, 0.4); border-radius: 8px; margin-bottom: 0.8rem; border: 1px solid rgba(56, 189, 248, 0.15); display: flex; align-items: center; justify-content: center; }
-        .search-input { width: 100%; padding: 0.6rem; background: rgba(9, 13, 22, 0.8); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-size: 0.9rem; margin-bottom: 0.8rem; }
-        
-        .knot-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
-        .knot-card { background: rgba(9, 13, 22, 0.6); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; }
-        .knot-card h4 { color: var(--accent-cyan); margin-bottom: 0.4rem; font-size: 1rem; display: flex; justify-content: space-between; }
-        .knot-phases { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 0.6rem; }
-        .knot-phase-box { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 6px; padding: 6px; text-align: center; }
-        .knot-phase-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; font-weight: bold; }
+        .module-svg { width: 100%; height: 112px; background: rgba(9, 13, 22, 0.45); border-radius: 8px; margin-bottom: 0.8rem; border: 1px solid rgba(56, 189, 248, 0.16); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .search-input { width: 100%; padding: 0.65rem; background: rgba(9, 13, 22, 0.8); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-size: 0.9rem; margin-bottom: 0.8rem; }
+
+        .knot-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .knot-card { background: rgba(9, 13, 22, 0.65); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; }
+        .knot-card h4 { color: var(--accent-cyan); margin-bottom: 0.35rem; font-size: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+        .knot-eff { font-size: 0.76rem; color: var(--accent-green); background: rgba(34, 197, 94, 0.12); padding: 0.15rem 0.45rem; border-radius: 6px; white-space: nowrap; }
+        .knot-phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 0.7rem; }
+        .knot-phase-box { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 6px; padding: 7px 5px; text-align: center; }
+        .knot-phase-title { font-size: 0.68rem; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.3px; }
+        .knot-step-cap { font-size: 0.7rem; color: var(--text-muted); margin-top: 3px; line-height: 1.25; }
+
+        .gear-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1rem; }
+        .gear-card { background: rgba(9, 13, 22, 0.65); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; }
+        .pictograph-box { background: #040811; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; height: 125px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem; }
+        .gear-card h4 { color: var(--accent-cyan); font-size: 1.02rem; margin-bottom: 0.35rem; }
+        .gear-card p { color: var(--text-muted); font-size: 0.83rem; line-height: 1.42; margin-bottom: 0.7rem; }
     </style>
 </head>
 <body>
@@ -105,68 +116,83 @@
         <h1 onclick="returnToHub()">Canadian Technical Rescue Hub</h1>
         <div class="header-nav">
             <button id="hubBackBtn" class="hub-back-btn" onclick="returnToHub()">← Rescue Hub</button>
-            <span style="font-size: 0.85rem; color: var(--accent-cyan); font-weight: 600;" id="headerSubtitle">CSA / Canadian Inter-Agency Command Engine</span>
+            <button class="reset-btn" onclick="resetDefaults()">↺ Reset Defaults</button>
+            <span style="font-size: 0.82rem; color: var(--accent-cyan); font-weight: 600;" id="headerSubtitle">CSA / Canadian Inter-Agency Command Engine</span>
         </div>
     </header>
 
     <nav id="ropeNavTabs" class="screen-tabs">
         <button class="tab-btn active" onclick="switchRopeTab('screen-inputs', this)">1. Operations & Inputs</button>
-        <button class="tab-btn" onclick="switchRopeTab('screen-analysis', this)">2. Load & Shock Margin</button>
-        <button class="tab-btn" onclick="switchRopeTab('screen-knots', this)">3. Knot Efficiency Matrix</button>
-        <button class="tab-btn" onclick="switchRopeTab('screen-diagram', this)">4. Lay Diagram</button>
+        <button class="tab-btn" onclick="switchRopeTab('screen-analysis', this)">2. Load & Haul Math</button>
+        <button class="tab-btn" onclick="switchRopeTab('screen-diagram', this)">3. Lay Diagram</button>
     </nav>
 
     <main>
         <!-- LANDING PAGE / RESCUE HUB -->
         <section id="screen-home" class="screen active">
-            <div style="margin-bottom: 1.5rem;">
-                <h2 style="color: var(--text-main); font-size: 1.5rem; margin-bottom: 0.4rem;">Canadian Incident Command Modules</h2>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Select an accredited technical rescue discipline below for provincial/CSA standard calculators and field modules.</p>
+            <div style="margin-bottom: 1.4rem;">
+                <h2 style="color: var(--text-main); font-size: 1.45rem; margin-bottom: 0.35rem;">Canadian Incident Command Modules</h2>
+                <p style="color: var(--text-muted); font-size: 0.92rem;">Select a standalone technical rescue module, knot tying reference, or patient packaging pictograph guide.</p>
             </div>
-            
+
             <div class="hub-grid">
                 <div class="hub-card active-module" onclick="launchModule('rope')">
                     <div>
                         <div class="module-svg">
-                            <svg width="120" height="70" viewBox="0 0 120 70">
-                                <path d="M10 50 Q 60 10 110 50" stroke="#38bdf8" stroke-width="3" fill="none"/>
-                                <circle cx="60" cy="30" r="6" fill="#ef4444"/>
-                                <line x1="60" y1="30" x2="60" y2="60" stroke="#22c55e" stroke-width="3"/>
+                            <svg width="130" height="72" viewBox="0 0 130 72">
+                                <line x1="15" y1="20" x2="75" y2="20" stroke="#38bdf8" stroke-width="3"/>
+                                <line x1="75" y1="20" x2="105" y2="55" stroke="#38bdf8" stroke-width="3"/>
+                                <circle cx="75" cy="20" r="6" fill="#eab308"/>
+                                <circle cx="105" cy="55" r="7" fill="#ef4444"/>
                             </svg>
                         </div>
-                        <h3>Rope Rescue & Systems <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Twin tension systems, MA hauling math, haul team effort estimator, dynamic shock math, and 3-phase knot efficiency graphics.</p>
+                        <h3>Rope Systems & MA Calc <span style="color: var(--accent-cyan);">→</span></h3>
+                        <p>Includes 2:1 Drop Loop, 3:1 Z-Rig, 4:1 Piggyback, and 6:1 (Drop Loop + 3:1), slope/overhang angles, haul force, and lay diagram.</p>
                     </div>
                     <span class="hub-badge badge-active">CSA Standard</span>
+                </div>
+
+                <div class="hub-card active-module" onclick="launchModule('knots')">
+                    <div>
+                        <div class="module-svg">
+                            <svg width="130" height="72" viewBox="0 0 130 72">
+                                <path d="M 35 55 C 20 35, 55 15, 65 36 C 75 57, 110 37, 95 17" stroke="#38bdf8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                                <circle cx="65" cy="36" r="14" stroke="#22c55e" stroke-width="2" stroke-dasharray="3 2" fill="none"/>
+                            </svg>
+                        </div>
+                        <h3>Knots & Hitches Pictographs <span style="color: var(--accent-cyan);">→</span></h3>
+                        <p>Standalone step-by-step knot & hitch tying demo pictographs: Figure-8 Loop, Bowline, Alpine Butterfly, Prusik, Double Fisherman's, and Barrel.</p>
+                    </div>
+                    <span class="hub-badge badge-active">Standalone Reference</span>
                 </div>
 
                 <div class="hub-card active-module" onclick="launchModule('packaging')">
                     <div>
                         <div class="module-svg">
-                            <svg width="120" height="70" viewBox="0 0 120 70">
-                                <rect x="20" y="25" width="80" height="25" rx="12" fill="none" stroke="#38bdf8" stroke-width="3"/>
-                                <circle cx="40" cy="37" r="4" fill="#ef4444"/>
-                                <line x1="55" y1="25" x2="55" y2="50" stroke="#22c55e" stroke-width="2"/>
-                                <line x1="75" y1="25" x2="75" y2="50" stroke="#22c55e" stroke-width="2"/>
+                            <svg width="130" height="72" viewBox="0 0 130 72">
+                                <rect x="20" y="26" width="90" height="20" rx="10" fill="none" stroke="#38bdf8" stroke-width="3"/>
+                                <line x1="45" y1="12" x2="65" y2="26" stroke="#eab308" stroke-width="2.5"/>
+                                <line x1="85" y1="12" x2="65" y2="26" stroke="#eab308" stroke-width="2.5"/>
+                                <circle cx="65" cy="11" r="4" fill="#ef4444"/>
                             </svg>
                         </div>
                         <h3>Patient Packaging & Litters <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Sked, Ferno basket, KED, and spineboard deployment protocols, spinal motion restriction, horizontal/vertical harness bridles, and official manuals.</p>
+                        <p>Pictographs & reference links for Sked, Basket Litter, Spec Pac, Traverse Stretcher, and Helicopter Rescue Sling / Harness.</p>
                     </div>
-                    <span class="hub-badge badge-active">New Operational</span>
+                    <span class="hub-badge badge-active">Pictographs + Links</span>
                 </div>
 
                 <div class="hub-card active-module" onclick="launchModule('extrication')">
                     <div>
                         <div class="module-svg">
-                            <svg width="120" height="70" viewBox="0 0 120 70">
-                                <rect x="15" y="25" width="55" height="25" rx="3" fill="#334155" stroke="#38bdf8" stroke-width="2"/>
-                                <rect x="73" y="20" width="35" height="30" rx="2" fill="#1e293b" stroke="#eab308" stroke-width="2"/>
-                                <circle cx="28" cy="52" r="6" fill="#ef4444"/><circle cx="55" cy="52" r="6" fill="#ef4444"/><circle cx="90" cy="52" r="6" fill="#ef4444"/>
+                            <svg width="130" height="72" viewBox="0 0 130 72">
+                                <rect x="18" y="24" width="56" height="24" rx="3" fill="#334155" stroke="#38bdf8" stroke-width="2"/>
+                                <rect x="78" y="20" width="34" height="28" rx="2" fill="#1e293b" stroke="#eab308" stroke-width="2"/>
+                                <circle cx="32" cy="51" r="6" fill="#ef4444"/><circle cx="60" cy="51" r="6" fill="#ef4444"/><circle cx="95" cy="51" r="6" fill="#ef4444"/>
                             </svg>
                         </div>
                         <h3>Heavy Vehicle & ERG <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Commercial vehicles, bus stabilization diagrams, EV orange cable high-voltage protocols, and built-in ERG 2024 database.</p>
+                        <p>Commercial vehicles, transit bus stabilization, EV high-voltage orange cable safety, and Transport Canada ERG lookup.</p>
                     </div>
                     <span class="hub-badge badge-active">TC / ERG 2024</span>
                 </div>
@@ -174,17 +200,16 @@
                 <div class="hub-card active-module" onclick="launchModule('collapse')">
                     <div>
                         <div class="module-svg">
-                            <svg width="120" height="70" viewBox="0 0 120 70">
-                                <line x1="30" y1="15" x2="30" y2="60" stroke="#eab308" stroke-width="4"/>
-                                <line x1="15" y1="15" x2="45" y2="15" stroke="#eab308" stroke-width="4"/>
-                                <line x1="15" y1="60" x2="45" y2="60" stroke="#eab308" stroke-width="4"/>
-                                <line x1="75" y1="15" x2="75" y2="60" stroke="#38bdf8" stroke-width="4"/>
-                                <line x1="60" y1="15" x2="90" y2="15" stroke="#38bdf8" stroke-width="4"/>
-                                <line x1="60" y1="37" x2="90" y2="37" stroke="#38bdf8" stroke-width="2"/>
+                            <svg width="130" height="72" viewBox="0 0 130 72">
+                                <line x1="35" y1="14" x2="35" y2="58" stroke="#eab308" stroke-width="4"/>
+                                <line x1="20" y1="14" x2="50" y2="14" stroke="#eab308" stroke-width="4"/>
+                                <line x1="20" y1="58" x2="50" y2="58" stroke="#eab308" stroke-width="4"/>
+                                <line x1="85" y1="14" x2="85" y2="58" stroke="#38bdf8" stroke-width="4"/>
+                                <line x1="70" y1="36" x2="100" y2="36" stroke="#38bdf8" stroke-width="2.5"/>
                             </svg>
                         </div>
                         <h3>Advanced Collapse & Shoring <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>T-Stops, Double T-Stops, flying rakers, rapid wall assessment matrix, Paratech metal strut capacities, and breaching timelines.</p>
+                        <p>Rapid wall assessment matrix, Paratech metal strut capacities, off-axis load penalties, and breaching tool timelines.</p>
                     </div>
                     <span class="hub-badge badge-active">Advanced Tech</span>
                 </div>
@@ -192,14 +217,14 @@
                 <div class="hub-card active-module" onclick="launchModule('swiftwater')">
                     <div>
                         <div class="module-svg">
-                            <svg width="120" height="70" viewBox="0 0 120 70">
-                                <path d="M10 30 Q 30 50 60 30 T 110 30" stroke="#38bdf8" stroke-width="3" fill="none"/>
-                                <path d="M10 45 Q 30 65 60 45 T 110 45" stroke="#22c55e" stroke-width="2" fill="none"/>
-                                <circle cx="65" cy="25" r="7" fill="#ef4444"/>
+                            <svg width="130" height="72" viewBox="0 0 130 72">
+                                <path d="M12 32 Q 36 52 65 32 T 118 32" stroke="#38bdf8" stroke-width="3" fill="none"/>
+                                <path d="M12 46 Q 36 64 65 46 T 118 46" stroke="#22c55e" stroke-width="2" fill="none"/>
+                                <circle cx="70" cy="26" r="6" fill="#ef4444"/>
                             </svg>
                         </div>
                         <h3>Swift Water Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Entrapment mitigations, live-bait tether safety, downstream safety cells, whistle signals, and Alberta Rivers hydrometric links.</p>
+                        <p>Entrapment mitigation, live-bait tether safety, downstream safety cells, whistle signals, and Alberta Rivers hydrometric link.</p>
                     </div>
                     <span class="hub-badge badge-active">Provincial Gov</span>
                 </div>
@@ -207,14 +232,14 @@
                 <div class="hub-card active-module" onclick="launchModule('surfacewater')">
                     <div>
                         <div class="module-svg">
-                            <svg width="120" height="70" viewBox="0 0 120 70">
-                                <rect x="25" y="20" width="70" height="30" rx="4" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4"/>
-                                <circle cx="60" cy="35" r="5" fill="#ef4444"/>
-                                <line x1="60" y1="35" x2="90" y2="15" stroke="#22c55e" stroke-width="2"/>
+                            <svg width="130" height="72" viewBox="0 0 130 72">
+                                <rect x="28" y="20" width="74" height="30" rx="4" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4"/>
+                                <circle cx="65" cy="35" r="5" fill="#ef4444"/>
+                                <line x1="65" y1="35" x2="96" y2="16" stroke="#22c55e" stroke-width="2.5"/>
                             </svg>
                         </div>
                         <h3>Surface Water & Boat Ops <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Grid searches, body recovery, boat handling in current, night operations, decontamination, and helicopter hoist signals.</p>
+                        <p>Ferry angles, eddy crossings, night search operations, contaminated water decon, and helicopter hoist signals.</p>
                     </div>
                     <span class="hub-badge badge-active">Operational</span>
                 </div>
@@ -222,14 +247,14 @@
                 <div class="hub-card active-module" onclick="launchModule('confined')">
                     <div>
                         <div class="module-svg">
-                            <svg width="120" height="70" viewBox="0 0 120 70">
-                                <circle cx="60" cy="35" r="22" fill="none" stroke="#eab308" stroke-width="3"/>
-                                <line x1="45" y1="35" x2="75" y2="35" stroke="#38bdf8" stroke-width="2"/>
-                                <line x1="60" y1="20" x2="60" y2="50" stroke="#38bdf8" stroke-width="2"/>
+                            <svg width="130" height="72" viewBox="0 0 130 72">
+                                <circle cx="65" cy="36" r="22" fill="none" stroke="#eab308" stroke-width="3"/>
+                                <line x1="48" y1="36" x2="82" y2="36" stroke="#38bdf8" stroke-width="2"/>
+                                <line x1="65" y1="19" x2="65" y2="53" stroke="#38bdf8" stroke-width="2"/>
                             </svg>
                         </div>
                         <h3>Confined Space Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Atmospheric monitoring limits (O2, LEL, H2S, CO), permit checklists, 4-minute extraction timelines, and tripod systems.</p>
+                        <p>Atmospheric monitoring thresholds (O2, LEL, H2S, CO), LOTO permit checklists, and 4-minute extraction priorities.</p>
                     </div>
                     <span class="hub-badge badge-active">OHS Compliant</span>
                 </div>
@@ -237,14 +262,14 @@
                 <div class="hub-card active-module" onclick="launchModule('ice')">
                     <div>
                         <div class="module-svg">
-                            <svg width="120" height="70" viewBox="0 0 120 70">
-                                <rect x="15" y="25" width="90" height="8" fill="#38bdf8" rx="2"/>
-                                <line x1="15" y1="33" x2="105" y2="33" stroke="#22c55e" stroke-width="2"/>
-                                <path d="M 50 33 Q 60 55 70 33" stroke="#ef4444" stroke-width="2" fill="none"/>
+                            <svg width="130" height="72" viewBox="0 0 130 72">
+                                <rect x="18" y="24" width="94" height="9" fill="#38bdf8" rx="2"/>
+                                <line x1="18" y1="33" x2="112" y2="33" stroke="#22c55e" stroke-width="2"/>
+                                <path d="M 52 33 Q 65 56 78 33" stroke="#ef4444" stroke-width="2.5" fill="none"/>
                             </svg>
                         </div>
                         <h3>Comprehensive Ice Rescue <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Blue ice thickness matrix, degradation factors, slot cutting, thermal survival math, and multi-rescuer chain protocols.</p>
+                        <p>Clear blue ice load capacity table, spring/thermal degradation rules, and spaced multi-rescuer tether chain protocols.</p>
                     </div>
                     <span class="hub-badge badge-active">Operational</span>
                 </div>
@@ -252,21 +277,21 @@
                 <div class="hub-card active-module" onclick="launchModule('medical')">
                     <div>
                         <div class="module-svg">
-                            <svg width="120" height="70" viewBox="0 0 120 70">
-                                <rect x="48" y="20" width="24" height="30" rx="3" fill="#ef4444"/>
-                                <line x1="40" y1="32" x2="80" y2="32" stroke="#fff" stroke-width="4"/>
-                                <line x1="60" y1="12" x2="60" y2="58" stroke="#fff" stroke-width="4"/>
+                            <svg width="130" height="72" viewBox="0 0 130 72">
+                                <rect x="53" y="18" width="24" height="34" rx="4" fill="#ef4444"/>
+                                <line x1="45" y1="31" x2="85" y2="31" stroke="#fff" stroke-width="4"/>
+                                <line x1="65" y1="11" x2="65" y2="59" stroke="#fff" stroke-width="4"/>
                             </svg>
                         </div>
                         <h3>Field Medical & Alberta Scopes <span style="color: var(--accent-cyan);">→</span></h3>
-                        <p>Bleeding control kit inventory, TCCC tourniquets, mass-casualty triage, WMA wilderness protocols, and Alberta First Aid to ACP flowcharts.</p>
+                        <p>Hemorrhage kit inventory, START triage, WMA wilderness care, core care plans, and Alberta First Aid to ACP scopes.</p>
                     </div>
                     <span class="hub-badge badge-active">Alberta HS / WMA</span>
                 </div>
             </div>
         </section>
 
-        <!-- SCREEN 1: ROPE INPUTS -->
+        <!-- ROPE SCREEN 1: INPUTS -->
         <section id="screen-inputs" class="screen">
             <div class="input-grid">
                 <div class="card">
@@ -274,32 +299,34 @@
                     <div class="field">
                         <label>Rigging Strategy</label>
                         <div class="btn-group" data-key="riggingStrategy">
-                            <button class="opt-btn active" onclick="selectOption(this, 'riggingStrategy', 'tts')">Twin Tension System</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'riggingStrategy', 'tts')">Twin Tension (TTS)</button>
                             <button class="opt-btn" onclick="selectOption(this, 'riggingStrategy', 'mb')">Main & Belay</button>
                         </div>
                     </div>
                     <div class="field">
                         <label>Mechanical Advantage (MA)</label>
                         <div class="btn-group" data-key="maSystem">
-                            <button class="opt-btn active" onclick="selectOption(this, 'maSystem', 1)">1:1 (Direct)</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'maSystem', 3)">3:1 (Z-Rig)</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'maSystem', 4)">4:1 (Piggyback)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'maSystem', 1)">1:1 Direct</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'maSystem', 2)">2:1 Drop Loop</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'maSystem', 3)">3:1 Z-Rig</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'maSystem', 4)">4:1 Piggyback</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'maSystem', 6)">6:1 (Drop Loop + 3:1)</button>
                         </div>
                     </div>
                     <div class="field">
-                        <label>Rope Type & Diameter</label>
+                        <label>Rope Type & Spec</label>
                         <div class="btn-group" data-key="ropeType">
-                            <button class="opt-btn active" onclick="selectOption(this, 'ropeType', 'static')">12.5mm Static</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'ropeType', 'static11')">11mm Low-Elongation</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'ropeType', 'dynamic')">11mm Dynamic</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'ropeType', 'static125')">12.5mm Static (40kN)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'ropeType', 'static11')">11mm Low-Elong (30kN)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'ropeType', 'dynamic11')">11mm Dynamic (24kN)</button>
                         </div>
                     </div>
                     <div class="field">
                         <label>Edge Friction Estimate</label>
                         <div class="btn-group" data-key="frictionLoss">
-                            <button class="opt-btn active" onclick="selectOption(this, 'frictionLoss', 10)">Roller (~10% Loss)</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'frictionLoss', 30)">Edge Pad (~30% Loss)</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'frictionLoss', 50)">Rough Edge (~50% Loss)</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'frictionLoss', 10)">Roller (~10%)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'frictionLoss', 30)">Edge Pad (~30%)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'frictionLoss', 50)">Rough Edge (~50%)</button>
                         </div>
                     </div>
                 </div>
@@ -307,10 +334,10 @@
                 <div class="card">
                     <h3>Load & Personnel</h3>
                     <div class="field">
-                        <label>Rescue Basket (Litter)</label>
+                        <label>Rescue Basket / Litter</label>
                         <div class="btn-group" data-key="useLitter">
-                            <button class="opt-btn active" onclick="selectOption(this, 'useLitter', true)">Metal Basket (+30 lbs)</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'useLitter', false)">None / Sked Only</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'useLitter', true)">Metal Litter (+30 lbs)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'useLitter', false)">Sked / Harness Only</button>
                         </div>
                     </div>
                     <div class="field">
@@ -322,7 +349,7 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label>Rescuers on Line</label>
+                        <label>Rescuers on Line / Litter</label>
                         <div class="stepper-control">
                             <button class="step-btn" onclick="adjustValue('numRescuers', -1)">-</button>
                             <span class="step-value" id="val-numRescuers">1</span>
@@ -340,7 +367,7 @@
                 </div>
 
                 <div class="card">
-                    <h3>Environment & Anchors</h3>
+                    <h3>Slope Profile & Anchors</h3>
                     <div class="field">
                         <label>Average Weight / Person</label>
                         <div class="btn-group" data-key="avgWeight">
@@ -350,318 +377,453 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label>Slope Angle (Degrees)</label>
+                        <label>Slope Angle (Degrees / Overhang)</label>
                         <div class="btn-group" data-key="angle">
-                            <button class="opt-btn" onclick="selectOption(this, 'angle', 30)">30°</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'angle', 45)">45°</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'angle', 60)">60°</button>
-                            <button class="opt-btn active" onclick="selectOption(this, 'angle', 90)">90°</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 20)">20° Low</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 35)">35° Slope</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 50)">50° Steep</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 75)">75° High</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'angle', 90)">90° Vertical</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 105)">Overhang (105°)</button>
                         </div>
                     </div>
                     <div class="field">
                         <label>Anchor Type / Rating</label>
                         <div class="btn-group" data-key="anchorType">
-                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'industrial')">Industrial (6k)</button>
-                            <button class="opt-btn active" onclick="selectOption(this, 'anchorType', 'tree')">Substantial Tree</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'vehicle')">Vehicle</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'industrial')">Industrial (6,000 lbs)</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'anchorType', 'tree')">Substantial Tree (4,000 lbs)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'vehicle')">Vehicle (2,500 lbs)</button>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SCREEN 2: ROPE ANALYSIS -->
+        <!-- ROPE SCREEN 2: ANALYSIS -->
         <section id="screen-analysis" class="screen">
             <div id="safetyAlertBanner" class="alert-banner">
-                <h3 style="color: var(--accent-red); margin-bottom: 0.3rem;">⚠️ SAFETY FACTOR / HAUL CAPACITY WARNING</h3>
-                <p id="alertBannerText" style="font-size: 0.95rem; line-height: 1.4;">System parameters exceed recommended safety margins or physical haul team capacity.</p>
+                <h3 style="color: var(--accent-red); margin-bottom: 0.3rem;">⚠️ SYSTEM / ERGONOMIC WARNING</h3>
+                <p id="alertBannerText" style="font-size: 0.92rem; line-height: 1.45;"></p>
             </div>
+
             <div class="summary-grid">
                 <div class="metric-card">
                     <div class="metric-title">Total Suspended Mass</div>
                     <div class="metric-value" id="res-total-weight">0 lbs</div>
-                    <div class="metric-sub" id="res-total-weight-sub">0 kg / 0 kN</div>
+                    <div class="metric-sub" id="res-total-weight-sub">0 kg / 0.00 kN</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-title">Tension Per Line (+ Friction)</div>
+                    <div class="metric-title">Working Line Tension (+ Friction)</div>
                     <div class="metric-value" id="res-rope-load">0 lbs</div>
-                    <div class="metric-sub" id="res-rope-load-sub">0 kg / 0 kN</div>
+                    <div class="metric-sub" id="res-rope-load-sub">0 kg / 0.00 kN</div>
                 </div>
                 <div class="metric-card alert" style="border-left-color: var(--accent-yellow);">
-                    <div class="metric-title">Worst-Case Single Line Dynamic Shock</div>
+                    <div class="metric-title">Dynamic Shock Spike</div>
                     <div class="metric-value" id="res-shock-load">0 lbs</div>
-                    <div class="metric-sub" id="res-shock-sub">Estimated 2ft Dynamic Drop</div>
+                    <div class="metric-sub" id="res-shock-sub">Elongation-adjusted shock</div>
                 </div>
                 <div class="metric-card" id="card-sf">
-                    <div class="metric-title">System Safety Factor (Single Line Failure)</div>
-                    <div class="metric-value" id="res-safety-factor">0 : 1</div>
-                    <div class="metric-sub">Target: 10:1 Minimum</div>
+                    <div class="metric-title">System Safety Factor</div>
+                    <div class="metric-value" id="res-safety-factor">0.0 : 1</div>
+                    <div class="metric-sub" id="res-sf-sub">Target: 10:1 Minimum</div>
                 </div>
                 <div class="metric-card" id="card-haul">
-                    <div class="metric-title">Haul Team Pull Required</div>
+                    <div class="metric-title">Haul Force (<span id="res-ma-label">2:1</span>)</div>
                     <div class="metric-value" id="res-haul-force">0 lbs</div>
-                    <div class="metric-sub" id="res-haul-sub">~0 lbs / person</div>
+                    <div class="metric-sub" id="res-haul-sub">~0 lbs / rescuer</div>
                 </div>
             </div>
-            
+
             <div style="display: flex; justify-content: flex-end; margin-bottom: 1.2rem;">
-                <button class="action-btn" onclick="exportIncidentReport()">📋 Export Incident Report Summary</button>
+                <button class="action-btn" onclick="exportIncidentReport()">📋 Export Incident Report (.TXT)</button>
             </div>
 
-            <div class="card" style="margin-bottom: 1.2rem;">
-                <h3>Top 3 Weakest System Components</h3>
+            <div class="card">
+                <h3>Top 3 Weakest System Components (Relative to Governing Load)</h3>
                 <ul id="weakestGearList" class="weakest-list"></ul>
             </div>
+
             <div class="card">
-                <h3>System Structural Breakdown & Physics Evaluation</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;" id="res-breakdown-text">Select parameters on the operational tab to evaluate forces.</p>
+                <h3>Rigging Physics & MA System Notes</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;" id="res-breakdown-text"></p>
             </div>
         </section>
 
-        <!-- SCREEN 3: KNOT EFFICIENCY GRAPHICS -->
+        <!-- ROPE SCREEN 3: LAY DIAGRAM -->
+        <section id="screen-diagram" class="screen">
+            <div class="canvas-container">
+                <h3 style="color: var(--accent-cyan); margin-bottom: 0.6rem; align-self: flex-start;">Slope, Overhang & Rigging Lay Diagram</h3>
+                <canvas id="diagramCanvas" width="900" height="460"></canvas>
+            </div>
+        </section>
+
+        <!-- STANDALONE MODULE: KNOTS & HITCHES PICTOGRAPHS -->
         <section id="screen-knots" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Rescue Knot Efficiency & 3-Phase Formation Graphics</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Visualizing rope bending radius strength retention across Start, Middle weave, and Finished dress phases.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.32rem;">Knots & Hitches Tying Pictographs</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Standalone knot & hitch visual guide showing step-by-step formation (Blue = standing/primary, Yellow = working/wrap, Green = dressed/locked).</p>
             </div>
 
             <div class="knot-card-grid">
+                <!-- 1. Figure-8 Loop -->
                 <div class="knot-card">
-                    <h4>Figure-8 Loop / Follow-Through <span>~75 - 80% Retained</span></h4>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Standard anchor & tie-in loop. High bending radius stability.</p>
+                    <div>
+                        <h4>Figure-8 on a Bight <span class="knot-eff">~75–80% Strength</span></h4>
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">Primary anchor & rigging loop. High strength retention and easy untying after load.</p>
+                    </div>
                     <div class="knot-phases">
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">1. Bight</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M 15 35 C 15 5, 45 5, 45 35" stroke="#38bdf8" stroke-width="3" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 1: Bight</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <path d="M 22 42 L 22 16 A 16 14 0 0 1 54 16 L 54 42" stroke="#38bdf8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                            </svg>
+                            <div class="knot-step-cap">Form a clean bight</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">2. Twist 360°</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M 15 35 Q 45 25, 30 15 T 45 5" stroke="#eab308" stroke-width="3" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 2: Full Turn</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <path d="M 20 42 C 20 26, 56 26, 56 16 C 56 6, 20 6, 20 18 C 20 28, 56 28, 56 42" stroke="#eab308" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+                            </svg>
+                            <div class="knot-step-cap">360° twist around stem</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">3. Finished Figure-8</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M 20 35 C 5 20, 55 20, 40 5 C 20 5, 55 35, 20 35 Z" stroke="#22c55e" stroke-width="2.5" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 3: Tuck & Dress</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <path d="M 24 42 L 24 24 C 24 10, 52 10, 52 24 L 52 42" stroke="#22c55e" stroke-width="3.2" fill="none"/>
+                                <path d="M 20 22 C 20 14, 56 14, 56 24 C 56 34, 20 32, 24 20" stroke="#22c55e" stroke-width="2.5" fill="none"/>
+                            </svg>
+                            <div class="knot-step-cap">Pass through eye & dress</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- 2. Bowline -->
                 <div class="knot-card">
-                    <h4>Bowline Family <span>~70 - 75% Retained</span></h4>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Non-jamming loop under heavy load. Must be backed up (Yosemite/Overhand).</p>
+                    <div>
+                        <h4>Bowline + Backup <span class="knot-eff">~70–75% Strength</span></h4>
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">Resists jamming under heavy tension. Always add a stopper/backup on the tail.</p>
+                    </div>
                     <div class="knot-phases">
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">1. Nipping Loop</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><circle cx="30" cy="18" r="10" stroke="#38bdf8" stroke-width="3" fill="none"/><line x1="20" y1="35" x2="20" y2="26" stroke="#38bdf8" stroke-width="3"/></svg>
+                            <div class="knot-phase-title">Step 1: Overhand Loop</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <line x1="28" y1="44" x2="28" y2="28" stroke="#38bdf8" stroke-width="3.5" stroke-linecap="round"/>
+                                <circle cx="36" cy="20" r="10" stroke="#eab308" stroke-width="3" fill="none"/>
+                            </svg>
+                            <div class="knot-step-cap">Form small loop in line</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">2. Up & Around</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M 30 35 L 30 15 C 30 5, 50 5, 50 20 C 50 35, 10 35, 10 20" stroke="#eab308" stroke-width="3" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 2: Rabbit Hole</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <path d="M 48 44 L 48 18 C 48 6, 24 6, 24 18 L 36 24" stroke="#eab308" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+                                <circle cx="36" cy="22" r="8" stroke="#38bdf8" stroke-width="2.5" fill="none"/>
+                            </svg>
+                            <div class="knot-step-cap">Up through eye, around tree</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">3. Finished Bowline</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M 25 35 L 25 15 A 8 8 0 1 1 41 15 L 41 28 A 6 6 0 0 1 29 28 L 15 35" stroke="#22c55e" stroke-width="2.5" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 3: Back Down</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <path d="M 24 44 L 24 18 A 12 10 0 0 1 48 18 L 48 44" stroke="#22c55e" stroke-width="3.2" fill="none"/>
+                                <path d="M 44 16 L 34 22 L 42 32" stroke="#22c55e" stroke-width="2.5" fill="none"/>
+                            </svg>
+                            <div class="knot-step-cap">Back down eye & snug</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- 3. Alpine Butterfly -->
                 <div class="knot-card">
-                    <h4>Alpine Butterfly <span>~75 - 80% Retained</span></h4>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Midline loadable loop. Excellent multi-directional strength retention.</p>
+                    <div>
+                        <h4>Alpine Butterfly Loop <span class="knot-eff">~75–80% Strength</span></h4>
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">Midline non-slip loop that can be loaded in any direction or in-line.</p>
+                    </div>
                     <div class="knot-phases">
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">1. 3-Turn Hand Wrap</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><line x1="15" y1="10" x2="15" y2="30" stroke="#38bdf8" stroke-width="3"/><line x1="30" y1="10" x2="30" y2="30" stroke="#38bdf8" stroke-width="3"/><line x1="45" y1="10" x2="45" y2="30" stroke="#38bdf8" stroke-width="3"/></svg>
+                            <div class="knot-phase-title">Step 1: Two Wraps</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <path d="M 10 24 L 66 24" stroke="#38bdf8" stroke-width="3"/>
+                                <ellipse cx="32" cy="24" rx="8" ry="12" stroke="#eab308" stroke-width="2.8" fill="none"/>
+                                <ellipse cx="44" cy="24" rx="8" ry="12" stroke="#eab308" stroke-width="2.8" fill="none"/>
+                            </svg>
+                            <div class="knot-step-cap">Wrap two turns on hand</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">2. Pull Outer Bight</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M 15 25 L 30 25 L 45 5 L 15 25" stroke="#eab308" stroke-width="3" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 2: Fold Across</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <path d="M 14 24 L 62 24" stroke="#38bdf8" stroke-width="3"/>
+                                <path d="M 26 12 C 42 12, 34 36, 50 36" stroke="#eab308" stroke-width="3" fill="none"/>
+                            </svg>
+                            <div class="knot-step-cap">Bring left coil over right</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">3. Dressed Butterfly</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><circle cx="30" cy="15" r="8" stroke="#22c55e" stroke-width="2.5" fill="none"/><line x1="5" y1="30" x2="55" y2="30" stroke="#22c55e" stroke-width="2.5"/></svg>
+                            <div class="knot-phase-title">Step 3: Pull & Dress</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <line x1="8" y1="26" x2="68" y2="26" stroke="#22c55e" stroke-width="3.2"/>
+                                <circle cx="38" cy="15" r="8" stroke="#22c55e" stroke-width="2.8" fill="none"/>
+                            </svg>
+                            <div class="knot-step-cap">Pull loop through & dress</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- 4. Prusik Hitch -->
                 <div class="knot-card">
-                    <h4>Prusik Hitch (Friction) <span>~70 - 80% Retained</span></h4>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Binds under load, slides when unloaded. Requires 6mm-8mm cord on 11-12.5mm rope.</p>
+                    <div>
+                        <h4>Prusik Friction Hitch <span class="knot-eff">~70–80% Strength</span></h4>
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">Slides when unloaded, grips when weighted. Use cord ~2–4mm thinner than host rope.</p>
+                    </div>
                     <div class="knot-phases">
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">1. Girth Hitch Wrap</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><line x1="30" y1="5" x2="30" y2="35" stroke="#94a3b8" stroke-width="6"/><circle cx="30" cy="20" r="10" stroke="#38bdf8" stroke-width="2.5" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 1: Girth Hitch</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <line x1="38" y1="4" x2="38" y2="44" stroke="#94a3b8" stroke-width="6"/>
+                                <path d="M 26 24 L 50 24" stroke="#38bdf8" stroke-width="3"/>
+                                <circle cx="38" cy="24" r="9" stroke="#38bdf8" stroke-width="2.5" fill="none"/>
+                            </svg>
+                            <div class="knot-step-cap">Loop around host rope</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">2. Double / Triple Wrap</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><line x1="30" y1="5" x2="30" y2="35" stroke="#94a3b8" stroke-width="6"/><rect x="20" y="12" width="20" height="16" rx="4" stroke="#eab308" stroke-width="2.5" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 2: Extra Coils</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <line x1="38" y1="4" x2="38" y2="44" stroke="#94a3b8" stroke-width="6"/>
+                                <path d="M 24 16 L 52 16 M 24 24 L 52 24 M 24 32 L 52 32" stroke="#eab308" stroke-width="3" stroke-linecap="round"/>
+                            </svg>
+                            <div class="knot-step-cap">2–3 wraps inside bight</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">3. Dressed Prusik</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><line x1="30" y1="5" x2="30" y2="35" stroke="#94a3b8" stroke-width="6"/><path d="M 20 12 L 40 12 M 20 20 L 40 20 M 20 28 L 40 28" stroke="#22c55e" stroke-width="3"/></svg>
+                            <div class="knot-phase-title">Step 3: Set Coils</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <line x1="38" y1="4" x2="38" y2="44" stroke="#94a3b8" stroke-width="6"/>
+                                <rect x="25" y="13" width="26" height="22" rx="5" stroke="#22c55e" stroke-width="3" fill="none"/>
+                                <line x1="25" y1="24" x2="51" y2="24" stroke="#22c55e" stroke-width="2.5"/>
+                            </svg>
+                            <div class="knot-step-cap">Align coils neatly & test</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- 5. Double Fisherman's Bend -->
                 <div class="knot-card">
-                    <h4>Double Fisherman's Bend <span>~75 - 85% Retained</span></h4>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Standard for joining ropes of equal diameter or tying prusik loops.</p>
+                    <div>
+                        <h4>Double Fisherman's Bend <span class="knot-eff">~75–85% Strength</span></h4>
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">Strong bend for joining two ends or making prusik/anchor loops. Snugs tight under load.</p>
+                    </div>
                     <div class="knot-phases">
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">1. Overlap Lines</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><line x1="5" y1="15" x2="55" y2="15" stroke="#38bdf8" stroke-width="3"/><line x1="5" y1="25" x2="55" y2="25" stroke="#eab308" stroke-width="3"/></svg>
+                            <div class="knot-phase-title">Step 1: Parallel Ends</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <line x1="8" y1="19" x2="54" y2="19" stroke="#38bdf8" stroke-width="3.2"/>
+                                <line x1="22" y1="29" x2="68" y2="29" stroke="#eab308" stroke-width="3.2"/>
+                            </svg>
+                            <div class="knot-step-cap">Lay tails side-by-side</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">2. Double Strands Wrap</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><circle cx="20" cy="20" r="8" stroke="#38bdf8" stroke-width="2.5" fill="none"/><circle cx="40" cy="20" r="8" stroke="#eab308" stroke-width="2.5" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 2: Double Wraps</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <line x1="8" y1="24" x2="68" y2="24" stroke="#94a3b8" stroke-width="2.5"/>
+                                <circle cx="25" cy="24" r="9" stroke="#38bdf8" stroke-width="2.8" fill="none"/>
+                                <circle cx="51" cy="24" r="9" stroke="#eab308" stroke-width="2.8" fill="none"/>
+                            </svg>
+                            <div class="knot-step-cap">2 turns around opposing line</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">3. Jammed Strangle Knots</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><rect x="18" y="10" width="24" height="20" rx="3" fill="#22c55e"/><line x1="5" y1="20" x2="18" y2="20" stroke="#38bdf8" stroke-width="3"/><line x1="42" y1="20" x2="55" y2="20" stroke="#eab308" stroke-width="3"/></svg>
+                            <div class="knot-phase-title">Step 3: Lock Together</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <line x1="8" y1="24" x2="26" y2="24" stroke="#22c55e" stroke-width="3.2"/>
+                                <rect x="26" y="14" width="11" height="20" rx="3" fill="#22c55e"/>
+                                <rect x="39" y="14" width="11" height="20" rx="3" fill="#22c55e"/>
+                                <line x1="50" y1="24" x2="68" y2="24" stroke="#22c55e" stroke-width="3.2"/>
+                            </svg>
+                            <div class="knot-step-cap">cinch both knots tight</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- 6. Barrel Knot -->
                 <div class="knot-card">
-                    <h4>Barrel Knot (Stopper) <span>~65 - 70% Retained</span></h4>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Safety end stopper knot or single strand termination.</p>
+                    <div>
+                        <h4>Barrel Knot (Stopper) <span class="knot-eff">~65–70% Strength</span></h4>
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">Bulky stopper knot for tail security or single-line termination.</p>
+                    </div>
                     <div class="knot-phases">
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">1. Loop Working End</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M 10 20 Q 30 5, 30 20 T 50 20" stroke="#38bdf8" stroke-width="3" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 1: Bight & Tail</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <path d="M 14 24 Q 38 8, 62 24" stroke="#38bdf8" stroke-width="3.2" fill="none"/>
+                                <line x1="46" y1="16" x2="46" y2="38" stroke="#eab308" stroke-width="3"/>
+                            </svg>
+                            <div class="knot-step-cap">Bring tail over standing line</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">2. Double Coils</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><path d="M 15 10 C 25 30, 35 10, 45 30" stroke="#eab308" stroke-width="3" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 2: Coil Turns</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <line x1="12" y1="24" x2="64" y2="24" stroke="#38bdf8" stroke-width="3"/>
+                                <path d="M 28 14 C 48 14, 48 34, 28 34" stroke="#eab308" stroke-width="3" fill="none"/>
+                            </svg>
+                            <div class="knot-step-cap">Wrap turns toward bight</div>
                         </div>
                         <div class="knot-phase-box">
-                            <div class="knot-phase-title">3. Finished Barrel</div>
-                            <svg width="60" height="40" viewBox="0 0 60 40"><rect x="18" y="12" width="24" height="16" rx="4" stroke="#22c55e" stroke-width="3" fill="none"/></svg>
+                            <div class="knot-phase-title">Step 3: Tuck & Dress</div>
+                            <svg width="76" height="48" viewBox="0 0 76 48">
+                                <line x1="10" y1="24" x2="24" y2="24" stroke="#22c55e" stroke-width="3.2"/>
+                                <rect x="24" y="13" width="28" height="22" rx="6" stroke="#22c55e" stroke-width="3.2" fill="none"/>
+                                <line x1="52" y1="24" x2="66" y2="24" stroke="#22c55e" stroke-width="3.2"/>
+                            </svg>
+                            <div class="knot-step-cap">Pass through & cinch</div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SCREEN 4: LAY DIAGRAM -->
-        <section id="screen-diagram" class="screen">
-            <div class="canvas-container">
-                <h3 style="color: var(--accent-cyan); margin-bottom: 0.5rem; align-self: flex-start;">Professional Lay Diagram</h3>
-                <canvas id="diagramCanvas" width="900" height="450"></canvas>
-            </div>
-        </section>
-
-        <!-- SCREEN: PATIENT PACKAGING & LITTERS -->
+        <!-- STANDALONE MODULE: PATIENT PACKAGING & LITTERS -->
         <section id="screen-packaging" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Patient Packaging, Litter Bridles & Extrication Devices</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Operational field procedures, spinal immobilization guidelines, bridle attachment math, and manufacturer manuals.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.32rem;">Patient Packaging, Litters & Extraction Pictographs</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Visual pictographs and manufacturer/operational reference links for patient packaging systems.</p>
             </div>
 
-            <div class="card">
-                <h3>Official Manufacturer Manuals & Technical Documentation</h3>
-                <div class="glossary-grid">
-                    <div class="glossary-item">
-                        <strong>Sked® Stretcher (Skedco)</strong>
-                        Horizontal/vertical hoisting, unrolling protocols, and strap lacing guidelines.
-                        <div style="margin-top: 0.4rem;">
-                            <a class="resource-link" href="https://skedco.com/wp-content/uploads/2024/06/NEW-SKED-INSTRUCTION-2024-SD-4.pdf" target="_blank">📄 Official Skedco User Manual (PDF) ↗</a>
+            <div class="gear-grid">
+                <!-- 1. Sked Stretcher -->
+                <div class="gear-card">
+                    <div>
+                        <div class="pictograph-box">
+                            <svg width="180" height="105" viewBox="0 0 180 105">
+                                <path d="M 25 65 Q 90 85 155 62 L 150 48 Q 90 66 30 50 Z" fill="#f97316" fill-opacity="0.25" stroke="#f97316" stroke-width="2.5"/>
+                                <circle cx="138" cy="44" r="7" fill="#38bdf8"/>
+                                <path d="M 65 55 L 130 48" stroke="#f8fafc" stroke-width="4" stroke-linecap="round"/>
+                                <line x1="55" y1="48" x2="55" y2="66" stroke="#eab308" stroke-width="2.5"/>
+                                <line x1="85" y1="50" x2="85" y2="70" stroke="#eab308" stroke-width="2.5"/>
+                                <line x1="115" y1="49" x2="115" y2="67" stroke="#eab308" stroke-width="2.5"/>
+                                <text x="90" y="96" fill="#94a3b8" font-size="10" text-anchor="middle">SKED® FLEXIBLE LITTER</text>
+                            </svg>
                         </div>
+                        <h4>Sked® Stretcher</h4>
+                        <p>Rolled polyethylene stretcher for confined spaces, vertical hoisting, rough terrain drags, and low-clearance extraction.</p>
                     </div>
-                    <div class="glossary-item">
-                        <strong>Ferno® Basket Stretcher & Pedi-Pac</strong>
-                        Metallic/polyethylene litters, bridle attachment points, and color-coded straps.
-                        <div style="margin-top: 0.4rem;">
-                            <a class="resource-link" href="https://www.life-assist.com/Content/Docs/fernoPeidPackManual.pdf" target="_blank">📄 Ferno Packaging & Restraint Guide (PDF) ↗</a>
+                    <a class="resource-link" href="https://skedco.com/product/sked-basic-rescue-system-international-orange/" target="_blank">🔗 Skedco Sked® Basic Rescue System Specs & Instructions ↗</a>
+                </div>
+
+                <!-- 2. Basket Litter (Stokes / Ferno) -->
+                <div class="gear-card">
+                    <div>
+                        <div class="pictograph-box">
+                            <svg width="180" height="105" viewBox="0 0 180 105">
+                                <rect x="24" y="44" width="132" height="24" rx="11" fill="none" stroke="#38bdf8" stroke-width="3"/>
+                                <line x1="36" y1="44" x2="36" y2="68" stroke="#64748b" stroke-width="1.5"/>
+                                <line x1="68" y1="44" x2="68" y2="68" stroke="#64748b" stroke-width="1.5"/>
+                                <line x1="100" y1="44" x2="100" y2="68" stroke="#64748b" stroke-width="1.5"/>
+                                <line x1="132" y1="44" x2="132" y2="68" stroke="#64748b" stroke-width="1.5"/>
+                                <line x1="45" y1="44" x2="90" y2="16" stroke="#eab308" stroke-width="2.2"/>
+                                <line x1="135" y1="44" x2="90" y2="16" stroke="#eab308" stroke-width="2.2"/>
+                                <circle cx="90" cy="14" r="5" fill="#ef4444"/>
+                                <text x="90" y="96" fill="#94a3b8" font-size="10" text-anchor="middle">BASKET LITTER + 4-POINT BRIDLE</text>
+                            </svg>
                         </div>
+                        <h4>Basket Litter (Stokes / Ferno)</h4>
+                        <p>Rigid/semi-rigid basket litter for high-angle rope raises/lowers, talus/scree carries, and technical evacuation with internal harness tie-in.</p>
                     </div>
-                    <div class="glossary-item">
-                        <strong>Ferno XT / KED Extrication Devices</strong>
-                        Short spineboard immobilization for seated patients in vehicle extrication.
-                        <div style="margin-top: 0.4rem;">
-                            <a class="resource-link" href="https://www.scribd.com/document/334887417/Ferno-XT-Manual-pdf" target="_blank">📄 Ferno XT Extrication Manual ↗</a>
+                    <a class="resource-link" href="https://coastropes.ca/products/skedco-SKED-BASIC-RESCUE-SYSTEM" target="_blank">🔗 Canadian Technical Rescue & Litter Gear Reference ↗</a>
+                </div>
+
+                <!-- 3. Spec Pac -->
+                <div class="gear-card">
+                    <div>
+                        <div class="pictograph-box">
+                            <svg width="180" height="105" viewBox="0 0 180 105">
+                                <rect x="74" y="24" width="32" height="52" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5"/>
+                                <circle cx="90" cy="33" r="6" fill="#ef4444"/>
+                                <line x1="74" y1="46" x2="106" y2="46" stroke="#eab308" stroke-width="2.5"/>
+                                <line x1="74" y1="60" x2="106" y2="60" stroke="#eab308" stroke-width="2.5"/>
+                                <line x1="90" y1="24" x2="90" y2="9" stroke="#22c55e" stroke-width="2.5"/>
+                                <text x="90" y="96" fill="#94a3b8" font-size="10" text-anchor="middle">SPEC PAC EXTRICATION HARNESS</text>
+                            </svg>
                         </div>
+                        <h4>Spec Pac</h4>
+                        <p>Integrated extrication harness and rigid spine/head support system for tight accesses, vertical lifts, and confined/industrial spaces.</p>
                     </div>
+                    <a class="resource-link" href="https://www.conterra-inc.com/products/yates-spec-pack-extrication-harness" target="_blank">🔗 Conterra / Yates Spec Pac Extrication Harness Guide ↗</a>
+                </div>
+
+                <!-- 4. Traverse Stretcher -->
+                <div class="gear-card">
+                    <div>
+                        <div class="pictograph-box">
+                            <svg width="180" height="105" viewBox="0 0 180 105">
+                                <line x1="15" y1="20" x2="165" y2="20" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="5 3"/>
+                                <line x1="55" y1="20" x2="55" y2="54" stroke="#eab308" stroke-width="2"/>
+                                <line x1="125" y1="20" x2="125" y2="54" stroke="#eab308" stroke-width="2"/>
+                                <rect x="42" y="54" width="96" height="16" rx="6" fill="#1e293b" stroke="#22c55e" stroke-width="2.5"/>
+                                <text x="90" y="96" fill="#94a3b8" font-size="10" text-anchor="middle">HIGHLINE / TRAVERSE STRETCHER RIG</text>
+                            </svg>
+                        </div>
+                        <h4>Traverse Stretcher</h4>
+                        <p>Litter rigged for horizontal span/highline traverses, river crossings, or canyon/ravine spans with tag/haul control lines.</p>
+                    </div>
+                    <a class="resource-link" href="https://skedco.com/product/sked-basic-rescue-system-international-orange/" target="_blank">🔗 Traverse & Horizontal Rigging Configuration Guide ↗</a>
+                </div>
+
+                <!-- 5. Helicopter Rescue Sling / Harness ("Diaper" Sling) -->
+                <div class="gear-card">
+                    <div>
+                        <div class="pictograph-box">
+                            <svg width="180" height="105" viewBox="0 0 180 105">
+                                <line x1="90" y1="6" x2="90" y2="34" stroke="#f8fafc" stroke-width="2.5"/>
+                                <path d="M 64 56 Q 90 78 116 56 L 108 42 L 72 42 Z" fill="#ef4444" fill-opacity="0.3" stroke="#ef4444" stroke-width="2.5"/>
+                                <line x1="72" y1="42" x2="90" y2="34" stroke="#eab308" stroke-width="2.5"/>
+                                <line x1="108" y1="42" x2="90" y2="34" stroke="#eab308" stroke-width="2.5"/>
+                                <text x="90" y="96" fill="#94a3b8" font-size="10" text-anchor="middle">HELICOPTER RESCUE SLING / HARNESS</text>
+                            </svg>
+                        </div>
+                        <h4>Helicopter Rescue Sling ("Diaper" Sling)</h4>
+                        <p>Quick-deployment helicopter hoist sling/harness passing under the armpits/back and between/under legs for rapid vertical extraction.</p>
+                    </div>
+                    <a class="resource-link" href="https://tc.canada.ca/en/aviation" target="_blank">🔗 Transport Canada Aviation / SAR Hoist Reference ↗</a>
                 </div>
             </div>
 
-            <div class="card">
-                <h3>Packaging Protocol & Bridle Configuration Matrix</h3>
-                <table class="cheat-table">
-                    <tr><th>Device Name</th><th>Primary Rescue Application</th><th>Litter Bridle & Lift Configurations</th><th>Critical Field Security Notes</th></tr>
-                    <tr>
-                        <td><strong>Sked® Flexible Stretcher</strong></td>
-                        <td>Confined space, high-angle vertical hoist, rough terrain dragging.</td>
-                        <td><strong>Horizontal:</strong> Slings through side slots.<br/><strong>Vertical:</strong> Drag handle tied over cross strap; rope through grommets.</td>
-                        <td>Must curl head end over patient's head to prevent sliding out during head-down inversion or falling debris impact.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Rigid Basket Litter (Ferno / CMC)</strong></td>
-                        <td>Technical high-angle rope raise/lower, helicopter hoist, structural rescue.</td>
-                        <td><strong>4-Point Adjustable Bridle:</strong> Head legs slightly shorter for 10° head-up angle. Interlocking carabiners.</td>
-                        <td>Always tie patient in with a continuous 30ft to 50ft spinal webbing harness ("Internal Tie-In") in addition to external basket straps.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Short Spine Device (KED / Ferno XT)</strong></td>
-                        <td>Seated vehicle extrication with suspected cervical spine trauma.</td>
-                        <td>Not for direct vertical suspension; secured inside rigid basket or Sked after extrication.</td>
-                        <td>Strap Sequence: <strong>Middle Chest (Yellow), Bottom Chest (Red), Leg Straps, Head Securement, Top Chest (Green)</strong> last.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Full Spineboard / Vacuum Mattress</strong></td>
-                        <td>Rapid immobilization, pelvic trauma, full-body splinting.</td>
-                        <td>Vacuum mattress preferred for prolonged backcountry evac to prevent tissue pressure necrosis.</td>
-                        <td>Secure chest/pelvis with spider straps; apply cervical collar and head blocks prior to log-rolling patient.</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="card">
-                <h3>Bridle Angle Mechanics & Load Multipliers</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 0.8rem;">
-                    When utilizing adjustable litter bridles for horizontal basket rescue, the internal angle of the bridle legs significantly alters tension on bridle straps and carabiners.
-                </p>
+            <div class="card" style="margin-top: 1.2rem;">
+                <h3>Bridle Angle Load Multipliers</h3>
                 <div class="glossary-grid">
-                    <div class="glossary-item"><strong>45° Included Angle</strong> Multiplier: <strong>1.08x</strong> per leg. Standard optimal configuration. Minimal stress amplification.</div>
-                    <div class="glossary-item"><strong>90° Included Angle</strong> Multiplier: <strong>1.41x</strong> per leg. Acceptable field limit for low-clearance operations.</div>
-                    <div class="glossary-item" style="border-color: var(--accent-red);"><strong>120° Included Angle</strong> Multiplier: <strong>2.00x</strong> per leg. Critical warning! Equal to total load per leg. Avoid in technical rigging.</div>
+                    <div class="glossary-item"><strong>45° Included Angle</strong> ~1.08× load per leg — Preferred low-stress configuration.</div>
+                    <div class="glossary-item"><strong>90° Included Angle</strong> ~1.41× load per leg — Moderate angle; verify hardware ratings.</div>
+                    <div class="glossary-item" style="border-color: var(--accent-red);"><strong>120° Included Angle</strong> 2.00× load per leg — High stress amplification; avoid wide angles.</div>
                 </div>
             </div>
         </section>
 
-        <!-- SCREEN: SWIFT WATER RESCUE -->
+        <!-- SWIFT WATER -->
         <section id="screen-swiftwater" class="screen">
             <div style="margin-bottom: 1.2rem;">
                 <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Swift Water Command & Reference Guide</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Entrapment protocols, live-bait tether safety, downstream safety cells, and provincial flow monitoring.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Entrapment mitigation, live-bait tether safety, downstream safety cells, and provincial flow monitoring.</p>
             </div>
 
             <div class="card">
                 <h3>Provincial Hydrometric Data Link</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">
-                    Before committing teams to moving water, verify current discharge rates, flood advisories, and ice jams via the official government monitoring portal:
-                </p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.7rem;">Verify current discharge rates, flood advisories, and ice jams before moving-water deployment:</p>
                 <a class="resource-link" href="https://rivers.alberta.ca/" target="_blank">🌐 Open Alberta Rivers Data and Advisories Portal (Government of Alberta) ↗</a>
             </div>
 
             <div class="card">
-                <h3>Critical Swiftwater Tactics: Entrapment, Live-Bait & Safety Cells</h3>
+                <h3>Critical Swiftwater Tactics</h3>
                 <div class="glossary-grid">
-                    <div class="glossary-item"><strong>Foot Entrapment Protocols</strong> Never attempt to stand up in moving water faster than knee-deep. Current pressure pins legs instantly. Swimmers must float defensively on their back feet up, angle toward shore, and roll over banks.</div>
-                    <div class="glossary-item"><strong>Live-Bait Tether Safety Mechanics</strong> Rescuer is tethered to a quick-release harness on shore or via a tension diagonal. The handler must maintain absolute visual contact and be ready to deploy the instant-release buckle if the rescuer gets swept underwater or snagged.</div>
-                    <div class="glossary-item"><strong>Downstream Safety Cell Setup</strong> Positioned below any technical rescue or rapid hazard. Equipped with throw bags, rescue watercraft, and backup tethered swimmers to intercept victims who slip past primary operational zones.</div>
+                    <div class="glossary-item"><strong>Foot Entrapment Protocols</strong> Avoid standing in fast water above knee depth. Adopt defensive swimming posture (on back, feet up and downstream) to negotiate obstacles and eddy out.</div>
+                    <div class="glossary-item"><strong>Live-Bait Tether Safety</strong> Use an approved quick-release system with a dedicated tender watching the swimmer continuously and ready to release immediately if pinned or entrapped.</div>
+                    <div class="glossary-item"><strong>Downstream Safety Cell</strong> Position spotters, throw bags, and backup rescue assets downstream of the hazard to intercept swimmers or gear swept past the primary site.</div>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Technical Rescue River Difficulty Matrix</h3>
+                <h3>River Difficulty Matrix</h3>
                 <table class="cheat-table">
-                    <tr><th>Class</th><th>Water Velocity & Waves</th><th>Rescueability & Operational Profile</th></tr>
-                    <tr><td><strong>Class I</strong></td><td>1–3 fps (Fast riffles, waves &lt; 1 ft)</td><td><strong>High (Self-Rescue / Reach):</strong> Easy self-rescue. Standard PFDs sufficient.</td></tr>
-                    <tr><td><strong>Class II</strong></td><td>3–6 fps (Straightforward rapids, waves 1–2 ft)</td><td><strong>Moderate (Throw Bag):</strong> Swimmers can catch eddies easily. Effective throw bag zone.</td></tr>
-                    <tr><td><strong>Class III</strong></td><td>6–10 fps (Irregular waves, waves 2–4 ft)</td><td><strong>Challenging (Tension / Boat):</strong> Strainers & cold water present severe hazards. High-side boats required.</td></tr>
-                    <tr><td><strong>Class IV</strong></td><td>10–15 fps (Powerful rapids, waves 4–6 ft)</td><td><strong>High Consequence (Technician Only):</strong> Recirculating hydraulics. Live-bait rescues and advanced boat handling required.</td></tr>
-                    <tr><td><strong>Class V</strong></td><td>15–20+ fps (Violent drops, waves 6+ ft)</td><td><strong>Extreme / Marginal:</strong> High fatality rate for swimmers. In-water contact rescue is extremely high risk.</td></tr>
-                    <tr><td><strong>Class VI</strong></td><td>Unpredictable / Flood Stage</td><td><strong>Zero In-Water Entry:</strong> Unrunnable catastrophic debris fields. Shore or aerial recovery only.</td></tr>
+                    <tr><th>Class</th><th>Conditions</th><th>Operational Profile</th></tr>
+                    <tr><td><strong>Class I</strong></td><td>Fast riffles, small waves (&lt;1 ft)</td><td>Straightforward; reach/throw or basic wading with proper PPE.</td></tr>
+                    <tr><td><strong>Class II</strong></td><td>Clear rapids, waves up to 2 ft</td><td>Moderate maneuvering; throw bags effective; eddies easy to catch.</td></tr>
+                    <tr><td><strong>Class III</strong></td><td>Irregular waves up to 4 ft, eddies/strainers</td><td>Technical maneuvering; cold water/strainer risk; high-side boats or tensioned lines.</td></tr>
+                    <tr><td><strong>Class IV</strong></td><td>Powerful rapids, 4–6 ft waves, hydraulics</td><td>High consequence; live-bait/boat technicians required; downstream safety mandatory.</td></tr>
+                    <tr><td><strong>Class V</strong></td><td>Violent drops, 6+ ft waves, heavy hazards</td><td>Extreme risk; in-water contact rescue severely limited.</td></tr>
+                    <tr><td><strong>Class VI</strong></td><td>Flood stage / unrunnable debris</td><td>Extreme hazard; avoid in-water entry.</td></tr>
                 </table>
             </div>
 
@@ -669,287 +831,309 @@
                 <div class="card">
                     <h3>Standard Whistle Commands</h3>
                     <ul class="weakest-list">
-                        <li class="weakest-item"><strong>1 Blast (Short):</strong> Stop / Look / Attention.</li>
-                        <li class="weakest-item"><strong>2 Blasts (Short):</strong> Forward / Move / Paddle on.</li>
-                        <li class="weakest-item"><strong>3 Blasts (Short):</strong> Back Up / Reverse.</li>
-                        <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>Long Continuous Blast:</strong> 🚨 <strong>EMERGENCY / SOS</strong></li>
+                        <li class="weakest-item"><strong>1 Short Blast:</strong> Stop / Look / Attention</li>
+                        <li class="weakest-item"><strong>2 Short Blasts:</strong> Forward / Move downstream or across</li>
+                        <li class="weakest-item"><strong>3 Short Blasts:</strong> Back up / Reverse</li>
+                        <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>Long Continuous Blast:</strong> 🚨 Emergency / Man Down / Abort</li>
                     </ul>
                 </div>
                 <div class="card">
-                    <h3>The Rescue Progression</h3>
+                    <h3>Rescue Progression</h3>
                     <ul class="weakest-list">
-                        <li class="weakest-item"><strong>Reach:</strong> Reach with voice or tools from shore.</li>
-                        <li class="weakest-item"><strong>Throw:</strong> Deploy throw bag to conscious swimmer.</li>
-                        <li class="weakest-item"><strong>Row:</strong> Use watercraft to effect rescue.</li>
-                        <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>Go:</strong> In-water contact rescue by trained technician. Last resort.</li>
+                        <li class="weakest-item"><strong>1. Reach:</strong> Verbal guidance or pole/line from shore without entering water.</li>
+                        <li class="weakest-item"><strong>2. Throw:</strong> Throw bag to conscious victim.</li>
+                        <li class="weakest-item"><strong>3. Row:</strong> Watercraft approach/rescue.</li>
+                        <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>4. Go:</strong> Tethered/un-tethered technician entry — highest risk option.</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- SCREEN: HEAVY VEHICLE & ERG -->
+        <!-- HEAVY VEHICLE & ERG -->
         <section id="screen-extrication" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Heavy Vehicle Extrication, EV Protocols & ERG 2024</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Commercial vehicles, heavy transit bus stabilization graphics, electric vehicle high-voltage orange cables, and ERG lookup.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Heavy Vehicle Extrication, EV Protocols & ERG Lookup</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Commercial vehicles, bus stabilization, EV high-voltage orange cables, and quick UN/material lookup.</p>
             </div>
 
             <div class="card">
-                <h3>Built-In Transport Canada ERG 2024 Quick Lookup</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">
-                    Type a UN/NA 4-digit number (e.g., 1203 for Gasoline, 1075 for Propane) or material name to retrieve emergency response actions:
-                </p>
-                <input type="text" id="ergSearchInput" class="search-input" placeholder="Enter UN Number or Material Name (e.g., 1203, Propane, Diesel)..." oninput="queryERG()">
-                <div id="ergResultOutput" style="background: rgba(9, 13, 22, 0.6); padding: 0.9rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.9rem; line-height: 1.5;">
-                    <em>Enter a UN number or material keyword above to query the embedded ERG database...</em>
+                <h3>Quick UN / Material Lookup (Reference Cache)</h3>
+                <input type="text" id="ergSearchInput" class="search-input" placeholder="Search UN code or keyword (e.g., 1203, 1075, Propane, Diesel, Chlorine)..." oninput="queryERG()">
+                <div id="ergResultOutput" style="background: rgba(9, 13, 22, 0.65); padding: 0.9rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.88rem; line-height: 1.5;">
+                    <em>Enter a UN number or material name above to query the quick reference cache...</em>
                 </div>
-                <div style="margin-top: 0.8rem;">
-                    <a class="resource-link" href="https://tc.canada.ca/en/dangerous-goods/canutec/emergency-response-guidebook" target="_blank">🌐 Official Transport Canada ERG Reference & App ↗</a>
+                <div style="margin-top: 0.75rem;">
+                    <a class="resource-link" href="https://tc.canada.ca/en/dangerous-goods/canutec/emergency-response-guidebook" target="_blank">🌐 Official Transport Canada Emergency Response Guidebook (ERG) ↗</a>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Alternative Fuel Vehicle (EV/Hybrid) & High-Voltage Protocols</h3>
+                <h3>EV / Hybrid High-Voltage Protocols</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>High-Voltage Orange Cables:</strong> Never cut, pinch, or crush bright orange HV cables. They carry up to 400V–800V DC.</li>
-                    <li class="weakest-item"><strong>First Responder Disconnects:</strong> Locate 12V auxiliary battery in hood or trunk and cut/disconnect negative terminal first to deactivate contactors.</li>
-                    <li class="weakest-item"><strong>Lithium-Ion Thermal Runaway:</strong> Damaged battery packs can reignite hours later. Apply massive water volumes (up to 3,000+ gallons) for cooling and monitor with thermal imaging cameras.</li>
+                    <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>High-Voltage Orange Cables:</strong> Never cut, crush, or pierce bright orange HV cabling/conduit.</li>
+                    <li class="weakest-item"><strong>12V System & Isolation:</strong> Follow manufacturer emergency response guide for 12V disconnect/service plug procedures where safe and appropriate.</li>
+                    <li class="weakest-item"><strong>Thermal Runaway:</strong> Watch for delayed or repeated re-ignition; use large volumes of water for cooling and monitor with thermal imaging.</li>
                 </ul>
             </div>
 
             <div class="card">
-                <h3>Heavy Transit Bus Stabilization & Graphics</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">
-                    Transit and highway motor coaches feature heavy rear-engine weight bias and large baggage compartments.
-                </p>
-                <div class="module-svg" style="height: 140px;">
-                    <svg width="340" height="120" viewBox="0 0 340 120">
-                        <rect x="20" y="30" width="300" height="60" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-                        <path d="M 280 30 L 310 50 L 310 90 L 280 90 Z" fill="#090d16" stroke="#38bdf8" stroke-width="1"/>
-                        <rect x="40" y="40" width="35" height="25" fill="#334155" rx="2"/>
-                        <rect x="85" y="40" width="35" height="25" fill="#334155" rx="2"/>
-                        <rect x="130" y="40" width="35" height="25" fill="#334155" rx="2"/>
-                        <rect x="175" y="40" width="35" height="25" fill="#334155" rx="2"/>
-                        <circle cx="70" cy="90" r="14" fill="#ef4444"/><circle cx="270" cy="90" r="14" fill="#ef4444"/>
-                        <line x1="70" y1="90" x2="70" y2="115" stroke="#eab308" stroke-width="3" stroke-dasharray="3"/>
-                        <line x1="270" y1="90" x2="270" y2="115" stroke="#eab308" stroke-width="3" stroke-dasharray="3"/>
-                        <text x="50" y="20" fill="#38bdf8" font-size="10">Front Axle Strut Point</text>
-                        <text x="220" y="20" fill="#eab308" font-size="10">Rear Engine Weight Bias</text>
+                <h3>Heavy Bus / Coach Stabilization</h3>
+                <div class="module-svg" style="height: 135px;">
+                    <svg width="340" height="115" viewBox="0 0 340 115">
+                        <rect x="20" y="28" width="300" height="56" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                        <rect x="40" y="38" width="36" height="22" fill="#334155" rx="2"/>
+                        <rect x="86" y="38" width="36" height="22" fill="#334155" rx="2"/>
+                        <rect x="132" y="38" width="36" height="22" fill="#334155" rx="2"/>
+                        <rect x="178" y="38" width="36" height="22" fill="#334155" rx="2"/>
+                        <circle cx="72" cy="84" r="13" fill="#ef4444"/><circle cx="268" cy="84" r="13" fill="#ef4444"/>
+                        <line x1="72" y1="84" x2="72" y2="106" stroke="#eab308" stroke-width="3" stroke-dasharray="3"/>
+                        <line x1="268" y1="84" x2="268" y2="106" stroke="#eab308" stroke-width="3" stroke-dasharray="3"/>
+                        <text x="42" y="18" fill="#38bdf8" font-size="10">Front Stabilization</text>
+                        <text x="210" y="18" fill="#eab308" font-size="10">Rear Engine Bias / Cribbing</text>
                     </svg>
                 </div>
-                <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Cribbing & Strut Placement:</strong> Place heavy 6x6 wood cribbing and pneumatic struts directly under front axle and rear wheel wells prior to lower compartment rescue operations.</li>
-                </ul>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Stabilize near suspension/frame/axles first and chock wheels before lifting or prying heavy compartments.</p>
             </div>
         </section>
 
-        <!-- SCREEN: ADVANCED STRUCTURAL COLLAPSE -->
+        <!-- COLLAPSE -->
         <section id="screen-collapse" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Advanced Structural Collapse, Shoring & Paratech Metrics</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Rapid wall assessments, Paratech metal strut working loads, and breaching tool timelines.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Advanced Structural Collapse & Shoring</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Wall assessment, strut load considerations, and breaching timelines.</p>
             </div>
 
             <div class="card">
-                <h3>Rapid Wall Assessment Matrix</h3>
+                <h3>Wall Assessment Matrix</h3>
                 <table class="cheat-table">
-                    <tr><th>Wall Construction Type</th><th>Collapse Hazards</th><th>Primary Shoring Solution</th></tr>
-                    <tr><td><strong>Unreinforced Masonry (URM)</strong></td><td>Extreme out-of-plane collapse, falling bricks, pancake floors.</td><td>T-Stops, Double T-Stops, standard exterior rakers spaced every 8 feet.</td></tr>
-                    <tr><td><strong>Tilt-Up Concrete Panels</strong></td><td>Sudden connection failures at roofline, inward tipping.</td><td>Heavy duty Paratech pneumatic rakers with mechanical locking collars.</td></tr>
-                    <tr><td><strong>Wood Frame / Residential</strong></td><td>Leaning walls, ruptured utility lines, roof sag.</td><td>Vertical post shores, Laced post systems, continuous wall bracing.</td></tr>
+                    <tr><th>Structure Type</th><th>Primary Hazards</th><th>Typical Shoring Approach</th></tr>
+                    <tr><td><strong>Unreinforced Masonry (URM)</strong></td><td>Out-of-plane wall failure, falling brick/debris</td><td>Rakers, T-stops, or wall bracing per structural assessment.</td></tr>
+                    <tr><td><strong>Tilt-Up Concrete</strong></td><td>Panel connection/brace failure, sudden inward/outward movement</td><td>Heavy rakers/struts with positive mechanical locking.</td></tr>
+                    <tr><td><strong>Wood Frame</strong></td><td>Sagging floors/roofs, shifting load paths, utilities</td><td>Post shores, laced posts, and lateral bracing.</td></tr>
                 </table>
             </div>
 
             <div class="card">
-                <h3>Paratech Metal Rescue Strut Load Capacity Matrix</h3>
+                <h3>Strut & Breaching Reference</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Short / Medium / Long Shores:</strong> Safe working load capacity ranges from 10,000 to 20,000 lbs depending on extension length.</li>
-                    <li class="weakest-item"><strong>Off-Axis Loading Rule:</strong> Every 5 degrees of off-axis angular load reduces strut working capacity by approximately 10%. Always pin struts securely.</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h3>Breaching & Breaking Tool Timelines</h3>
-                <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Rotary Hammer Drills (Concrete/Masonry):</strong> Core drilling/stitch drilling at ~1 to 2 inches per minute in reinforced concrete.</li>
-                    <li class="weakest-item"><strong>Gas/Battery Cut-Off Saws (Steel Rebar / Wood):</strong> Cuts standard 1-inch rebar in 10-15 seconds; structural timber 4x4 in 5-10 seconds.</li>
-                    <li class="weakest-item"><strong>Hydraulic Breakers / Combi Tools:</strong> Rapid displacement of door frames, structural framing, and vehicle pillars in under 30 seconds.</li>
+                    <li class="weakest-item"><strong>Axial vs. Off-Axis Loads:</strong> Keep struts aligned axially and locked; off-axis angles reduce capacity quickly.</li>
+                    <li class="weakest-item"><strong>Breaching Benchmarks:</strong> Rotary hammer stitch drilling in concrete is slow (~1–2 in/min depending on aggregate/rebar); rebar/timber cutting is fast (~5–15 sec per member).</li>
                 </ul>
             </div>
         </section>
 
-        <!-- SCREEN: SURFACE WATER & BOAT OPS -->
+        <!-- SURFACE WATER -->
         <section id="screen-surfacewater" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Surface Water Rescue, Boat Handling & Specialized Ops</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Night search tactics, decontamination protocols, and helicopter hoist rescue signals.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Surface Water & Boat Operations</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Current navigation, night/decon procedures, and aviation hoist signals.</p>
             </div>
 
             <div class="card">
-                <h3>Boat Handling & Navigation in Moving Water</h3>
+                <h3>Boat Handling in Current</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Ferry Angle (Crossing Current):</strong> Angle bow upstream at 45° to the current vector. Vector force pushes boat across safely. Never point straight across.</li>
-                    <li class="weakest-item"><strong>Entering & Exiting Eddies:</strong> Cross eddy line with bow pointed upstream at 45° to 60° to prevent "catch-and-flip".</li>
+                    <li class="weakest-item"><strong>Ferry Angle:</strong> Angle bow upstream at ~45° to use current thrust to cross without turning broadside.</li>
+                    <li class="weakest-item"><strong>Eddy Lines:</strong> Commit cleanly across eddy boundaries with proper bow angle to avoid broaching/capsizing.</li>
                 </ul>
             </div>
 
             <div class="card">
-                <h3>Night Operations, Decontamination & Helicopter Hoist Signals</h3>
+                <h3>Night Ops, Decon & Hoist Signals</h3>
                 <div class="glossary-grid">
-                    <div class="glossary-item"><strong>Night / Low-Light Operations</strong> Utilize waterproof tactical lighting, thermal imaging drones/cameras, and acoustic hailing systems. Maintain strict verbal and whistle command redundancy.</div>
-                    <div class="glossary-item"><strong>Contaminated Water Decon</strong> Post-rescue decontamination using disinfectant rinses and PPE disposal for responders exposed to raw sewage, agricultural runoff, or industrial chemical spills.</div>
-                    <div class="glossary-item"><strong>Helicopter Hoist Signals</strong> Arms raised in "Y" means "Yes / Ready for Hoist". Arms extended down in "N" means "No / Do Not Hoist". Keep low profile during rotor-wash approach.</div>
+                    <div class="glossary-item"><strong>Night / Low Visibility</strong> Use high-vis markers, scene lighting, thermal imaging, and clear redundant voice/whistle commands.</div>
+                    <div class="glossary-item"><strong>Decontamination</strong> Perform gross decon and PPE doffing/disinfection after exposure to sewage, agricultural runoff, or hazardous runoff.</div>
+                    <div class="glossary-item"><strong>Hoist Signals</strong> Arms raised in a "Y" = Ready/Yes; arms down/crossed = Do Not Hoist/Cancel. Secure loose gear in rotor wash.</div>
                 </div>
             </div>
         </section>
 
-        <!-- SCREEN: CONFINED SPACE RESCUE -->
+        <!-- CONFINED SPACE -->
         <section id="screen-confined" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Confined Space Rescue Command Hub</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Permit checklists, atmospheric monitoring limits, 4-minute extraction timelines, and tripod systems.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Confined Space Rescue</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Entry controls, atmospheric monitoring thresholds, and rapid extraction priorities.</p>
             </div>
 
             <div class="card">
-                <h3>Permit-Required Confined Space Checklist</h3>
+                <h3>Pre-Entry & Rescue Readiness</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Lockout / Tagout (LOTO):</strong> Verify zero energy state for electrical, hydraulic, and pneumatic lines entering vessel.</li>
-                    <li class="weakest-item"><strong>Continuous Atmospheric Monitoring:</strong> Calibrate and test sensors for O2, LEL, H2S, and CO prior to and during entry.</li>
-                    <li class="weakest-item"><strong>Standby Rescue Team:</strong> Qualified rescue team stationed outside portal with SCBA and retrieval gear ready before entry is authorized.</li>
+                    <li class="weakest-item"><strong>Energy Isolation (LOTO):</strong> Lock out/tag out electrical, mechanical, hydraulic, and pneumatic energy sources.</li>
+                    <li class="weakest-item"><strong>Continuous Gas Monitoring:</strong> Test and monitor O2, LEL, H2S, and CO from top to bottom before and during entry.</li>
+                    <li class="weakest-item"><strong>Standby Rescue:</strong> Maintain dedicated rescue personnel and retrieval/breathing gear ready prior to entry.</li>
                 </ul>
             </div>
 
             <div class="card">
-                <h3>IDLH & Acceptable Atmospheric Parameters (OHS Standards)</h3>
+                <h3>Atmospheric Reference Thresholds</h3>
                 <table class="cheat-table">
-                    <tr><th>Parameter</th><th>Normal Safe Range</th><th>Action Threshold / IDLH Limit</th></tr>
-                    <tr><td><strong>Oxygen (O2)</strong></td><td>20.8% - 21.0%</td><td>&lt; 19.5% (Deficient) or &gt; 23.5% (Enriched - Fire Hazard)</td></tr>
-                    <tr><td><strong>Flammable Vapors (LEL)</strong></td><td>0% LEL</td><td>&gt; 10% LEL requires immediate evacuation and ventilation</td></tr>
-                    <tr><td><strong>Hydrogen Sulfide (H2S)</strong></td><td>0 ppm</td><td>&gt; 10 ppm (Action) / 100 ppm (IDLH - instant paralysis)</td></tr>
-                    <tr><td><strong>Carbon Monoxide (CO)</strong></td><td>0 ppm</td><td>&gt; 25 ppm (Action) / 1200 ppm (IDLH threshold)</td></tr>
+                    <tr><th>Gas / Hazard</th><th>Typical Normal</th><th>Warning / Action Thresholds</th></tr>
+                    <tr><td><strong>Oxygen (O2)</strong></td><td>20.8% – 21.0%</td><td>&lt; 19.5% deficient or &gt; 23.5% enriched</td></tr>
+                    <tr><td><strong>LEL</strong></td><td>0%</td><td>&gt; 10% LEL (evacuate / ventilate)</td></tr>
+                    <tr><td><strong>H2S</strong></td><td>0 ppm</td><td>&gt; 10 ppm action / 100 ppm IDLH</td></tr>
+                    <tr><td><strong>CO</strong></td><td>0 ppm</td><td>&gt; 25 ppm action / 1200 ppm IDLH</td></tr>
                 </table>
-            </div>
-
-            <div class="card">
-                <h3>Critical 4-Minute Extraction Window</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;">
-                    In an oxygen-deficient or toxic atmosphere (e.g., high H2S), brain hypoxia leads to irreversible damage within 4 to 6 minutes. Rescue teams must prioritize immediate mechanical winch retrieval over complex medical treatment inside the hazard zone.
-                </p>
             </div>
         </section>
 
-        <!-- SCREEN: ICE RESCUE -->
+        <!-- ICE RESCUE -->
         <section id="screen-ice" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Comprehensive Ice Rescue & Load Metrics</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Blue ice thickness ratings, degradation factors, slot cutting, and multi-rescuer chain protocols.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Comprehensive Ice Rescue</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Ice thickness reference, degradation factors, and spaced tether chains.</p>
             </div>
 
             <div class="card">
-                <h3>Clear Blue Ice Load Safety Matrix</h3>
+                <h3>Clear Solid Ice Load Guidelines</h3>
                 <table class="cheat-table">
-                    <tr><th>Ice Thickness (Clear Solid Blue)</th><th>Max Safe Load Capacity</th><th>Operational Guidance & Deployment Profile</th></tr>
-                    <tr><td><strong>Under 2 inches</strong></td><td>Keep Off (Unsafe)</td><td>Absolute prohibition for personnel. Zero structural integrity.</td></tr>
-                    <tr><td><strong>2 to 3 inches</strong></td><td>Single Person (Caution)</td><td>Extremely marginal. Requires flotation suits and shore belay.</td></tr>
-                    <tr><td><strong>4 inches</strong></td><td>200 lbs (1 Rescuer)</td><td>Minimum threshold for single rescuer in ice rescue suit with tether.</td></tr>
-                    <tr><td><strong>5 inches</strong></td><td>1,000 lbs</td><td>Group of rescuers spaced out (minimum 15ft intervals) or rescue sled.</td></tr>
-                    <tr><td><strong>8+ inches</strong></td><td>Passenger Car / ATV (~2 Tons)</td><td>Supported vehicle access for heavy extraction gear.</td></tr>
+                    <tr><th>Thickness (Clear Blue/Black Ice)</th><th>General Load Guidance</th><th>Notes</th></tr>
+                    <tr><td><strong>&lt; 2 inches</strong></td><td>Stay off</td><td>Unsafe for personnel.</td></tr>
+                    <tr><td><strong>2–3 inches</strong></td><td>Single person (caution)</td><td>Flotation suit &amp; belay recommended.</td></tr>
+                    <tr><td><strong>4 inches</strong></td><td>~200 lbs single rescuer</td><td>Minimum threshold for tethered rescue entry.</td></tr>
+                    <tr><td><strong>5 inches</strong></td><td>Group / sled (spaced)</td><td>Maintain spacing (~15 ft+) between rescuers.</td></tr>
+                    <tr><td><strong>8+ inches</strong></td><td>Light vehicle / ATV</td><td>Verify local ice conditions and thickness across path.</td></tr>
                 </table>
             </div>
 
             <div class="card">
-                <h3>Ice Strength Degradation Factors & Multi-Rescuer Chains</h3>
+                <h3>Degradation & Tether Chain Rules</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Rotten Spring Ice:</strong> Sun-warmed ice loses structural strength rapidly even if thickness appears substantial. Reduce rated capacities by 50% in spring conditions.</li>
-                    <li class="weakest-item"><strong>Multi-Rescuer Tethered Chain Protocol:</strong> For heavy or unresponsive victims, deploy rescuers in a distributed chain connected by webbing lines separated by at least 15 feet to prevent multiple team members from punching through the same breakthrough hole.</li>
+                    <li class="weakest-item"><strong>Thermal / Spring Degradation:</strong> Warm temperatures, sun, currents, or snow insulation weaken ice regardless of thickness.</li>
+                    <li class="weakest-item"><strong>Spaced Rescuer Chain:</strong> Space tethered rescuers apart (~15 ft+) so a single breakthrough does not pull multiple rescuers in.</li>
                 </ul>
             </div>
         </section>
 
-        <!-- SCREEN: FIELD MEDICAL CARE PLANS & ALBERTA SCOPES -->
+        <!-- MEDICAL -->
         <section id="screen-medical" class="screen">
             <div style="margin-bottom: 1.2rem;">
-                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Field Medical, Bleeding Control & Alberta Scope Protocols</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Bleeding control kit bag inventory, TCCC tourniquets, mass-casualty triage, WMA wilderness protocols, and Alberta First Aid to ACP scopes.</p>
+                <h2 style="color: var(--accent-cyan); font-size: 1.3rem;">Field Medical & Alberta Scopes</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Hemorrhage control kit, START triage, WMA wilderness care, core care plans, and Alberta scopes.</p>
             </div>
 
             <div class="card">
-                <h3>Bleeding Control "Kit" Contents Bag Inventory</h3>
+                <h3>Hemorrhage Control Kit Contents</h3>
                 <div class="glossary-grid">
-                    <div class="glossary-item"><strong>CAT Tourniquets (Qty 2)</strong> Windlass rod strap devices for massive extremity hemorrhage control.</div>
-                    <div class="glossary-item"><strong>Hemostatic Gauze (e.g., QuikClot)</strong> Z-folded gauze impregnated with kaolin for rapid clotting on junctional/wound bleeding.</div>
-                    <div class="glossary-item"><strong>Compressed Rolled / Z-Folded Gauze</strong> For pressure dressings and wound packing.</div>
-                    <div class="glossary-item"><strong>Chest Seals (Vented & Non-Vented)</strong> Treatment for penetrating open pneumothorax (sucking chest wounds).</div>
-                    <div class="glossary-item"><strong>Hypothermic Blanket & Trauma Shears</strong> Mylar thermal wrap and heavy-duty 7.25-inch shears.</div>
+                    <div class="glossary-item"><strong>Windlass Tourniquets</strong> Severe extremity arterial bleeding control.</div>
+                    <div class="glossary-item"><strong>Hemostatic Gauze</strong> Wound packing for deep/junctional bleeding with direct pressure.</div>
+                    <div class="glossary-item"><strong>Compressed / Rolled Gauze &amp; Bandages</strong> Pressure dressings and securement.</div>
+                    <div class="glossary-item"><strong>Chest Seals</strong> Vented/non-vented seals for open chest wounds.</div>
+                    <div class="glossary-item"><strong>Thermal Blanket &amp; Trauma Shears</strong> Hypothermia prevention and clothing access.</div>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Mass-Casualty Triage (START Algorithm) & WMA Wilderness Protocols</h3>
+                <h3>START Triage & WMA Wilderness Care</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>BLACK (Expectant / Deceased):</strong> Apneic after manual airway repositioning.</li>
-                    <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>RED (Immediate):</strong> Respirations &gt;30, CRT &gt;2 sec, or unable to follow simple commands.</li>
-                    <li class="weakest-item" style="border-left-color: var(--accent-yellow);"><strong>YELLOW (Delayed):</strong> Serious injuries but stable; does not fit immediate criteria.</li>
-                    <li class="weakest-item" style="border-left-color: var(--accent-green);"><strong>GREEN (Minor / Walking Wounded):</strong> Ambulatory minor injuries.</li>
-                    <li class="weakest-item"><strong>WMA International Wilderness Protocols:</strong> Extended patient assessments for prolonged backcountry evacuations where definitive care exceeds 2–24 hours. Focus on serial vitals tracking and hypothermia prevention.</li>
+                    <li class="weakest-item"><strong>BLACK:</strong> Deceased / apneic after airway positioning.</li>
+                    <li class="weakest-item" style="border-left-color: var(--accent-red);"><strong>RED:</strong> Immediate — RR &gt;30, delayed perfusion/CRT, or cannot follow simple commands.</li>
+                    <li class="weakest-item" style="border-left-color: var(--accent-yellow);"><strong>YELLOW:</strong> Delayed — serious injuries but stable enough to wait.</li>
+                    <li class="weakest-item" style="border-left-color: var(--accent-green);"><strong>GREEN:</strong> Minor / walking wounded.</li>
+                    <li class="weakest-item"><strong>WMA Wilderness Approach:</strong> Long-evacuation patient monitoring, serial vitals, insulation, and hydration/nutrition planning.</li>
                 </ul>
             </div>
 
             <div class="card">
-                <h3>Alberta Health Services & OHS Scope of Practice Flowchart (First Aid to ACP)</h3>
+                <h3>Alberta Scope Overview (SFA to ACP)</h3>
                 <table class="cheat-table">
-                    <tr><th>Provider Level</th><th>Authorized Modalities & Interventions (Alberta Standards)</th></tr>
-                    <tr><td><strong>Standard First Aid (SFA)</strong></td><td>CPR/AED, basic wound dressing, direct pressure, recovery position, basic splinting.</td></tr>
-                    <tr><td><strong>Advanced First Aid (AFA) / OFR</strong></td><td>O2 administration, Oropharyngeal airways, wound packing, tourniquet application, spinal motion restriction.</td></tr>
-                    <tr><td><strong>Primary Care Paramedic (PCP)</strong></td><td>Advanced airway management (supraglottic), IV cannulation, limited symptom relief medications (ASA, nitroglycerin, salbutamol, epinephrine, glucagon, naloxone).</td></tr>
-                    <tr><td><strong>Advanced Care Paramedic (ACP)</strong></td><td>Advanced cardiac life support, endotracheal intubation, IV/IO pharmacotherapy (analgesics, sedatives, paralytics, advanced vasopressors), needle thoracostomy.</td></tr>
+                    <tr><th>Level</th><th>Typical Capabilities</th></tr>
+                    <tr><td><strong>Standard First Aid (SFA)</strong></td><td>CPR/AED, bleeding control, splinting, basic assessment.</td></tr>
+                    <tr><td><strong>AFA / OFR</strong></td><td>Supplemental O2, airway adjuncts, wound packing, tourniquets, spinal motion restriction.</td></tr>
+                    <tr><td><strong>Primary Care Paramedic (PCP)</strong></td><td>Supraglottic airway, IV access, authorized symptom-relief medications.</td></tr>
+                    <tr><td><strong>Advanced Care Paramedic (ACP)</strong></td><td>Advanced airway/intubation, IV/IO medications, advanced resuscitation/procedures per protocols.</td></tr>
                 </table>
             </div>
 
             <div class="card">
-                <h3>Core Care Plans (Hypothermia, Hyperthermia, Drowning, Burns, Harness Hand, Pain)</h3>
+                <h3>Core Care Plans</h3>
                 <ul class="weakest-list">
-                    <li class="weakest-item"><strong>Hypothermia:</strong> Gentle handling to prevent after-drop ventricular fibrillation; vapor-barrier wrap.</li>
-                    <li class="weakest-item"><strong>Hyperthermia:</strong> Active cooling with ice packs to groin/axillae; electrolyte rehydration.</li>
-                    <li class="weakest-item"><strong>Drowning:</strong> Immediate airway clearance and CPR; treat concurrent hypothermia.</li>
-                    <li class="weakest-item"><strong>Burns:</strong> Cool water irrigation (10-20 min); sterile dry dressings; no ointments or ice.</li>
-                    <li class="weakest-item"><strong>Harness Hand / Suspension Trauma:</strong> Immediate vertical rescue; keep patient in semi-recumbent sitting position post-rescue (never lay flat instantly).</li>
-                    <li class="weakest-item"><strong>Pain Management:</strong> Anatomical splinting, vitals monitoring, and authorized analgesic administration per Alberta EMS scope.</li>
+                    <li class="weakest-item"><strong>Hypothermia:</strong> Handle gently, insulate from ground/wind, use vapor barrier, rewarm per protocol.</li>
+                    <li class="weakest-item"><strong>Hyperthermia:</strong> Move to shade/cool environment, active cooling, rehydrate if alert.</li>
+                    <li class="weakest-item"><strong>Drowning:</strong> Airway/ventilation/CPR priority, treat hypothermia and hypoxia.</li>
+                    <li class="weakest-item"><strong>Burns:</strong> Cool water cooling (avoid ice), clean dry sterile dressing, prevent hypothermia.</li>
+                    <li class="weakest-item"><strong>Suspension Trauma ("Harness Hang"):</strong> Gentle extrication, avoid sudden flat positioning if symptomatic, monitor closely.</li>
+                    <li class="weakest-item"><strong>Pain Management:</strong> Splint/immobilize, monitor vitals, administer authorized analgesia per scope.</li>
                 </ul>
             </div>
         </section>
     </main>
 
     <script>
-        const state = {
-            riggingStrategy: 'tts', maSystem: 1, ropeType: 'static', 
-            useLitter: true, numPatients: 1, 
-            numRescuers: 1, haulTeam: 4, avgWeight: 220, angle: 90, anchorType: 'tree',
+        const DEFAULT_STATE = {
+            riggingStrategy: 'tts',
+            maSystem: 2,
+            ropeType: 'static125',
+            useLitter: true,
+            numPatients: 1,
+            numRescuers: 1,
+            haulTeam: 4,
+            avgWeight: 220,
+            angle: 90,
+            anchorType: 'tree',
             frictionLoss: 10
-        }; 
-        const anchorStrengths = { industrial: 6000, tree: 4000, vehicle: 2500 }; 
+        };
+
+        let state = { ...DEFAULT_STATE };
+
+        const anchorStrengths = {
+            industrial: 6000,
+            tree: 4000,
+            vehicle: 2500
+        };
+
+        const ropeSpecs = {
+            static125: { label: '12.5mm Static', rawMbs: 9000, shockMult: 1.85 },
+            static11: { label: '11mm Low-Elongation', rawMbs: 6700, shockMult: 1.75 },
+            dynamic11: { label: '11mm Dynamic', rawMbs: 5500, shockMult: 1.35 }
+        };
+
+        const maDescriptions = {
+            1: '1:1 Direct Haul (No mechanical advantage; 1 ft pull = 1 ft load travel)',
+            2: '2:1 Drop Loop (Simple 2:1 advantage; 2 ft pull = 1 ft load travel)',
+            3: '3:1 Z-Rig (Compound/Z-rig 3:1 advantage; 3 ft pull = 1 ft load travel)',
+            4: '4:1 Piggyback (4:1 advantage; 4 ft pull = 1 ft load travel)',
+            6: '6:1 Drop Loop + 3:1 (2:1 drop loop feeding a 3:1 haul system; 6 ft pull = 1 ft load travel)'
+        };
 
         const ergDatabase = {
-            "1203": { name: "Gasoline / Motor Fuel", guide: "128", hazard: "Flammable liquid. Vapors may form explosive mixtures with air.", action: "Keep ignition sources away. Isolate spill 50m in all directions. Use foam or dry chemical." },
-            "1075": { name: "Liquefied Petroleum Gas (Propane)", guide: "115", hazard: "Extremely flammable gas. Containers may explode when heated.", action: "Evacuate 1.6 km (1 mile) in all directions if tank fire is involved. Eliminate ignition sources." },
-            "1202": { name: "Diesel Fuel / Gas Oil", guide: "128", hazard: "Combustible liquid.", action: "Stop leak if safe. Contain spill with earth or sand. Use water fog to cool containers." },
-            "1993": { name: "Flammable Liquid, N.O.S.", guide: "128", hazard: "Flammable liquid hazard.", action: "Isolate spill area. Wear positive pressure SCBA and full protective turnout gear." },
-            "1017": { name: "Chlorine", guide: "124", hazard: "Toxic gas. Corrosive and oxidizing.", action: "Initial isolation distance: 100 meters downwind. Full Hazmat Level-A entry required." },
-            "1005": { name: "Anhydrous Ammonia", guide: "125", hazard: "Toxic and corrosive gas. Inhalation may be fatal.", action: "Isolate spill 100m. Wear chemical protective suit and SCBA. Spray water fog to reduce vapors." },
-            "1044": { name: "Fire Extinguishers", guide: "126", hazard: "Compressed non-flammable gas under pressure.", action: "Protect from mechanical shock. Isolate area if vessel breaches." },
-            "3475": { name: "Hydrogen in a Metal Hydride Storage System", guide: "115", hazard: "Extremely flammable gas.", action: "Eliminate all ignition sources. Evacuate downwind." }
+            "1203": { name: "Gasoline / Motor Fuel", guide: "128", hazard: "Flammable liquid; vapors may form explosive mixtures with air.", action: "Eliminate ignition sources, isolate spill, use foam/dry chemical/CO2." },
+            "1075": { name: "Liquefied Petroleum Gas (Propane)", guide: "115", hazard: "Extremely flammable gas; tank BLEVE/rupture risk if heated.", action: "Eliminate ignition sources, isolate/evacuate per tank involvement, cool if safe." },
+            "1202": { name: "Diesel Fuel / Gas Oil", guide: "128", hazard: "Combustible liquid.", action: "Contain spill, eliminate ignition sources, use water fog/foam/dry chemical." },
+            "1993": { name: "Flammable Liquid, N.O.S.", guide: "128", hazard: "Flammable liquid hazard.", action: "Isolate area, wear appropriate PPE/SCBA, apply compatible extinguishing media." },
+            "1017": { name: "Chlorine", guide: "124", hazard: "Toxic, corrosive oxidizer gas.", action: "Isolate downwind, avoid water contact with leaks, full hazmat PPE required." },
+            "1005": { name: "Anhydrous Ammonia", guide: "125", hazard: "Toxic and corrosive gas/liquid.", action: "Isolate area, water spray may knock down vapor, full chemical PPE required." }
         };
+
+        function resetDefaults() {
+            state = { ...DEFAULT_STATE };
+            document.querySelectorAll('.btn-group').forEach(group => {
+                const key = group.getAttribute('data-key');
+                const val = String(state[key]);
+                group.querySelectorAll('.opt-btn').forEach(btn => {
+                    const onclickStr = btn.getAttribute('onclick') || '';
+                    const match = onclickStr.match(/,\s*'?([^')]+)'?\s*\)/);
+                    btn.classList.toggle('active', match && match[1] === val);
+                });
+            });
+            ['numPatients', 'numRescuers', 'haulTeam'].forEach(k => {
+                const el = document.getElementById(`val-${k}`);
+                if (el) el.innerText = state[k];
+            });
+            calculate();
+            if (document.getElementById('screen-diagram').classList.contains('active')) {
+                drawDiagram();
+            }
+        }
 
         function queryERG() {
             const query = document.getElementById('ergSearchInput').value.trim().toUpperCase();
             const output = document.getElementById('ergResultOutput');
             if (!query) {
-                output.innerHTML = "<em>Enter a UN number or material keyword above to query the embedded ERG database...</em>";
+                output.innerHTML = "<em>Enter a UN number or material name above to query the quick reference cache...</em>";
                 return;
             }
             let found = ergDatabase[query];
             if (!found) {
-                for (let key in ergDatabase) {
+                for (const key in ergDatabase) {
                     if (ergDatabase[key].name.toUpperCase().includes(query)) {
                         found = ergDatabase[key];
                         break;
@@ -957,56 +1141,42 @@
                 }
             }
             if (found) {
-                output.innerHTML = `<strong>Match Found:</strong> ${found.name}<br/>
-                <strong>ERG Guide Number:</strong> Guide ${found.guide} (Transport Canada 2024)<br/>
-                <strong>Hazard Characteristics:</strong> ${found.hazard}<br/>
-                <strong>Initial Response Action:</strong> ${found.action}`;
+                output.innerHTML = `<strong>Material:</strong> ${found.name}<br/>
+                <strong>Reference Guide:</strong> Guide ${found.guide}<br/>
+                <strong>Hazards:</strong> ${found.hazard}<br/>
+                <strong>Initial Action:</strong> ${found.action}`;
             } else {
-                output.innerHTML = `<span style="color: var(--accent-yellow);">No direct match in quick cache. Consult full Transport Canada ERG 2024 mobile app or manual for UN code "${query}".</span>`;
+                output.innerHTML = `<span style="color: var(--accent-yellow);">"${query}" is not in the offline quick cache. Check the official Transport Canada ERG link below.</span>`;
             }
         }
 
         function launchModule(moduleName) {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-            document.getElementById('hubBackBtn').style.display = 'block';
+            document.getElementById('hubBackBtn').style.display = 'inline-block';
+            document.getElementById('ropeNavTabs').style.display = 'none';
 
-            if (moduleName === 'rope') {
-                document.getElementById('screen-inputs').classList.add('active');
+            const map = {
+                rope: { screen: 'screen-inputs', sub: 'Rope Systems & MA Calculator', showTabs: true },
+                knots: { screen: 'screen-knots', sub: 'Standalone Knots & Hitches Pictographs', showTabs: false },
+                packaging: { screen: 'screen-packaging', sub: 'Patient Packaging & Litter Pictographs', showTabs: false },
+                extrication: { screen: 'screen-extrication', sub: 'Heavy Vehicle Extrication & ERG', showTabs: false },
+                collapse: { screen: 'screen-collapse', sub: 'Advanced Structural Collapse & Shoring', showTabs: false },
+                swiftwater: { screen: 'screen-swiftwater', sub: 'Swift Water Rescue & Alberta Rivers', showTabs: false },
+                surfacewater: { screen: 'screen-surfacewater', sub: 'Surface Water & Boat Operations', showTabs: false },
+                confined: { screen: 'screen-confined', sub: 'Confined Space Rescue', showTabs: false },
+                ice: { screen: 'screen-ice', sub: 'Comprehensive Ice Rescue', showTabs: false },
+                medical: { screen: 'screen-medical', sub: 'Field Medical & Alberta Scopes', showTabs: false }
+            };
+
+            const cfg = map[moduleName];
+            if (!cfg) return;
+
+            document.getElementById(cfg.screen).classList.add('active');
+            document.getElementById('headerSubtitle').innerText = cfg.sub;
+            if (cfg.showTabs) {
                 document.getElementById('ropeNavTabs').style.display = 'flex';
-                document.getElementById('headerSubtitle').innerText = 'Rope Rescue & Knot Efficiency Hub';
+                document.querySelectorAll('#ropeNavTabs .tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
                 calculate();
-            } else if (moduleName === 'packaging') {
-                document.getElementById('screen-packaging').classList.add('active');
-                document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Patient Packaging & Litter Bridle Hub';
-            } else if (moduleName === 'swiftwater') {
-                document.getElementById('screen-swiftwater').classList.add('active');
-                document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Swift Water Rescue & Alberta Rivers Data Hub';
-            } else if (moduleName === 'extrication') {
-                document.getElementById('screen-extrication').classList.add('active');
-                document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Heavy Vehicle Extrication, EV & ERG 2024 Hub';
-            } else if (moduleName === 'collapse') {
-                document.getElementById('screen-collapse').classList.add('active');
-                document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Advanced Structural Collapse & Shoring Hub';
-            } else if (moduleName === 'surfacewater') {
-                document.getElementById('screen-surfacewater').classList.add('active');
-                document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Surface Water Operations & Boat Handling Hub';
-            } else if (moduleName === 'confined') {
-                document.getElementById('screen-confined').classList.add('active');
-                document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Confined Space Rescue & Atmospheric Hub';
-            } else if (moduleName === 'ice') {
-                document.getElementById('screen-ice').classList.add('active');
-                document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Comprehensive Ice Rescue & Load Metrics Hub';
-            } else if (moduleName === 'medical') {
-                document.getElementById('screen-medical').classList.add('active');
-                document.getElementById('ropeNavTabs').style.display = 'none';
-                document.getElementById('headerSubtitle').innerText = 'Field Medical Care & Alberta Scopes Hub';
             }
         }
 
@@ -1019,15 +1189,15 @@
         }
 
         function switchRopeTab(tabId, btnEl) {
-            document.querySelectorAll('#screen-inputs, #screen-analysis, #screen-knots, #screen-diagram').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#screen-inputs, #screen-analysis, #screen-diagram').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('#ropeNavTabs .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             if (btnEl) btnEl.classList.add('active');
-            
+
             if (tabId === 'screen-analysis') {
                 calculate();
-            } else if (tabId === 'screen-diagram') { 
-                drawDiagram(); 
+            } else if (tabId === 'screen-diagram') {
+                drawDiagram();
             }
         }
 
@@ -1037,6 +1207,9 @@
             btn.classList.add('active');
             state[key] = value;
             calculate();
+            if (document.getElementById('screen-diagram').classList.contains('active')) {
+                drawDiagram();
+            }
         }
 
         function adjustValue(key, delta) {
@@ -1044,250 +1217,310 @@
             const valEl = document.getElementById(`val-${key}`);
             if (valEl) valEl.innerText = state[key];
             calculate();
+            if (document.getElementById('screen-diagram').classList.contains('active')) {
+                drawDiagram();
+            }
         }
 
         function calculate() {
-            const personnelWeight = (state.numPatients + state.numRescuers) * state.avgWeight; 
-            const litterWeight = state.useLitter ? 30 : 0; 
-            const totalWeightLbs = personnelWeight + litterWeight; 
-            const totalWeightKg = totalWeightLbs * 0.453592; 
-            const totalWeightKn = totalWeightLbs * 0.00444822; 
-            const rad = state.angle * (Math.PI / 180); 
-            const slopeForceLbs = totalWeightLbs * Math.sin(rad); 
-            
-            // Apply edge friction loss multiplier
+            const personnelWeight = (state.numPatients + state.numRescuers) * state.avgWeight;
+            const litterWeight = state.useLitter ? 30 : 0;
+            const totalWeightLbs = personnelWeight + litterWeight;
+            const totalWeightKg = totalWeightLbs * 0.453592;
+            const totalWeightKn = totalWeightLbs * 0.00444822;
+
+            // For overhang (>90 deg), gravitational pull acts vertically (sin(90 deg) = 1.0)
+            const effectiveAngleRad = Math.min(state.angle, 90) * (Math.PI / 180);
+            const slopeForceLbs = totalWeightLbs * Math.sin(effectiveAngleRad);
+
             const frictionMultiplier = 1 + (state.frictionLoss / 100);
             const adjustedSlopeForce = slopeForceLbs * frictionMultiplier;
 
-            // Tension shared across TTS vs single Main line
-            const tensionPerLineLbs = state.riggingStrategy === 'tts' ? adjustedSlopeForce / 2 : adjustedSlopeForce; 
-            
-            // Dynamic Shock Evaluation (If single line fails in TTS or Main slips)
-            const shockMultiplier = state.ropeType === 'dynamic' ? 1.4 : 1.85;
-            const singleLineFailShockLbs = adjustedSlopeForce * shockMultiplier;
+            const isTTS = state.riggingStrategy === 'tts';
+            const workingLineLoadLbs = isTTS ? adjustedSlopeForce / 2 : adjustedSlopeForce;
 
-            // Rope rating & knot reduction (~75% retention)
-            let rawRopeMbs = 9000;
-            if (state.ropeType === 'static11') rawRopeMbs = 6700;
-            else if (state.ropeType === 'dynamic') rawRopeMbs = 5500;
-            const knotEfficiency = 0.75;
-            const effectiveRopeMbs = rawRopeMbs * knotEfficiency;
+            // Governing load for single-line / post-failure check is adjustedSlopeForce
+            const spec = ropeSpecs[state.ropeType] || ropeSpecs.static125;
+            const knotRetention = 0.75;
+            const effectiveRopeMbs = spec.rawMbs * knotRetention;
 
-            // Safety Factor: Evaluated against single-line failure load to prevent catastrophic failure
-            const safetyFactor = adjustedSlopeForce > 0 ? (effectiveRopeMbs / adjustedSlopeForce).toFixed(1) : "N/A"; 
+            const shockLoadLbs = workingLineLoadLbs * spec.shockMult;
+            const safetyFactor = adjustedSlopeForce > 0 ? (effectiveRopeMbs / adjustedSlopeForce) : 0;
 
-            // Mechanical Advantage & Haul Force
-            const mechanicalAdvantage = state.maSystem;
-            const haulForceTotalLbs = adjustedSlopeForce / mechanicalAdvantage;
-            const perRescuerPullLbs = state.haulTeam > 0 ? (haulForceTotalLbs / state.haulTeam) : haulForceTotalLbs;
+            const ma = state.maSystem || 1;
+            // Realistic haul efficiency (~85% for simple/2:1, ~75% for compound/3:1/4:1/6:1)
+            const maEfficiency = ma <= 2 ? 0.85 : 0.75;
+            const haulForceLbs = adjustedSlopeForce / (ma * maEfficiency);
+            const perRescuerPullLbs = state.haulTeam > 0 ? (haulForceLbs / state.haulTeam) : haulForceLbs;
 
-            const anchorValLbs = anchorStrengths[state.anchorType] || 4000; 
-            const highDirMbsLbs = 8000; 
+            const anchorValLbs = anchorStrengths[state.anchorType] || 4000;
+            const highDirMbsLbs = 8000;
 
-            if (document.getElementById('res-total-weight')) {
-                document.getElementById('res-total-weight').innerText = `${totalWeightLbs.toFixed(0)} lbs`; 
-                document.getElementById('res-total-weight-sub').innerText = `${totalWeightKg.toFixed(0)} kg / ${totalWeightKn.toFixed(2)} kN`; 
-                document.getElementById('res-rope-load').innerText = `${tensionPerLineLbs.toFixed(0)} lbs / line`; 
-                document.getElementById('res-rope-load-sub').innerText = `${(tensionPerLineLbs*0.453592).toFixed(0)} kg / ${(tensionPerLineLbs*0.00444822).toFixed(2)} kN`; 
-                document.getElementById('res-shock-load').innerText = `${singleLineFailShockLbs.toFixed(0)} lbs`;
-                document.getElementById('res-shock-sub').innerText = `Drop Factor Shock (${state.ropeType.toUpperCase()})`;
-                document.getElementById('res-haul-force').innerText = `${haulForceTotalLbs.toFixed(0)} lbs`;
-                document.getElementById('res-haul-sub').innerText = `~${perRescuerPullLbs.toFixed(0)} lbs / rescuer (${state.haulTeam} on team)`;
+            document.getElementById('res-total-weight').innerText = `${totalWeightLbs.toFixed(0)} lbs`;
+            document.getElementById('res-total-weight-sub').innerText = `${totalWeightKg.toFixed(0)} kg / ${totalWeightKn.toFixed(2)} kN`;
+
+            document.getElementById('res-rope-load').innerText = `${workingLineLoadLbs.toFixed(0)} lbs`;
+            document.getElementById('res-rope-load-sub').innerText = `${(workingLineLoadLbs * 0.453592).toFixed(0)} kg / ${(workingLineLoadLbs * 0.00444822).toFixed(2)} kN`;
+
+            document.getElementById('res-shock-load').innerText = `${shockLoadLbs.toFixed(0)} lbs`;
+            document.getElementById('res-shock-sub').innerText = `${spec.shockMult}× line load (${spec.label})`;
+
+            const sfEl = document.getElementById('res-safety-factor');
+            const sfCard = document.getElementById('card-sf');
+            const sfSub = document.getElementById('res-sf-sub');
+            sfEl.innerText = adjustedSlopeForce > 0 ? `${safetyFactor.toFixed(1)} : 1` : 'N/A';
+            sfSub.innerText = isTTS ? 'Against single-line governing load' : 'Against main line load';
+
+            document.getElementById('res-ma-label').innerText = `${ma}:1`;
+            document.getElementById('res-haul-force').innerText = `${haulForceLbs.toFixed(0)} lbs`;
+            document.getElementById('res-haul-sub').innerText = state.haulTeam > 0
+                ? `~${perRescuerPullLbs.toFixed(0)} lbs / rescuer (${state.haulTeam} hauling)`
+                : 'No haul team specified';
+
+            const warnings = [];
+            if (adjustedSlopeForce > 0 && safetyFactor < 10) {
+                sfCard.className = 'metric-card alert';
+                warnings.push(`Safety factor (${safetyFactor.toFixed(1)}:1) is below the 10:1 rescue benchmark.`);
+            } else {
+                sfCard.className = 'metric-card good';
             }
-            
-            const sfElement = document.getElementById('res-safety-factor'); 
-            const sfCard = document.getElementById('card-sf'); 
+
             const haulCard = document.getElementById('card-haul');
-            const alertBanner = document.getElementById('safetyAlertBanner'); 
-
-            let alertTriggers = [];
-
-            if (sfElement && sfCard) {
-                sfElement.innerText = `${safetyFactor} : 1`; 
-                if (parseFloat(safetyFactor) < 10) {
-                    sfCard.className = "metric-card alert"; 
-                    alertTriggers.push(`System safety factor (${safetyFactor}:1) is below the 10:1 CSA general rescue standard.`);
-                } else {
-                    sfCard.className = "metric-card good"; 
-                } 
+            if (perRescuerPullLbs > 60) {
+                haulCard.className = 'metric-card alert';
+                warnings.push(`Estimated pull (~${perRescuerPullLbs.toFixed(0)} lbs/rescuer) exceeds ~60 lbs ergonomic guideline — consider 2:1, 3:1, 4:1, or 6:1 (Drop Loop + 3:1).`);
+            } else {
+                haulCard.className = 'metric-card good';
             }
 
-            if (haulCard) {
-                if (perRescuerPullLbs > 60) {
-                    haulCard.className = "metric-card alert";
-                    alertTriggers.push(`Haul team force (${perRescuerPullLbs.toFixed(0)} lbs/person) exceeds ergonomic limit (~50-60 lbs). Increase MA or team size.`);
-                } else {
-                    haulCard.className = "metric-card good";
-                }
-            }
-
-            if (alertBanner) {
-                if (alertTriggers.length > 0) {
-                    document.getElementById('alertBannerText').innerHTML = alertTriggers.join('<br/>');
-                    alertBanner.classList.add('visible');
-                } else {
-                    alertBanner.classList.remove('visible');
-                }
+            const banner = document.getElementById('safetyAlertBanner');
+            if (warnings.length > 0) {
+                document.getElementById('alertBannerText').innerHTML = warnings.join('<br/>');
+                banner.classList.add('visible');
+            } else {
+                banner.classList.remove('visible');
             }
 
             const components = [
-                { name: `Anchor Point (${state.anchorType.toUpperCase()})`, capacity: anchorValLbs }, 
-                { name: `Main Line Rope (${state.ropeType} - Knot Dressed)`, capacity: effectiveRopeMbs }, 
-                { name: `High Directional Focal Point`, capacity: highDirMbsLbs }, 
-                { name: `General Use Connectors (~40 kN)`, capacity: 8992 }, 
-                { name: `Technical Hardware / Carabiners (~25 kN)`, capacity: 5620 } 
-            ]; 
-            components.sort((a, b) => (a.capacity / adjustedSlopeForce) - (b.capacity / adjustedSlopeForce)); 
-            
-            const weakestListHtml = components.slice(0, 3).map((item, idx) => `
+                { name: `Anchor (${state.anchorType.toUpperCase()})`, capacity: anchorValLbs },
+                { name: `${spec.label} (Knot-Dressed ~75%)`, capacity: effectiveRopeMbs },
+                { name: 'High Directional System', capacity: highDirMbsLbs },
+                { name: 'General Use Hardware (~40 kN)', capacity: 8992 },
+                { name: 'Technical Use Hardware (~25 kN)', capacity: 5620 }
+            ];
+            const denom = Math.max(adjustedSlopeForce, 1);
+            components.sort((a, b) => (a.capacity / denom) - (b.capacity / denom));
+
+            document.getElementById('weakestGearList').innerHTML = components.slice(0, 3).map((item, idx) => `
                 <li class="weakest-item">
-                    <strong>#${idx + 1}: ${item.name}</strong> — Effective Working MBS: ~${item.capacity.toFixed(0)} lbs (${(item.capacity*0.00444822).toFixed(1)} kN)
+                    <strong>#${idx + 1}: ${item.name}</strong> — ~${item.capacity.toFixed(0)} lbs (${(item.capacity * 0.00444822).toFixed(1)} kN)
                 </li>
-            `).join(''); 
-            
-            const weakestGearList = document.getElementById('weakestGearList');
-            if (weakestGearList) weakestGearList.innerHTML = weakestListHtml; 
-            
-            const breakdownText = document.getElementById('res-breakdown-text');
-            if (breakdownText) {
-                breakdownText.innerHTML = `
-                    <strong>Rigging Strategy:</strong> ${state.riggingStrategy === 'tts' ? 'Twin Tension System (Shared 50/50 Load)' : 'Main & Dedicated Belay System'}<br/>
-                    <strong>Mechanical Advantage:</strong> ${state.maSystem}:1 System (Total Haul Force: ${haulForceTotalLbs.toFixed(0)} lbs across ${state.haulTeam} rescuers)<br/>
-                    <strong>Friction Loss Multiplier:</strong> +${state.frictionLoss}% applied for edge/sheave friction.<br/>
-                    <strong>Slope Angle Multiplier:</strong> sin(${state.angle}°) = ${Math.sin(rad).toFixed(2)}<br/>
-                    <strong>Single Line Failure Shock Load:</strong> ${singleLineFailShockLbs.toFixed(0)} lbs (${(singleLineFailShockLbs*0.00444822).toFixed(1)} kN) evaluated for dynamic margin.
-                `; 
-            }
-        } 
+            `).join('');
+
+            const angleLabel = state.angle > 90 ? `${state.angle}° (Overhang)` : `${state.angle}°`;
+            document.getElementById('res-breakdown-text').innerHTML = `
+                <strong>Strategy:</strong> ${isTTS ? 'Twin Tension System (shared working tension; SF checked against governing single-line load)' : 'Main & Belay System'}<br/>
+                <strong>MA Selection:</strong> ${maDescriptions[ma]} (with ${(maEfficiency * 100).toFixed(0)}% system efficiency factor)<br/>
+                <strong>Slope & Friction:</strong> ${angleLabel} | +${state.frictionLoss}% friction loss applied<br/>
+                <strong>Governing Force:</strong> ${adjustedSlopeForce.toFixed(0)} lbs (${(adjustedSlopeForce * 0.00444822).toFixed(2)} kN)
+            `;
+        }
 
         function exportIncidentReport() {
             const personnelWeight = (state.numPatients + state.numRescuers) * state.avgWeight;
             const litterWeight = state.useLitter ? 30 : 0;
             const totalWeightLbs = personnelWeight + litterWeight;
-            const rad = state.angle * (Math.PI / 180);
-            const slopeForceLbs = totalWeightLbs * Math.sin(rad) * (1 + state.frictionLoss / 100);
-            const tensionPerLine = state.riggingStrategy === 'tts' ? slopeForceLbs / 2 : slopeForceLbs;
-            
-            let rawRopeMbs = 9000;
-            if (state.ropeType === 'static11') rawRopeMbs = 6700;
-            else if (state.ropeType === 'dynamic') rawRopeMbs = 5500;
-            const effectiveRopeMbs = rawRopeMbs * 0.75;
-            const safetyFactor = (effectiveRopeMbs / slopeForceLbs).toFixed(1);
+            const effectiveAngleRad = Math.min(state.angle, 90) * (Math.PI / 180);
+            const adjustedSlopeForce = totalWeightLbs * Math.sin(effectiveAngleRad) * (1 + state.frictionLoss / 100);
+            const spec = ropeSpecs[state.ropeType] || ropeSpecs.static125;
+            const effectiveRopeMbs = spec.rawMbs * 0.75;
+            const sf = adjustedSlopeForce > 0 ? (effectiveRopeMbs / adjustedSlopeForce).toFixed(1) : 'N/A';
 
-            const report = `=== CANADIAN TECHNICAL RESCUE INCIDENT REPORT ===
-Timestamp: ${new Date().toLocaleString()}
-Strategy: ${state.riggingStrategy.toUpperCase()} (${state.maSystem}:1 MA)
-Rope Spec: ${state.ropeType.toUpperCase()} (Dressed MBS: ${effectiveRopeMbs.toFixed(0)} lbs)
-Edge Friction Loss: +${state.frictionLoss}%
-Slope Angle: ${state.angle}°
-Total Suspended Mass: ${totalWeightLbs} lbs (${(totalWeightLbs * 0.453592).toFixed(0)} kg)
-Calculated Line Tension: ${tensionPerLine.toFixed(0)} lbs per line
-Single Line Failure Safety Factor: ${safetyFactor}:1
-Anchor Type: ${state.anchorType.toUpperCase()}
-Haul Team Effort: ${(slopeForceLbs / state.maSystem / state.haulTeam).toFixed(0)} lbs/person (${state.haulTeam} Rescuers)
-===================================================`;
+            const text = [
+                '=== CANADIAN TECHNICAL RESCUE INCIDENT SUMMARY ===',
+                `Timestamp: ${new Date().toLocaleString()}`,
+                `Strategy: ${state.riggingStrategy.toUpperCase()}`,
+                `Mechanical Advantage: ${state.maSystem}:1`,
+                `Rope: ${spec.label} (Knot-dressed MBS: ${effectiveRopeMbs.toFixed(0)} lbs)`,
+                `Angle: ${state.angle > 90 ? state.angle + ' deg (Overhang)' : state.angle + ' deg'}`,
+                `Friction Loss: +${state.frictionLoss}%`,
+                `Total Mass: ${totalWeightLbs} lbs (${(totalWeightLbs * 0.453592).toFixed(0)} kg)`,
+                `Governing Load: ${adjustedSlopeForce.toFixed(0)} lbs`,
+                `Safety Factor: ${sf}:1`,
+                `Anchor: ${state.anchorType.toUpperCase()}`,
+                '=================================================='
+            ].join('\n');
 
-            const blob = new Blob([report], { type: 'text/plain' });
+            const blob = new Blob([text], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Rescue_Incident_Report_${Date.now()}.txt`;
+            a.download = `Technical_Rescue_Summary_${Date.now()}.txt`;
             a.click();
             URL.revokeObjectURL(url);
         }
 
         function drawDiagram() {
-            const canvas = document.getElementById('diagramCanvas'); 
-            if (!canvas) return; 
-            const ctx = canvas.getContext('2d'); 
-            const w = canvas.width; 
-            const h = canvas.height; 
-            ctx.clearRect(0, 0, w, h); 
-            
-            // Draw background grid
-            ctx.strokeStyle = '#1e293b'; 
-            ctx.lineWidth = 1; 
-            for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); } 
-            for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); } 
-            
-            const edgeX = 350; 
-            const edgeY = 160; 
-            const rad = state.angle * (Math.PI / 180); 
-            const slopeLength = 180; 
-            const targetX = edgeX + Math.cos(rad) * slopeLength; 
-            const targetY = edgeY + Math.sin(rad) * slopeLength; 
-            
-            // Slope Terrain
-            ctx.fillStyle = '#1e293b'; 
-            ctx.strokeStyle = '#64748b'; 
-            ctx.lineWidth = 4; 
-            ctx.beginPath(); 
-            ctx.moveTo(0, edgeY); 
-            ctx.lineTo(edgeX, edgeY); 
-            ctx.lineTo(targetX, targetY); 
-            ctx.lineTo(targetX, h); 
-            ctx.lineTo(0, h); 
-            ctx.closePath(); 
-            ctx.fill(); 
-            ctx.stroke(); 
-            
-            // Anchor Rendering
-            const anchorX = 120; 
-            const anchorY = edgeY; 
-            if (state.anchorType === 'tree') {
-                ctx.fillStyle = '#8B4513'; ctx.fillRect(anchorX - 10, anchorY - 45, 20, 45); 
-                ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(anchorX, anchorY - 55, 30, 0, Math.PI * 2); ctx.fill(); 
-            } else if (state.anchorType === 'vehicle') {
-                ctx.fillStyle = '#ef4444'; ctx.fillRect(anchorX - 35, anchorY - 25, 60, 20); ctx.fillRect(anchorX - 20, anchorY - 40, 35, 15); 
-                ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(anchorX - 20, anchorY - 5, 8, 0, Math.PI * 2); ctx.arc(anchorX + 15, anchorY - 5, 8, 0, Math.PI * 2); ctx.fill(); 
+            const canvas = document.getElementById('diagramCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+
+            // Grid
+            ctx.strokeStyle = '#142033';
+            ctx.lineWidth = 1;
+            for (let x = 0; x <= w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+            for (let y = 0; y <= h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+
+            const edgeX = 360;
+            const edgeY = 145;
+            const ropeLen = 175;
+
+            // Compute target point for litter; for overhang (>90 deg), tuck slightly back under the lip so it hangs in open air
+            let targetX, targetY;
+            if (state.angle <= 90) {
+                const rad = state.angle * (Math.PI / 180);
+                targetX = edgeX + Math.cos(rad) * ropeLen;
+                targetY = edgeY + Math.sin(rad) * ropeLen;
             } else {
-                ctx.fillStyle = '#38bdf8'; ctx.fillRect(anchorX - 20, anchorY - 25, 40, 25); 
-            } 
-            ctx.fillStyle = '#f8fafc'; ctx.font = 'bold 12px sans-serif'; 
-            ctx.fillText(`Anchor (${state.anchorType.toUpperCase()})`, anchorX - 35, anchorY - 70); 
-            
-            // High Directional Frame
-            ctx.fillStyle = '#38bdf8'; 
-            ctx.fillRect(edgeX - 15, edgeY - 45, 12, 45); 
-            ctx.fillText('High Directional', edgeX - 45, anchorY - 50); 
-            
-            // Rigging Rope Lines
-            ctx.strokeStyle = state.ropeType === 'dynamic' ? '#f59e0b' : '#38bdf8'; 
-            ctx.lineWidth = 3; 
-            ctx.beginPath(); 
-            ctx.moveTo(anchorX, anchorY - 10); 
-            ctx.lineTo(edgeX, edgeY - 25); 
-            ctx.lineTo(targetX, targetY); 
-            ctx.stroke(); 
-            
-            // Rescuer Icon on Slope
-            const midX = edgeX + (targetX - edgeX) * 0.45; 
-            const midY = edgeY + (targetY - edgeY) * 0.45; 
+                const overhangRad = (state.angle - 90) * (Math.PI / 180);
+                targetX = edgeX - Math.sin(overhangRad) * 65;
+                targetY = edgeY + Math.cos(overhangRad) * ropeLen;
+            }
+
+            // Draw rock/terrain body so overhang leaves open air beneath the lip
+            ctx.fillStyle = '#1e293b';
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, edgeY);
+            ctx.lineTo(edgeX, edgeY);
+            if (state.angle <= 90) {
+                const rad = state.angle * (Math.PI / 180);
+                const faceEndX = edgeX + Math.cos(rad) * 240;
+                const faceEndY = edgeY + Math.sin(rad) * 240;
+                ctx.lineTo(faceEndX, faceEndY);
+                ctx.lineTo(faceEndX, h);
+            } else {
+                // Overhanging cliff lip angling inward/downward
+                ctx.lineTo(edgeX - 85, edgeY + 130);
+                ctx.lineTo(edgeX - 40, h);
+            }
+            ctx.lineTo(0, h);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Highlight edge lip
+            ctx.fillStyle = '#eab308';
+            ctx.beginPath();
+            ctx.arc(edgeX, edgeY, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Anchor
+            const anchorX = 115;
+            const anchorY = edgeY;
+            if (state.anchorType === 'tree') {
+                ctx.fillStyle = '#8b4513';
+                ctx.fillRect(anchorX - 8, anchorY - 40, 16, 40);
+                ctx.fillStyle = '#22c55e';
+                ctx.beginPath();
+                ctx.arc(anchorX, anchorY - 52, 26, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (state.anchorType === 'vehicle') {
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(anchorX - 30, anchorY - 22, 60, 16);
+                ctx.fillRect(anchorX - 18, anchorY - 34, 32, 12);
+                ctx.fillStyle = '#090d16';
+                ctx.beginPath();
+                ctx.arc(anchorX - 16, anchorY - 5, 6, 0, Math.PI * 2);
+                ctx.arc(anchorX + 16, anchorY - 5, 6, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillRect(anchorX - 16, anchorY - 24, 32, 24);
+            }
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText(`Anchor (${state.anchorType.toUpperCase()})`, anchorX - 40, anchorY - 84);
+
+            // High directional
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillRect(edgeX - 6, edgeY - 38, 12, 38);
+            ctx.fillText('High Directional', edgeX - 42, edgeY - 46);
+
+            // Main / TTS lines
+            ctx.strokeStyle = state.ropeType === 'dynamic11' ? '#f59e0b' : '#38bdf8';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(anchorX, anchorY - 12);
+            ctx.lineTo(edgeX, edgeY - 24);
+            ctx.lineTo(targetX, targetY);
+            ctx.stroke();
+
+            if (state.riggingStrategy === 'tts') {
+                ctx.strokeStyle = 'rgba(34, 197, 94, 0.85)';
+                ctx.setLineDash([6, 4]);
+                ctx.beginPath();
+                ctx.moveTo(anchorX, anchorY - 6);
+                ctx.lineTo(edgeX, edgeY - 18);
+                ctx.lineTo(targetX - 4, targetY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Rescuer marker along line
             if (state.numRescuers > 0) {
-                ctx.fillStyle = '#f97316'; ctx.beginPath(); ctx.arc(midX, midY - 15, 6, 0, Math.PI * 2); ctx.fill(); 
-                ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(midX, midY - 9); ctx.lineTo(midX, midY + 8); ctx.stroke(); 
-                ctx.fillText(`Rescuer (${state.numRescuers})`, midX + 10, midY); 
-            } 
-            
-            // Litter Packaging Rendering
-            ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3; 
-            ctx.strokeRect(targetX - 25, targetY - 12, 50, 24); 
-            ctx.beginPath(); 
-            ctx.moveTo(targetX - 15, targetY - 12); ctx.lineTo(targetX - 15, targetY + 12); 
-            ctx.moveTo(targetX + 15, targetY - 12); ctx.lineTo(targetX + 15, targetY + 12); 
-            ctx.stroke(); 
-            
+                const rx = edgeX + (targetX - edgeX) * 0.42;
+                const ry = edgeY + (targetY - edgeY) * 0.42;
+                ctx.fillStyle = '#f97316';
+                ctx.beginPath();
+                ctx.arc(rx, ry - 10, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.moveTo(rx, ry - 4);
+                ctx.lineTo(rx, ry + 10);
+                ctx.stroke();
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillText(`Rescuer (${state.numRescuers})`, rx + 12, ry + 4);
+            }
+
+            // Litter / Load
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 2.5;
+            ctx.strokeRect(targetX - 24, targetY - 10, 48, 20);
             if (state.numPatients > 0) {
-                ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(targetX, targetY, 5, 0, Math.PI * 2); ctx.fill(); 
-            } 
-            ctx.fillStyle = '#f8fafc'; 
-            ctx.fillText(`Rescue Basket / Litter (${state.numPatients} P)`, targetX - 55, targetY + 28); 
-            
-            // Angle Marker
-            ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; 
-            ctx.beginPath(); ctx.arc(edgeX, edgeY, 35, 0, rad); ctx.stroke(); 
-            ctx.fillStyle = '#ef4444'; ctx.fillText(`${state.angle}° Slope`, edgeX + 45, edgeY + 25); 
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(targetX, targetY, 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            const loadLabel = state.useLitter ? `Litter (${state.numPatients}P)` : `Load (${state.numPatients}P)`;
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillText(loadLabel, targetX - 32, targetY + 26);
+
+            // Angle & MA readout box
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 1;
+            ctx.fillRect(610, 20, 265, 92);
+            ctx.strokeRect(610, 20, 265, 92);
+
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText('RIGGING CONFIGURATION', 622, 40);
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = '12px sans-serif';
+            ctx.fillText(`Slope: ${state.angle > 90 ? state.angle + '° (Overhang)' : state.angle + '°'}`, 622, 60);
+            ctx.fillText(`MA: ${state.maSystem}:1 | Strategy: ${state.riggingStrategy.toUpperCase()}`, 622, 78);
+            ctx.fillText(`Rope: ${ropeSpecs[state.ropeType].label} (+${state.frictionLoss}% fric.)`, 622, 96);
         }
+
+        calculate();
     </script>
 </body>
 </html>
