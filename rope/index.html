@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rope Systems &amp; MA Calculator — Canadian Technical Rescue Hub</title>
+    <link rel="stylesheet" href="../shared/hub.css">
+    <style>
+        .sub-tabs { display: flex; background-color: rgba(15, 23, 42, 0.88); border-bottom: 1px solid var(--border-color); }
+        .sub-tab-btn { flex: 1; padding: 0.8rem; background: none; border: none; color: var(--text-muted); font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; font-size: 0.9rem; }
+        .sub-tab-btn.active { color: var(--accent-cyan); border-bottom-color: var(--accent-cyan); background-color: rgba(56, 189, 248, 0.08); }
+
+        .pane { display: none; animation: fadeIn 0.2s ease-in-out; }
+        .pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        .reset-btn { background-color: rgba(239, 68, 68, 0.12); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5); padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .reset-btn:hover { background-color: var(--accent-red); color: #fff; }
+
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
+        .field { margin-bottom: 1.15rem; }
+        .field label { display: block; font-size: 0.84rem; color: var(--text-muted); margin-bottom: 0.45rem; font-weight: 600; }
+        .btn-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .opt-btn { flex: 1; min-width: 76px; padding: 0.58rem 0.45rem; background-color: rgba(9, 13, 22, 0.65); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.15s ease-in-out; }
+        .opt-btn:hover { border-color: var(--accent-cyan); }
+        .opt-btn.active { background-color: var(--accent-cyan); color: #090d16; border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(56, 189, 248, 0.35); }
+
+        .stepper-control { display: flex; align-items: center; justify-content: space-between; background-color: rgba(9, 13, 22, 0.65); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem; }
+        .step-btn { background-color: var(--panel-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.4rem 0.9rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: all 0.1s; }
+        .step-btn:hover { background-color: var(--accent-cyan); color: #090d16; border-color: var(--accent-cyan); }
+        .step-value { font-weight: bold; font-size: 1.1rem; color: var(--accent-cyan); }
+
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.4rem; }
+        .metric-card { background: var(--panel-bg); backdrop-filter: blur(12px); padding: 1.1rem; border-radius: 10px; border: 1px solid var(--panel-border); border-left: 4px solid var(--accent-cyan); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25); }
+        .metric-card.alert { border-left-color: var(--accent-red); background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.35); }
+        .metric-card.good { border-left-color: var(--accent-green); }
+        .metric-title { font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .metric-value { font-size: 1.35rem; font-weight: bold; margin-top: 0.3rem; }
+        .metric-sub { font-size: 0.78rem; color: var(--accent-cyan); margin-top: 0.25rem; }
+
+        .alert-banner { background: rgba(239, 68, 68, 0.12); border: 1px solid var(--accent-red); padding: 1rem; border-radius: 8px; margin-bottom: 1.4rem; display: none; }
+        .alert-banner.visible { display: block; }
+        .weakest-list { list-style-type: none; margin-top: 0.5rem; }
+        .weakest-item { padding: 0.7rem; margin-bottom: 0.45rem; background-color: rgba(9, 13, 22, 0.55); border-left: 3px solid var(--accent-yellow); border-radius: 6px; font-size: 0.88rem; line-height: 1.4; }
+
+        .canvas-container { background: var(--panel-bg); backdrop-filter: blur(12px); border: 1px solid var(--panel-border); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; align-items: center; }
+        canvas { background-color: #03060a; border-radius: 6px; width: 100%; max-width: 900px; height: auto; aspect-ratio: 900 / 460; border: 1px solid var(--border-color); display: block; }
+
+        .action-btn { background: linear-gradient(135deg, var(--accent-cyan), #0284c7); color: #090d16; border: none; padding: 0.68rem 1.15rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.28); }
+        .action-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="../index.html">Canadian Technical Rescue Hub</a></h1>
+        <div class="header-nav">
+            <a class="nav-pill" href="../index.html">← Rescue Hub</a>
+            <button class="reset-btn" onclick="resetDefaults()">↺ Reset Defaults</button>
+            <span style="font-size: 0.82rem; color: var(--accent-cyan); font-weight: 600;">Rope Systems &amp; MA</span>
+        </div>
+    </header>
+
+    <nav class="sub-tabs">
+        <button class="sub-tab-btn active" onclick="switchPane('pane-inputs', this)">1. Operations &amp; Inputs</button>
+        <button class="sub-tab-btn" onclick="switchPane('pane-analysis', this)">2. Load &amp; Haul Math</button>
+        <button class="sub-tab-btn" onclick="switchPane('pane-diagram', this)">3. Lay Diagram</button>
+    </nav>
+
+    <main>
+        <section id="pane-inputs" class="pane active">
+            <div class="input-grid">
+                <div class="card">
+                    <h3>System Architecture</h3>
+                    <div class="field">
+                        <label>Rigging Strategy</label>
+                        <div class="btn-group" data-key="riggingStrategy">
+                            <button class="opt-btn active" onclick="selectOption(this, 'riggingStrategy', 'tts')">Twin Tension (TTS)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'riggingStrategy', 'mb')">Main &amp; Belay</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Mechanical Advantage (MA)</label>
+                        <div class="btn-group" data-key="maSystem">
+                            <button class="opt-btn" onclick="selectOption(this, 'maSystem', 1)">1:1 Direct</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'maSystem', 2)">2:1 Drop Loop</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'maSystem', 3)">3:1 Z-Rig</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'maSystem', 4)">4:1 Piggyback</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'maSystem', 6)">6:1 (Drop Loop + 3:1)</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Rope Type &amp; Spec</label>
+                        <div class="btn-group" data-key="ropeType">
+                            <button class="opt-btn active" onclick="selectOption(this, 'ropeType', 'static125')">12.5mm Static (40kN)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'ropeType', 'static11')">11mm Low-Elong (30kN)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'ropeType', 'dynamic11')">11mm Dynamic (24kN)</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Edge Friction Estimate</label>
+                        <div class="btn-group" data-key="frictionLoss">
+                            <button class="opt-btn active" onclick="selectOption(this, 'frictionLoss', 10)">Roller (~10%)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'frictionLoss', 30)">Edge Pad (~30%)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'frictionLoss', 50)">Rough Edge (~50%)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Load &amp; Personnel</h3>
+                    <div class="field">
+                        <label>Rescue Basket / Litter</label>
+                        <div class="btn-group" data-key="useLitter">
+                            <button class="opt-btn active" onclick="selectOption(this, 'useLitter', true)">Metal Litter (+30 lbs)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'useLitter', false)">Sked / Harness Only</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Number of Patients</label>
+                        <div class="stepper-control">
+                            <button class="step-btn" onclick="adjustValue('numPatients', -1)">-</button>
+                            <span class="step-value" id="val-numPatients">1</span>
+                            <button class="step-btn" onclick="adjustValue('numPatients', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Rescuers on Line / Litter</label>
+                        <div class="stepper-control">
+                            <button class="step-btn" onclick="adjustValue('numRescuers', -1)">-</button>
+                            <span class="step-value" id="val-numRescuers">1</span>
+                            <button class="step-btn" onclick="adjustValue('numRescuers', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Trained Haul Team Members</label>
+                        <div class="stepper-control">
+                            <button class="step-btn" onclick="adjustValue('haulTeam', -1)">-</button>
+                            <span class="step-value" id="val-haulTeam">4</span>
+                            <button class="step-btn" onclick="adjustValue('haulTeam', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Slope Profile &amp; Anchors</h3>
+                    <div class="field">
+                        <label>Average Weight / Person</label>
+                        <div class="btn-group" data-key="avgWeight">
+                            <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 180)">180 lbs</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'avgWeight', 220)">220 lbs</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 250)">250 lbs</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Slope Angle (Degrees / Overhang)</label>
+                        <div class="btn-group" data-key="angle">
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 20)">20° Low</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 35)">35° Slope</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 50)">50° Steep</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 75)">75° High</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'angle', 90)">90° Vertical</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'angle', 105)">Overhang (105°)</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Anchor Type / Rating</label>
+                        <div class="btn-group" data-key="anchorType">
+                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'industrial')">Industrial (6,000 lbs)</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'anchorType', 'tree')">Substantial Tree (4,000 lbs)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'vehicle')">Vehicle (2,500 lbs)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pane-analysis" class="pane">
+            <div id="safetyAlertBanner" class="alert-banner">
+                <h3 style="color: var(--accent-red); margin-bottom: 0.3rem;">⚠️ SYSTEM / ERGONOMIC WARNING</h3>
+                <p id="alertBannerText" style="font-size: 0.92rem; line-height: 1.45;"></p>
+            </div>
+
+            <div class="summary-grid">
+                <div class="metric-card">
+                    <div class="metric-title">Total Suspended Mass</div>
+                    <div class="metric-value" id="res-total-weight">0 lbs</div>
+                    <div class="metric-sub" id="res-total-weight-sub">0 kg / 0.00 kN</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Working Line Tension (+ Friction)</div>
+                    <div class="metric-value" id="res-rope-load">0 lbs</div>
+                    <div class="metric-sub" id="res-rope-load-sub">0 kg / 0.00 kN</div>
+                </div>
+                <div class="metric-card alert" style="border-left-color: var(--accent-yellow);">
+                    <div class="metric-title">Dynamic Shock Spike</div>
+                    <div class="metric-value" id="res-shock-load">0 lbs</div>
+                    <div class="metric-sub" id="res-shock-sub">Elongation-adjusted shock</div>
+                </div>
+                <div class="metric-card" id="card-sf">
+                    <div class="metric-title">System Safety Factor</div>
+                    <div class="metric-value" id="res-safety-factor">0.0 : 1</div>
+                    <div class="metric-sub" id="res-sf-sub">Target: 10:1 Minimum</div>
+                </div>
+                <div class="metric-card" id="card-haul">
+                    <div class="metric-title">Haul Force (<span id="res-ma-label">2:1</span>)</div>
+                    <div class="metric-value" id="res-haul-force">0 lbs</div>
+                    <div class="metric-sub" id="res-haul-sub">~0 lbs / rescuer</div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1.2rem;">
+                <button class="action-btn" onclick="exportIncidentReport()">📋 Export Incident Report (.TXT)</button>
+            </div>
+
+            <div class="card">
+                <h3>Top 3 Weakest System Components (Relative to Governing Load)</h3>
+                <ul id="weakestGearList" class="weakest-list"></ul>
+            </div>
+
+            <div class="card">
+                <h3>Rigging Physics &amp; MA System Notes</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;" id="res-breakdown-text"></p>
+            </div>
+        </section>
+
+        <section id="pane-diagram" class="pane">
+            <div class="canvas-container">
+                <h3 style="color: var(--accent-cyan); margin-bottom: 0.6rem; align-self: flex-start;">Slope, Overhang &amp; Rigging Lay Diagram</h3>
+                <canvas id="diagramCanvas" width="900" height="460"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const DEFAULT_STATE = {
+            riggingStrategy: 'tts', maSystem: 2, ropeType: 'static125',
+            useLitter: true, numPatients: 1, numRescuers: 1, haulTeam: 4,
+            avgWeight: 220, angle: 90, anchorType: 'tree', frictionLoss: 10
+        };
+        let state = { ...DEFAULT_STATE };
+
+        const anchorStrengths = { industrial: 6000, tree: 4000, vehicle: 2500 };
+        const ropeSpecs = {
+            static125: { label: '12.5mm Static', rawMbs: 9000, shockMult: 1.85 },
+            static11: { label: '11mm Low-Elongation', rawMbs: 6700, shockMult: 1.75 },
+            dynamic11: { label: '11mm Dynamic', rawMbs: 5500, shockMult: 1.35 }
+        };
+        const maDescriptions = {
+            1: '1:1 Direct Haul (1 ft pull = 1 ft load travel)',
+            2: '2:1 Drop Loop (2 ft pull = 1 ft load travel)',
+            3: '3:1 Z-Rig (3 ft pull = 1 ft load travel)',
+            4: '4:1 Piggyback (4 ft pull = 1 ft load travel)',
+            6: '6:1 Drop Loop + 3:1 (2:1 drop loop feeding a 3:1 haul; 6 ft pull = 1 ft load travel)'
+        };
+
+        function switchPane(paneId, btnEl) {
+            document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(paneId).classList.add('active');
+            if (btnEl) btnEl.classList.add('active');
+            if (paneId === 'pane-analysis') calculate();
+            else if (paneId === 'pane-diagram') drawDiagram();
+        }
+
+        function resetDefaults() {
+            state = { ...DEFAULT_STATE };
+            document.querySelectorAll('.btn-group').forEach(group => {
+                const key = group.getAttribute('data-key');
+                const val = String(state[key]);
+                group.querySelectorAll('.opt-btn').forEach(btn => {
+                    const match = (btn.getAttribute('onclick') || '').match(/,\s*'?([^')]+)'?\s*\)/);
+                    btn.classList.toggle('active', match && match[1] === val);
+                });
+            });
+            ['numPatients', 'numRescuers', 'haulTeam'].forEach(k => {
+                const el = document.getElementById(`val-${k}`);
+                if (el) el.innerText = state[k];
+            });
+            calculate();
+            if (document.getElementById('pane-diagram').classList.contains('active')) drawDiagram();
+        }
+
+        function selectOption(btn, key, value) {
+            btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state[key] = value;
+            calculate();
+            if (document.getElementById('pane-diagram').classList.contains('active')) drawDiagram();
+        }
+
+        function adjustValue(key, delta) {
+            state[key] = Math.max(0, state[key] + delta);
+            const el = document.getElementById(`val-${key}`);
+            if (el) el.innerText = state[key];
+            calculate();
+            if (document.getElementById('pane-diagram').classList.contains('active')) drawDiagram();
+        }
+
+        function calculate() {
+            const totalWeightLbs = ((state.numPatients + state.numRescuers) * state.avgWeight) + (state.useLitter ? 30 : 0);
+            const effectiveAngleRad = Math.min(state.angle, 90) * (Math.PI / 180);
+            const adjustedSlopeForce = totalWeightLbs * Math.sin(effectiveAngleRad) * (1 + state.frictionLoss / 100);
+            const isTTS = state.riggingStrategy === 'tts';
+            const workingLineLoadLbs = isTTS ? adjustedSlopeForce / 2 : adjustedSlopeForce;
+
+            const spec = ropeSpecs[state.ropeType] || ropeSpecs.static125;
+            const effectiveRopeMbs = spec.rawMbs * 0.75;
+            const shockLoadLbs = workingLineLoadLbs * spec.shockMult;
+            const safetyFactor = adjustedSlopeForce > 0 ? (effectiveRopeMbs / adjustedSlopeForce) : 0;
+
+            const ma = state.maSystem || 1;
+            const maEfficiency = ma <= 2 ? 0.85 : 0.75;
+            const haulForceLbs = adjustedSlopeForce / (ma * maEfficiency);
+            const perRescuerPullLbs = state.haulTeam > 0 ? (haulForceLbs / state.haulTeam) : haulForceLbs;
+
+            document.getElementById('res-total-weight').innerText = `${totalWeightLbs.toFixed(0)} lbs`;
+            document.getElementById('res-total-weight-sub').innerText = `${(totalWeightLbs * 0.453592).toFixed(0)} kg / ${(totalWeightLbs * 0.00444822).toFixed(2)} kN`;
+            document.getElementById('res-rope-load').innerText = `${workingLineLoadLbs.toFixed(0)} lbs`;
+            document.getElementById('res-rope-load-sub').innerText = `${(workingLineLoadLbs * 0.453592).toFixed(0)} kg / ${(workingLineLoadLbs * 0.00444822).toFixed(2)} kN`;
+            document.getElementById('res-shock-load').innerText = `${shockLoadLbs.toFixed(0)} lbs`;
+            document.getElementById('res-shock-sub').innerText = `${spec.shockMult}× line load (${spec.label})`;
+
+            const sfEl = document.getElementById('res-safety-factor');
+            const sfCard = document.getElementById('card-sf');
+            sfEl.innerText = adjustedSlopeForce > 0 ? `${safetyFactor.toFixed(1)} : 1` : 'N/A';
+            document.getElementById('res-sf-sub').innerText = isTTS ? 'Against single-line governing load' : 'Against main line load';
+
+            document.getElementById('res-ma-label').innerText = `${ma}:1`;
+            document.getElementById('res-haul-force').innerText = `${haulForceLbs.toFixed(0)} lbs`;
+            document.getElementById('res-haul-sub').innerText = state.haulTeam > 0
+                ? `~${perRescuerPullLbs.toFixed(0)} lbs / rescuer (${state.haulTeam} hauling)`
+                : 'No haul team specified';
+
+            const warnings = [];
+            if (adjustedSlopeForce > 0 && safetyFactor < 10) {
+                sfCard.className = 'metric-card alert';
+                warnings.push(`Safety factor (${safetyFactor.toFixed(1)}:1) is below the 10:1 rescue benchmark.`);
+            } else {
+                sfCard.className = 'metric-card good';
+            }
+
+            const haulCard = document.getElementById('card-haul');
+            if (perRescuerPullLbs > 60) {
+                haulCard.className = 'metric-card alert';
+                warnings.push(`Estimated pull (~${perRescuerPullLbs.toFixed(0)} lbs/rescuer) exceeds ~60 lbs ergonomic guideline.`);
+            } else {
+                haulCard.className = 'metric-card good';
+            }
+
+            const banner = document.getElementById('safetyAlertBanner');
+            if (warnings.length > 0) {
+                document.getElementById('alertBannerText').innerHTML = warnings.join('<br/>');
+                banner.classList.add('visible');
+            } else {
+                banner.classList.remove('visible');
+            }
+
+            const components = [
+                { name: `Anchor (${state.anchorType.toUpperCase()})`, capacity: anchorStrengths[state.anchorType] || 4000 },
+                { name: `${spec.label} (Knot-Dressed ~75%)`, capacity: effectiveRopeMbs },
+                { name: 'High Directional System', capacity: 8000 },
+                { name: 'General Use Hardware (~40 kN)', capacity: 8992 },
+                { name: 'Technical Use Hardware (~25 kN)', capacity: 5620 }
+            ];
+            const denom = Math.max(adjustedSlopeForce, 1);
+            components.sort((a, b) => (a.capacity / denom) - (b.capacity / denom));
+            document.getElementById('weakestGearList').innerHTML = components.slice(0, 3).map((item, idx) => `
+                <li class="weakest-item"><strong>#${idx + 1}: ${item.name}</strong> — ~${item.capacity.toFixed(0)} lbs (${(item.capacity * 0.00444822).toFixed(1)} kN)</li>
+            `).join('');
+
+            const angleLabel = state.angle > 90 ? `${state.angle}° (Overhang)` : `${state.angle}°`;
+            document.getElementById('res-breakdown-text').innerHTML = `
+                <strong>Strategy:</strong> ${isTTS ? 'Twin Tension System (SF checked against single-line governing load)' : 'Main & Belay System'}<br/>
+                <strong>MA Selection:</strong> ${maDescriptions[ma]} (${(maEfficiency * 100).toFixed(0)}% efficiency)<br/>
+                <strong>Slope &amp; Friction:</strong> ${angleLabel} | +${state.frictionLoss}% friction loss<br/>
+                <strong>Governing Force:</strong> ${adjustedSlopeForce.toFixed(0)} lbs (${(adjustedSlopeForce * 0.00444822).toFixed(2)} kN)
+            `;
+        }
+
+        function exportIncidentReport() {
+            const totalWeightLbs = ((state.numPatients + state.numRescuers) * state.avgWeight) + (state.useLitter ? 30 : 0);
+            const effectiveAngleRad = Math.min(state.angle, 90) * (Math.PI / 180);
+            const adjustedSlopeForce = totalWeightLbs * Math.sin(effectiveAngleRad) * (1 + state.frictionLoss / 100);
+            const spec = ropeSpecs[state.ropeType] || ropeSpecs.static125;
+            const sf = adjustedSlopeForce > 0 ? ((spec.rawMbs * 0.75) / adjustedSlopeForce).toFixed(1) : 'N/A';
+
+            const text = [
+                '=== CANADIAN TECHNICAL RESCUE INCIDENT SUMMARY ===',
+                `Timestamp: ${new Date().toLocaleString()}`,
+                `Strategy: ${state.riggingStrategy.toUpperCase()} | MA: ${state.maSystem}:1`,
+                `Rope: ${spec.label} | Angle: ${state.angle > 90 ? state.angle + ' deg (Overhang)' : state.angle + ' deg'}`,
+                `Friction Loss: +${state.frictionLoss}% | Total Mass: ${totalWeightLbs} lbs`,
+                `Governing Load: ${adjustedSlopeForce.toFixed(0)} lbs | SF: ${sf}:1`,
+                `Anchor: ${state.anchorType.toUpperCase()}`,
+                '=================================================='
+            ].join('\n');
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Technical_Rescue_Summary_${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function drawDiagram() {
+            const canvas = document.getElementById('diagramCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+
+            ctx.strokeStyle = '#142033'; ctx.lineWidth = 1;
+            for (let x = 0; x <= w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+            for (let y = 0; y <= h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+
+            const edgeX = 360, edgeY = 145, ropeLen = 175;
+            let targetX, targetY;
+            if (state.angle <= 90) {
+                const rad = state.angle * (Math.PI / 180);
+                targetX = edgeX + Math.cos(rad) * ropeLen;
+                targetY = edgeY + Math.sin(rad) * ropeLen;
+            } else {
+                const overhangRad = (state.angle - 90) * (Math.PI / 180);
+                targetX = edgeX - Math.sin(overhangRad) * 65;
+                targetY = edgeY + Math.cos(overhangRad) * ropeLen;
+            }
+
+            ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(0, edgeY); ctx.lineTo(edgeX, edgeY);
+            if (state.angle <= 90) {
+                const rad = state.angle * (Math.PI / 180);
+                ctx.lineTo(edgeX + Math.cos(rad) * 240, edgeY + Math.sin(rad) * 240);
+                ctx.lineTo(edgeX + Math.cos(rad) * 240, h);
+            } else {
+                ctx.lineTo(edgeX - 85, edgeY + 130);
+                ctx.lineTo(edgeX - 40, h);
+            }
+            ctx.lineTo(0, h); ctx.closePath(); ctx.fill(); ctx.stroke();
+
+            ctx.fillStyle = '#eab308'; ctx.beginPath(); ctx.arc(edgeX, edgeY, 5, 0, Math.PI * 2); ctx.fill();
+
+            const anchorX = 115, anchorY = edgeY;
+            if (state.anchorType === 'tree') {
+                ctx.fillStyle = '#8b4513'; ctx.fillRect(anchorX - 8, anchorY - 40, 16, 40);
+                ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(anchorX, anchorY - 52, 26, 0, Math.PI * 2); ctx.fill();
+            } else if (state.anchorType === 'vehicle') {
+                ctx.fillStyle = '#ef4444'; ctx.fillRect(anchorX - 30, anchorY - 22, 60, 16); ctx.fillRect(anchorX - 18, anchorY - 34, 32, 12);
+                ctx.fillStyle = '#090d16'; ctx.beginPath(); ctx.arc(anchorX - 16, anchorY - 5, 6, 0, Math.PI * 2); ctx.arc(anchorX + 16, anchorY - 5, 6, 0, Math.PI * 2); ctx.fill();
+            } else {
+                ctx.fillStyle = '#38bdf8'; ctx.fillRect(anchorX - 16, anchorY - 24, 32, 24);
+            }
+            ctx.fillStyle = '#f8fafc'; ctx.font = 'bold 12px sans-serif';
+            ctx.fillText(`Anchor (${state.anchorType.toUpperCase()})`, anchorX - 40, anchorY - 84);
+
+            ctx.fillStyle = '#38bdf8'; ctx.fillRect(edgeX - 6, edgeY - 38, 12, 38);
+            ctx.fillText('High Directional', edgeX - 42, edgeY - 46);
+
+            ctx.strokeStyle = state.ropeType === 'dynamic11' ? '#f59e0b' : '#38bdf8'; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(anchorX, anchorY - 12); ctx.lineTo(edgeX, edgeY - 24); ctx.lineTo(targetX, targetY); ctx.stroke();
+
+            if (state.riggingStrategy === 'tts') {
+                ctx.strokeStyle = 'rgba(34, 197, 94, 0.85)'; ctx.setLineDash([6, 4]);
+                ctx.beginPath(); ctx.moveTo(anchorX, anchorY - 6); ctx.lineTo(edgeX, edgeY - 18); ctx.lineTo(targetX - 4, targetY); ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            if (state.numRescuers > 0) {
+                const rx = edgeX + (targetX - edgeX) * 0.42;
+                const ry = edgeY + (targetY - edgeY) * 0.42;
+                ctx.fillStyle = '#f97316'; ctx.beginPath(); ctx.arc(rx, ry - 10, 6, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3.5;
+                ctx.beginPath(); ctx.moveTo(rx, ry - 4); ctx.lineTo(rx, ry + 10); ctx.stroke();
+                ctx.fillStyle = '#f8fafc'; ctx.fillText(`Rescuer (${state.numRescuers})`, rx + 12, ry + 4);
+            }
+
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2.5;
+            ctx.strokeRect(targetX - 24, targetY - 10, 48, 20);
+            if (state.numPatients > 0) {
+                ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(targetX, targetY, 5, 0, Math.PI * 2); ctx.fill();
+            }
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillText(`${state.useLitter ? 'Litter' : 'Load'} (${state.numPatients}P)`, targetX - 32, targetY + 26);
+
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.88)'; ctx.strokeStyle = '#334155'; ctx.lineWidth = 1;
+            ctx.fillRect(610, 20, 265, 92); ctx.strokeRect(610, 20, 265, 92);
+            ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 12px sans-serif';
+            ctx.fillText('RIGGING CONFIGURATION', 622, 40);
+            ctx.fillStyle = '#f8fafc'; ctx.font = '12px sans-serif';
+            ctx.fillText(`Slope: ${state.angle > 90 ? state.angle + '° (Overhang)' : state.angle + '°'}`, 622, 60);
+            ctx.fillText(`MA: ${state.maSystem}:1 | Strategy: ${state.riggingStrategy.toUpperCase()}`, 622, 78);
+            ctx.fillText(`Rope: ${ropeSpecs[state.ropeType].label} (+${state.frictionLoss}% fric.)`, 622, 96);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
