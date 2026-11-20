@@ -28,14 +28,14 @@
         .stepper-control { display: flex; align-items: center; justify-content: space-between; background-color: rgba(9, 13, 22, 0.65); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem; }
         .step-btn { background-color: var(--panel-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.4rem 0.9rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: all 0.1s; }
         .step-btn:hover { background-color: var(--accent-cyan); color: #090d16; border-color: var(--accent-cyan); }
-        .step-value { font-weight: bold; font-size: 1.1rem; color: var(--accent-cyan); }
+        .step-value { font-weight: bold; font-size: 1.05rem; color: var(--accent-cyan); }
 
-        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.4rem; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 1rem; margin-bottom: 1.4rem; }
         .metric-card { background: var(--panel-bg); backdrop-filter: blur(12px); padding: 1.1rem; border-radius: 10px; border: 1px solid var(--panel-border); border-left: 4px solid var(--accent-cyan); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25); }
         .metric-card.alert { border-left-color: var(--accent-red); background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.35); }
         .metric-card.good { border-left-color: var(--accent-green); }
         .metric-title { font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-        .metric-value { font-size: 1.35rem; font-weight: bold; margin-top: 0.3rem; }
+        .metric-value { font-size: 1.22rem; font-weight: bold; margin-top: 0.3rem; line-height: 1.25; }
         .metric-sub { font-size: 0.78rem; color: var(--accent-cyan); margin-top: 0.25rem; }
 
         .alert-banner { background: rgba(239, 68, 68, 0.12); border: 1px solid var(--accent-red); padding: 1rem; border-radius: 8px; margin-bottom: 1.4rem; display: none; }
@@ -43,8 +43,14 @@
         .weakest-list { list-style-type: none; margin-top: 0.5rem; }
         .weakest-item { padding: 0.7rem; margin-bottom: 0.45rem; background-color: rgba(9, 13, 22, 0.55); border-left: 3px solid var(--accent-yellow); border-radius: 6px; font-size: 0.88rem; line-height: 1.4; }
 
+        .checklist-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.65rem; margin-top: 0.5rem; }
+        .check-item { display: flex; align-items: flex-start; gap: 0.55rem; background: rgba(9, 13, 22, 0.6); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; cursor: pointer; font-size: 0.85rem; line-height: 1.35; transition: border-color 0.15s; }
+        .check-item:hover { border-color: var(--accent-cyan); }
+        .check-item.checked { border-color: var(--accent-green); background: rgba(34, 197, 94, 0.08); }
+        .check-item input { margin-top: 0.15rem; accent-color: var(--accent-green); width: 16px; height: 16px; cursor: pointer; }
+
         .canvas-container { background: var(--panel-bg); backdrop-filter: blur(12px); border: 1px solid var(--panel-border); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; align-items: center; }
-        canvas { background-color: #03060a; border-radius: 6px; width: 100%; max-width: 920px; height: auto; aspect-ratio: 920 / 480; border: 1px solid var(--border-color); display: block; }
+        canvas { background-color: #03060a; border-radius: 6px; width: 100%; max-width: 940px; height: auto; aspect-ratio: 940 / 500; border: 1px solid var(--border-color); display: block; }
 
         .action-btn { background: linear-gradient(135deg, var(--accent-cyan), #0284c7); color: #090d16; border: none; padding: 0.68rem 1.15rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.28); }
         .action-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
@@ -62,7 +68,7 @@
 
     <nav class="sub-tabs">
         <button class="sub-tab-btn active" onclick="switchPane('pane-inputs', this)">1. Operations &amp; Inputs</button>
-        <button class="sub-tab-btn" onclick="switchPane('pane-analysis', this)">2. Load &amp; Haul Math</button>
+        <button class="sub-tab-btn" onclick="switchPane('pane-analysis', this)">2. Load, Haul &amp; Resets</button>
         <button class="sub-tab-btn" onclick="switchPane('pane-diagram', this)">3. Lay Diagram</button>
     </nav>
 
@@ -72,6 +78,14 @@
                 <div class="card">
                     <h3>System Architecture</h3>
                     <div class="field">
+                        <label>Operation Mode</label>
+                        <div class="btn-group" data-key="opMode">
+                            <button class="opt-btn active" onclick="selectOption(this, 'opMode', 'raise')">Raise / Haul</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'opMode', 'lower')">Lower / Brake</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'opMode', 'pickoff')">Pickoff</button>
+                        </div>
+                    </div>
+                    <div class="field">
                         <label>Rigging Strategy</label>
                         <div class="btn-group" data-key="riggingStrategy">
                             <button class="opt-btn active" onclick="selectOption(this, 'riggingStrategy', 'tts')">Twin Tension (TTS)</button>
@@ -79,10 +93,10 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label>High Point (High Directional Frame)</label>
+                        <label>High Point (Arizona Vortex)</label>
                         <div class="btn-group" data-key="highPoint">
-                            <button class="opt-btn active" onclick="selectOption(this, 'highPoint', true)">High Point (Elevated HD)</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'highPoint', false)">None (Edge Roller Only)</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'highPoint', true)">Arizona Vortex</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'highPoint', false)">None (Edge Roller)</button>
                         </div>
                     </div>
                     <div class="field">
@@ -114,12 +128,19 @@
                 </div>
 
                 <div class="card">
-                    <h3>Load &amp; Personnel</h3>
+                    <h3>Stokes Litter, Personnel &amp; Span</h3>
                     <div class="field">
-                        <label>Rescue Basket / Litter</label>
+                        <label>Stokes Basket Orientation</label>
+                        <div class="btn-group" data-key="litterOrientation">
+                            <button class="opt-btn active" onclick="selectOption(this, 'litterOrientation', 'horizontal')">Horizontal</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'litterOrientation', 'vertical')">Vertical</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Stokes Basket Mass Allowance</label>
                         <div class="btn-group" data-key="useLitter">
-                            <button class="opt-btn active" onclick="selectOption(this, 'useLitter', true)">Metal Litter (+30 lbs)</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'useLitter', false)">Sked / Harness Only</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'useLitter', true)">Stokes Litter (+30 lbs / 0.13 kN)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'useLitter', false)">Patient Only (0 lbs / 0.00 kN)</button>
                         </div>
                     </div>
                     <div class="field">
@@ -139,11 +160,27 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label>Trained Haul Team Members</label>
+                        <label>Trained Haul / Brake Team Members</label>
                         <div class="stepper-control">
                             <button class="step-btn" onclick="adjustValue('haulTeam', -1)">-</button>
                             <span class="step-value" id="val-haulTeam">4</span>
                             <button class="step-btn" onclick="adjustValue('haulTeam', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Vertical Travel Distance (ft / m)</label>
+                        <div class="stepper-control">
+                            <button class="step-btn" onclick="adjustValue('travelFt', -10, 10)">-</button>
+                            <span class="step-value" id="val-travelFt">100 ft (30.5 m)</span>
+                            <button class="step-btn" onclick="adjustValue('travelFt', 10, 10)">+</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Usable Haul Stroke per Reset (ft / m)</label>
+                        <div class="stepper-control">
+                            <button class="step-btn" onclick="adjustValue('strokeFt', -5, 5)">-</button>
+                            <span class="step-value" id="val-strokeFt">15 ft (4.6 m)</span>
+                            <button class="step-btn" onclick="adjustValue('strokeFt', 5, 5)">+</button>
                         </div>
                     </div>
                 </div>
@@ -153,9 +190,9 @@
                     <div class="field">
                         <label>Average Weight / Person</label>
                         <div class="btn-group" data-key="avgWeight">
-                            <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 180)">180 lbs</button>
-                            <button class="opt-btn active" onclick="selectOption(this, 'avgWeight', 220)">220 lbs</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 250)">250 lbs</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 180)">180 lbs (0.80 kN)</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'avgWeight', 220)">220 lbs (0.98 kN)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'avgWeight', 250)">250 lbs (1.11 kN)</button>
                         </div>
                     </div>
                     <div class="field">
@@ -172,11 +209,23 @@
                     <div class="field">
                         <label>Anchor Type / Rating</label>
                         <div class="btn-group" data-key="anchorType">
-                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'industrial')">Industrial (6,000 lbs)</button>
-                            <button class="opt-btn active" onclick="selectOption(this, 'anchorType', 'tree')">Substantial Tree (4,000 lbs)</button>
-                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'vehicle')">Vehicle (2,500 lbs)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'industrial')">Industrial (6,000 lbs / 26.7 kN)</button>
+                            <button class="opt-btn active" onclick="selectOption(this, 'anchorType', 'tree')">Tree (4,000 lbs / 17.8 kN)</button>
+                            <button class="opt-btn" onclick="selectOption(this, 'anchorType', 'vehicle')">Vehicle (2,500 lbs / 11.1 kN)</button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Pre-Load Rigging Checklist (<span id="checklist-count">0 / 6</span> Complete)</h3>
+                <div class="checklist-grid" id="riggingChecklist">
+                    <label class="check-item"><input type="checkbox" onchange="updateChecklist()"><span><strong>Anchors &amp; Angles:</strong> Primary/backup anchors rated &amp; high-point/Vortex guy lines secured.</span></label>
+                    <label class="check-item"><input type="checkbox" onchange="updateChecklist()"><span><strong>Edge &amp; Lip Protection:</strong> Rollers/pads positioned to prevent abrasion or sharp bend radius.</span></label>
+                    <label class="check-item"><input type="checkbox" onchange="updateChecklist()"><span><strong>Knots &amp; Hardware:</strong> All knots dressed, set, backed up, and carabiners/pulleys locked.</span></label>
+                    <label class="check-item"><input type="checkbox" onchange="updateChecklist()"><span><strong>TTS / Belay System:</strong> Twin tension load-sharing or dedicated belay line rigged and tended.</span></label>
+                    <label class="check-item"><input type="checkbox" onchange="updateChecklist()"><span><strong>Stokes Packaging:</strong> Patient secured in litter (horizontal/vertical) with tag/control line ready.</span></label>
+                    <label class="check-item"><input type="checkbox" onchange="updateChecklist()"><span><strong>Comms &amp; Reset Plan:</strong> Whistle/voice commands briefed and rope length/reset points verified.</span></label>
                 </div>
             </div>
         </section>
@@ -190,17 +239,17 @@
             <div class="summary-grid">
                 <div class="metric-card">
                     <div class="metric-title">Total Suspended Mass</div>
-                    <div class="metric-value" id="res-total-weight">0 lbs</div>
-                    <div class="metric-sub" id="res-total-weight-sub">0 kg / 0.00 kN</div>
+                    <div class="metric-value" id="res-total-weight">0 lbs / 0.00 kN</div>
+                    <div class="metric-sub" id="res-total-weight-sub">0 kg mass equivalent</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-title">Working Line Tension (+ Friction)</div>
-                    <div class="metric-value" id="res-rope-load">0 lbs</div>
-                    <div class="metric-sub" id="res-rope-load-sub">0 kg / 0.00 kN</div>
+                    <div class="metric-title">Working Line Tension</div>
+                    <div class="metric-value" id="res-rope-load">0 lbs / 0.00 kN</div>
+                    <div class="metric-sub" id="res-rope-load-sub">Governing load: 0 lbs / 0.00 kN</div>
                 </div>
                 <div class="metric-card alert" style="border-left-color: var(--accent-yellow);">
                     <div class="metric-title">Dynamic Shock Spike</div>
-                    <div class="metric-value" id="res-shock-load">0 lbs</div>
+                    <div class="metric-value" id="res-shock-load">0 lbs / 0.00 kN</div>
                     <div class="metric-sub" id="res-shock-sub">Elongation-adjusted shock</div>
                 </div>
                 <div class="metric-card" id="card-sf">
@@ -209,9 +258,14 @@
                     <div class="metric-sub" id="res-sf-sub">Target: 10:1 Minimum</div>
                 </div>
                 <div class="metric-card" id="card-haul">
-                    <div class="metric-title">Haul Force (<span id="res-ma-label">2:1</span>)</div>
-                    <div class="metric-value" id="res-haul-force">0 lbs</div>
-                    <div class="metric-sub" id="res-haul-sub">~0 lbs / rescuer</div>
+                    <div class="metric-title" id="res-op-title">Haul Force (<span id="res-ma-label">2:1</span>)</div>
+                    <div class="metric-value" id="res-haul-force">0 lbs / 0.00 kN</div>
+                    <div class="metric-sub" id="res-haul-sub">~0 lbs (0.00 kN) / rescuer</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Rope Travel &amp; Resets</div>
+                    <div class="metric-value" id="res-rope-pull">0 ft (0.0 m)</div>
+                    <div class="metric-sub" id="res-resets-sub">~0 resets for travel</div>
                 </div>
             </div>
 
@@ -225,29 +279,39 @@
             </div>
 
             <div class="card">
-                <h3>Rigging Physics &amp; MA System Notes</h3>
+                <h3>Rigging Physics, Operation Mode &amp; Reset Notes</h3>
                 <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;" id="res-breakdown-text"></p>
             </div>
         </section>
 
         <section id="pane-diagram" class="pane">
             <div class="canvas-container">
-                <h3 style="color: var(--accent-cyan); margin-bottom: 0.6rem; align-self: flex-start;">Detailed Lay Diagram (High Point, Slope / Overhang &amp; Litter Rigging)</h3>
-                <canvas id="diagramCanvas" width="920" height="480"></canvas>
+                <h3 style="color: var(--accent-cyan); margin-bottom: 0.6rem; align-self: flex-start;">
+                    Detailed Lay Diagram — Arizona Vortex &amp; Stokes Basket (<span id="diagram-orient-label">Horizontal</span> • <span id="diagram-mode-label">RAISE</span>)
+                </h3>
+                <canvas id="diagramCanvas" width="940" height="500"></canvas>
             </div>
         </section>
     </main>
 
     <script>
+        const LBS_TO_KN = 0.00444822;
+        const LBS_TO_KG = 0.453592;
+        const FT_TO_M = 0.3048;
+
         const DEFAULT_STATE = {
+            opMode: 'raise',
             riggingStrategy: 'tts',
             highPoint: true,
+            litterOrientation: 'horizontal',
             maSystem: 2,
             ropeType: 'static125',
             useLitter: true,
             numPatients: 1,
             numRescuers: 1,
             haulTeam: 4,
+            travelFt: 100,
+            strokeFt: 15,
             avgWeight: 220,
             angle: 90,
             anchorType: 'tree',
@@ -269,6 +333,36 @@
             6: '6:1 Drop Loop + 3:1 (2:1 drop loop feeding a 3:1 haul; 6 ft pull = 1 ft load travel)'
         };
 
+        function fmtForce(lbs) {
+            return `${lbs.toFixed(0)} lbs / ${(lbs * LBS_TO_KN).toFixed(2)} kN`;
+        }
+
+        function syncStepLabels() {
+            ['numPatients', 'numRescuers', 'haulTeam'].forEach(k => {
+                const el = document.getElementById(`val-${k}`);
+                if (el) el.innerText = state[k];
+            });
+            const tEl = document.getElementById('val-travelFt');
+            if (tEl) tEl.innerText = `${state.travelFt} ft (${(state.travelFt * FT_TO_M).toFixed(1)} m)`;
+            const sEl = document.getElementById('val-strokeFt');
+            if (sEl) sEl.innerText = `${state.strokeFt} ft (${(state.strokeFt * FT_TO_M).toFixed(1)} m)`;
+        }
+
+        function updateChecklist() {
+            const boxes = document.querySelectorAll('#riggingChecklist input[type="checkbox"]');
+            let checkedCount = 0;
+            boxes.forEach(cb => {
+                const row = cb.closest('.check-item');
+                if (cb.checked) {
+                    checkedCount++;
+                    row.classList.add('checked');
+                } else {
+                    row.classList.remove('checked');
+                }
+            });
+            document.getElementById('checklist-count').innerText = `${checkedCount} / ${boxes.length}`;
+        }
+
         function switchPane(paneId, btnEl) {
             document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
@@ -288,10 +382,7 @@
                     btn.classList.toggle('active', match && match[1] === val);
                 });
             });
-            ['numPatients', 'numRescuers', 'haulTeam'].forEach(k => {
-                const el = document.getElementById(`val-${k}`);
-                if (el) el.innerText = state[k];
-            });
+            syncStepLabels();
             calculate();
             if (document.getElementById('pane-diagram').classList.contains('active')) drawDiagram();
         }
@@ -304,10 +395,9 @@
             if (document.getElementById('pane-diagram').classList.contains('active')) drawDiagram();
         }
 
-        function adjustValue(key, delta) {
-            state[key] = Math.max(0, state[key] + delta);
-            const el = document.getElementById(`val-${key}`);
-            if (el) el.innerText = state[key];
+        function adjustValue(key, delta, minVal = 0) {
+            state[key] = Math.max(minVal, state[key] + delta);
+            syncStepLabels();
             calculate();
             if (document.getElementById('pane-diagram').classList.contains('active')) drawDiagram();
         }
@@ -315,7 +405,6 @@
         function calculate() {
             const totalWeightLbs = ((state.numPatients + state.numRescuers) * state.avgWeight) + (state.useLitter ? 30 : 0);
             const effectiveAngleRad = Math.min(state.angle, 90) * (Math.PI / 180);
-            // High point reduces sharp edge drag slightly compared to an edge-only lip
             const effectiveFrictionPct = state.highPoint ? Math.max(5, state.frictionLoss - 5) : state.frictionLoss;
             const adjustedSlopeForce = totalWeightLbs * Math.sin(effectiveAngleRad) * (1 + effectiveFrictionPct / 100);
             const isTTS = state.riggingStrategy === 'tts';
@@ -323,31 +412,59 @@
 
             const spec = ropeSpecs[state.ropeType] || ropeSpecs.static125;
             const effectiveRopeMbs = spec.rawMbs * 0.75;
-            const shockLoadLbs = workingLineLoadLbs * spec.shockMult;
+            // Pickoff adds slight transfer/release dynamic margin
+            const modeShockBonus = state.opMode === 'pickoff' ? 0.2 : 0;
+            const shockLoadLbs = workingLineLoadLbs * (spec.shockMult + modeShockBonus);
             const safetyFactor = adjustedSlopeForce > 0 ? (effectiveRopeMbs / adjustedSlopeForce) : 0;
 
             const ma = state.maSystem || 1;
             const maEfficiency = ma <= 2 ? 0.85 : 0.75;
-            const haulForceLbs = adjustedSlopeForce / (ma * maEfficiency);
-            const perRescuerPullLbs = state.haulTeam > 0 ? (haulForceLbs / state.haulTeam) : haulForceLbs;
 
-            document.getElementById('res-total-weight').innerText = `${totalWeightLbs.toFixed(0)} lbs`;
-            document.getElementById('res-total-weight-sub').innerText = `${(totalWeightLbs * 0.453592).toFixed(0)} kg / ${(totalWeightLbs * 0.00444822).toFixed(2)} kN`;
-            document.getElementById('res-rope-load').innerText = `${workingLineLoadLbs.toFixed(0)} lbs`;
-            document.getElementById('res-rope-load-sub').innerText = `${(workingLineLoadLbs * 0.453592).toFixed(0)} kg / ${(workingLineLoadLbs * 0.00444822).toFixed(2)} kN`;
-            document.getElementById('res-shock-load').innerText = `${shockLoadLbs.toFixed(0)} lbs`;
-            document.getElementById('res-shock-sub').innerText = `${spec.shockMult}× line load (${spec.label})`;
+            let opForceLbs;
+            let opTitle;
+            let opNote;
+            if (state.opMode === 'raise') {
+                opForceLbs = adjustedSlopeForce / (ma * maEfficiency);
+                opTitle = `Haul Force (${ma}:1)`;
+                opNote = 'Hauling load up slope/vertical against friction & MA efficiency';
+            } else if (state.opMode === 'lower') {
+                // Lowering uses friction to assist holding load (approx 72% of unassisted gravity pull)
+                opForceLbs = workingLineLoadLbs * 0.72;
+                opTitle = 'Brake / Lower Tension';
+                opNote = 'Controlled descent load on lowering/brake device';
+            } else {
+                // Pickoff transfers load between lines (approx 1.15x working line during transfer)
+                opForceLbs = workingLineLoadLbs * 1.15;
+                opTitle = 'Pickoff Transfer Load';
+                opNote = 'Peak line tension during load transfer / pickoff release';
+            }
+
+            const perCrewLbs = state.haulTeam > 0 ? (opForceLbs / state.haulTeam) : opForceLbs;
+
+            // Rope pulled & resets calculation
+            const totalRopePulledFt = state.travelFt * ma;
+            const resetsNeeded = state.strokeFt > 0 ? Math.max(0, Math.ceil(totalRopePulledFt / state.strokeFt) - 1) : 0;
+
+            document.getElementById('res-total-weight').innerText = fmtForce(totalWeightLbs);
+            document.getElementById('res-total-weight-sub').innerText = `${(totalWeightLbs * LBS_TO_KG).toFixed(0)} kg mass equivalent`;
+            document.getElementById('res-rope-load').innerText = fmtForce(workingLineLoadLbs);
+            document.getElementById('res-rope-load-sub').innerText = `Governing load: ${fmtForce(adjustedSlopeForce)}`;
+            document.getElementById('res-shock-load').innerText = fmtForce(shockLoadLbs);
+            document.getElementById('res-shock-sub').innerText = `${(spec.shockMult + modeShockBonus).toFixed(2)}× line load (${spec.label})`;
 
             const sfEl = document.getElementById('res-safety-factor');
             const sfCard = document.getElementById('card-sf');
             sfEl.innerText = adjustedSlopeForce > 0 ? `${safetyFactor.toFixed(1)} : 1` : 'N/A';
             document.getElementById('res-sf-sub').innerText = isTTS ? 'Against single-line governing load' : 'Against main line load';
 
-            document.getElementById('res-ma-label').innerText = `${ma}:1`;
-            document.getElementById('res-haul-force').innerText = `${haulForceLbs.toFixed(0)} lbs`;
+            document.getElementById('res-op-title').innerText = opTitle;
+            document.getElementById('res-haul-force').innerText = fmtForce(opForceLbs);
             document.getElementById('res-haul-sub').innerText = state.haulTeam > 0
-                ? `~${perRescuerPullLbs.toFixed(0)} lbs / rescuer (${state.haulTeam} hauling)`
-                : 'No haul team specified';
+                ? `~${perCrewLbs.toFixed(0)} lbs (${(perCrewLbs * LBS_TO_KN).toFixed(2)} kN) / crew (${state.haulTeam} crew)`
+                : 'No crew specified';
+
+            document.getElementById('res-rope-pull').innerText = `${totalRopePulledFt} ft (${(totalRopePulledFt * FT_TO_M).toFixed(1)} m)`;
+            document.getElementById('res-resets-sub').innerText = `~${resetsNeeded} resets over ${state.travelFt} ft (${state.strokeFt} ft stroke)`;
 
             const warnings = [];
             if (adjustedSlopeForce > 0 && safetyFactor < 10) {
@@ -358,9 +475,9 @@
             }
 
             const haulCard = document.getElementById('card-haul');
-            if (perRescuerPullLbs > 60) {
+            if (state.opMode === 'raise' && perCrewLbs > 60) {
                 haulCard.className = 'metric-card alert';
-                warnings.push(`Estimated pull (~${perRescuerPullLbs.toFixed(0)} lbs/rescuer) exceeds ~60 lbs ergonomic guideline.`);
+                warnings.push(`Estimated pull (~${perCrewLbs.toFixed(0)} lbs / ${(perCrewLbs * LBS_TO_KN).toFixed(2)} kN per hauler) exceeds ~60 lbs (~0.27 kN) ergonomic guideline.`);
             } else {
                 haulCard.className = 'metric-card good';
             }
@@ -376,22 +493,22 @@
             const components = [
                 { name: `Anchor (${state.anchorType.toUpperCase()})`, capacity: anchorStrengths[state.anchorType] || 4000 },
                 { name: `${spec.label} (Knot-Dressed ~75%)`, capacity: effectiveRopeMbs },
-                { name: state.highPoint ? 'High Point Frame / Head Sheave' : 'Edge Roller / Lip Protection', capacity: state.highPoint ? 8000 : 5620 },
+                { name: state.highPoint ? 'Arizona Vortex Head / Legs' : 'Edge Roller / Lip Protection', capacity: state.highPoint ? 8000 : 5620 },
                 { name: 'General Use Hardware (~40 kN)', capacity: 8992 },
                 { name: 'Technical Use Hardware (~25 kN)', capacity: 5620 }
             ];
             const denom = Math.max(adjustedSlopeForce, 1);
             components.sort((a, b) => (a.capacity / denom) - (b.capacity / denom));
             document.getElementById('weakestGearList').innerHTML = components.slice(0, 3).map((item, idx) => `
-                <li class="weakest-item"><strong>#${idx + 1}: ${item.name}</strong> — ~${item.capacity.toFixed(0)} lbs (${(item.capacity * 0.00444822).toFixed(1)} kN)</li>
+                <li class="weakest-item"><strong>#${idx + 1}: ${item.name}</strong> — ${fmtForce(item.capacity)}</li>
             `).join('');
 
             const angleLabel = state.angle > 90 ? `${state.angle}° (Overhang)` : `${state.angle}°`;
             document.getElementById('res-breakdown-text').innerHTML = `
-                <strong>Strategy:</strong> ${isTTS ? 'Twin Tension System (SF checked against single-line governing load)' : 'Main & Belay System'} | <strong>High Point:</strong> ${state.highPoint ? 'Yes (Elevated HD)' : 'None (Edge Roller Only)'}<br/>
-                <strong>MA Selection:</strong> ${maDescriptions[ma]} (${(maEfficiency * 100).toFixed(0)}% efficiency)<br/>
+                <strong>Mode &amp; Strategy:</strong> ${state.opMode.toUpperCase()} (${opNote}) | ${isTTS ? 'Twin Tension System' : 'Main & Belay'} | <strong>High Point:</strong> ${state.highPoint ? 'Arizona Vortex' : 'None (Edge Roller)'} | <strong>Litter:</strong> ${state.litterOrientation.toUpperCase()}<br/>
+                <strong>MA &amp; Travel:</strong> ${maDescriptions[ma]} (${(maEfficiency * 100).toFixed(0)}% efficiency) — ${totalRopePulledFt} ft (${(totalRopePulledFt * FT_TO_M).toFixed(1)} m) rope travel, ~${resetsNeeded} resets<br/>
                 <strong>Slope &amp; Friction:</strong> ${angleLabel} | Effective friction ~${effectiveFrictionPct}% applied<br/>
-                <strong>Governing Force:</strong> ${adjustedSlopeForce.toFixed(0)} lbs (${(adjustedSlopeForce * 0.00444822).toFixed(2)} kN)
+                <strong>Governing Force:</strong> ${fmtForce(adjustedSlopeForce)}
             `;
         }
 
@@ -402,15 +519,19 @@
             const adjustedSlopeForce = totalWeightLbs * Math.sin(effectiveAngleRad) * (1 + effectiveFrictionPct / 100);
             const spec = ropeSpecs[state.ropeType] || ropeSpecs.static125;
             const sf = adjustedSlopeForce > 0 ? ((spec.rawMbs * 0.75) / adjustedSlopeForce).toFixed(1) : 'N/A';
+            const totalRopePulledFt = state.travelFt * (state.maSystem || 1);
+            const resetsNeeded = state.strokeFt > 0 ? Math.max(0, Math.ceil(totalRopePulledFt / state.strokeFt) - 1) : 0;
 
             const text = [
                 '=== CANADIAN TECHNICAL RESCUE INCIDENT SUMMARY ===',
                 `Timestamp: ${new Date().toLocaleString()}`,
-                `Strategy: ${state.riggingStrategy.toUpperCase()} | High Point: ${state.highPoint ? 'YES' : 'NO'} | MA: ${state.maSystem}:1`,
+                `Mode: ${state.opMode.toUpperCase()} | Strategy: ${state.riggingStrategy.toUpperCase()} | High Point: ${state.highPoint ? 'Arizona Vortex' : 'None'} | MA: ${state.maSystem}:1`,
+                `Stokes Litter Orientation: ${state.litterOrientation.toUpperCase()}`,
                 `Rope: ${spec.label} | Angle: ${state.angle > 90 ? state.angle + ' deg (Overhang)' : state.angle + ' deg'}`,
-                `Friction: ~${effectiveFrictionPct}% | Total Mass: ${totalWeightLbs} lbs`,
-                `Governing Load: ${adjustedSlopeForce.toFixed(0)} lbs | SF: ${sf}:1`,
-                `Anchor: ${state.anchorType.toUpperCase()}`,
+                `Friction: ~${effectiveFrictionPct}% | Total Mass: ${fmtForce(totalWeightLbs)}`,
+                `Governing Load: ${fmtForce(adjustedSlopeForce)} | SF: ${sf}:1`,
+                `Travel: ${state.travelFt} ft (${(state.travelFt * FT_TO_M).toFixed(1)} m) | Rope Pulled: ${totalRopePulledFt} ft | Resets: ~${resetsNeeded}`,
+                `Anchor: ${state.anchorType.toUpperCase()} (${fmtForce(anchorStrengths[state.anchorType] || 4000)})`,
                 '=================================================='
             ].join('\n');
 
@@ -423,27 +544,199 @@
             URL.revokeObjectURL(url);
         }
 
+        function drawTreeGraphic(ctx, x, y) {
+            ctx.fillStyle = '#78350f';
+            ctx.fillRect(x - 9, y - 48, 18, 48);
+            ctx.fillStyle = '#15803d';
+            ctx.beginPath(); ctx.arc(x - 16, y - 56, 20, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#16a34a';
+            ctx.beginPath(); ctx.arc(x + 16, y - 56, 20, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#22c55e';
+            ctx.beginPath(); ctx.arc(x, y - 72, 24, 0, Math.PI * 2); ctx.fill();
+        }
+
+        function drawVehicleGraphic(ctx, x, y) {
+            ctx.fillStyle = '#b91c1c';
+            ctx.beginPath(); ctx.roundRect(x - 38, y - 24, 76, 16, 4); ctx.fill();
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath(); ctx.roundRect(x - 22, y - 38, 40, 14, 3); ctx.fill();
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillRect(x - 18, y - 35, 14, 9);
+            ctx.fillStyle = '#090d16';
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(x - 21, y - 6, 7.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.arc(x + 21, y - 6, 7.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        }
+
+        function drawIndustrialAnchorGraphic(ctx, x, y) {
+            ctx.fillStyle = '#0f172a';
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath(); ctx.roundRect(x - 22, y - 30, 44, 30, 5); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = '#eab308';
+            ctx.beginPath(); ctx.arc(x, y - 15, 7, 0, Math.PI * 2); ctx.fill();
+        }
+
+        function drawArizonaVortexGraphic(ctx, edgeX, edgeY) {
+            const apexX = edgeX + 14;
+            const apexY = edgeY - 82;
+            const legLeftX = edgeX - 30;
+            const legRightX = edgeX + 28;
+
+            ctx.strokeStyle = 'rgba(234, 179, 8, 0.7)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([4, 3]);
+            ctx.beginPath();
+            ctx.moveTo(apexX, apexY);
+            ctx.lineTo(edgeX - 82, edgeY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(legLeftX, edgeY);
+            ctx.lineTo(apexX, apexY);
+            ctx.moveTo(legRightX, edgeY);
+            ctx.lineTo(apexX, apexY);
+            ctx.stroke();
+
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(legLeftX - 7, edgeY - 4, 14, 5);
+            ctx.fillRect(legRightX - 7, edgeY - 4, 14, 5);
+
+            ctx.fillStyle = '#1e293b';
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.arc(apexX, apexY, 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#eab308';
+            ctx.beginPath();
+            ctx.arc(apexX, apexY, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillText('ARIZONA VORTEX', apexX - 48, apexY - 17);
+
+            return { x: apexX, y: apexY };
+        }
+
+        function drawStokesBasketGraphic(ctx, cx, cy, orientation, hasLitter, numPatients) {
+            const isVert = orientation === 'vertical';
+
+            if (!hasLitter) {
+                if (numPatients > 0) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.beginPath(); ctx.arc(cx, cy - 8, 6, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 3;
+                    ctx.beginPath(); ctx.moveTo(cx, cy - 2); ctx.lineTo(cx, cy + 16); ctx.stroke();
+                }
+                return;
+            }
+
+            if (!isVert) {
+                const w = 74, h = 24;
+                const x0 = cx - w / 2, y0 = cy + 6;
+
+                ctx.strokeStyle = '#eab308';
+                ctx.lineWidth = 2.2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - 14);
+                ctx.lineTo(x0 + 8, y0);
+                ctx.moveTo(cx, cy - 14);
+                ctx.lineTo(x0 + w - 8, y0);
+                ctx.stroke();
+
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 10); ctx.fill(); ctx.stroke();
+
+                ctx.strokeStyle = '#64748b';
+                ctx.lineWidth = 1.5;
+                for (let rx = x0 + 14; rx < x0 + w - 8; rx += 13) {
+                    ctx.beginPath(); ctx.moveTo(rx, y0 + 2); ctx.lineTo(rx, y0 + h - 2); ctx.stroke();
+                }
+
+                if (numPatients > 0) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.beginPath(); ctx.arc(x0 + w - 16, y0 + 10, 5.5, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = '#38bdf8';
+                    ctx.lineWidth = 3.5;
+                    ctx.beginPath(); ctx.moveTo(x0 + w - 21, y0 + 13); ctx.lineTo(x0 + 14, y0 + 15); ctx.stroke();
+                }
+
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillText(`Stokes (HORIZ) • ${numPatients}P`, cx - 52, y0 + h + 16);
+            } else {
+                const w = 26, h = 74;
+                const x0 = cx - w / 2, y0 = cy - 12;
+
+                ctx.strokeStyle = '#eab308';
+                ctx.lineWidth = 2.2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - 26);
+                ctx.lineTo(x0 + 5, y0);
+                ctx.moveTo(cx, cy - 26);
+                ctx.lineTo(x0 + w - 5, y0);
+                ctx.stroke();
+
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 10); ctx.fill(); ctx.stroke();
+
+                ctx.strokeStyle = '#64748b';
+                ctx.lineWidth = 1.5;
+                for (let ry = y0 + 14; ry < y0 + h - 8; ry += 13) {
+                    ctx.beginPath(); ctx.moveTo(x0 + 2, ry); ctx.lineTo(x0 + w - 2, ry); ctx.stroke();
+                }
+
+                if (numPatients > 0) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.beginPath(); ctx.arc(cx, y0 + 15, 5.5, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = '#38bdf8';
+                    ctx.lineWidth = 3.5;
+                    ctx.beginPath(); ctx.moveTo(cx, y0 + 21); ctx.lineTo(cx, y0 + h - 14); ctx.stroke();
+                }
+
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillText(`Stokes (VERT) • ${numPatients}P`, cx - 48, y0 + h + 16);
+            }
+        }
+
         function drawDiagram() {
+            const orientEl = document.getElementById('diagram-orient-label');
+            if (orientEl) orientEl.innerText = state.litterOrientation === 'vertical' ? 'Vertical' : 'Horizontal';
+            const modeEl = document.getElementById('diagram-mode-label');
+            if (modeEl) modeEl.innerText = state.opMode.toUpperCase();
+
             const canvas = document.getElementById('diagramCanvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             const w = canvas.width, h = canvas.height;
             ctx.clearRect(0, 0, w, h);
 
-            // Subtle tactical grid
             ctx.strokeStyle = '#111d30';
             ctx.lineWidth = 1;
             for (let x = 0; x <= w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
             for (let y = 0; y <= h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
 
-            // Sky/void depth gradient on right/lower side
             const voidGrad = ctx.createLinearGradient(350, 150, w, h);
             voidGrad.addColorStop(0, 'rgba(14, 116, 144, 0.08)');
-            voidGrad.addColorStop(1, 'rgba(2, 6, 23, 0.6)');
+            voidGrad.addColorStop(1, 'rgba(2, 6, 23, 0.65)');
             ctx.fillStyle = voidGrad;
             ctx.fillRect(350, 0, w - 350, h);
 
-            const edgeX = 365, edgeY = 165, ropeLen = 185;
+            const edgeX = 365, edgeY = 175, ropeLen = 190;
             let targetX, targetY;
             if (state.angle <= 90) {
                 const rad = state.angle * (Math.PI / 180);
@@ -455,7 +748,6 @@
                 targetY = edgeY + Math.cos(overhangRad) * ropeLen;
             }
 
-            // Terrain / Cliff body
             ctx.fillStyle = '#1e293b';
             ctx.strokeStyle = '#64748b';
             ctx.lineWidth = 3;
@@ -464,8 +756,8 @@
             ctx.lineTo(edgeX, edgeY);
             if (state.angle <= 90) {
                 const rad = state.angle * (Math.PI / 180);
-                const fx = edgeX + Math.cos(rad) * 255;
-                const fy = edgeY + Math.sin(rad) * 255;
+                const fx = edgeX + Math.cos(rad) * 265;
+                const fy = edgeY + Math.sin(rad) * 265;
                 ctx.lineTo(fx, fy);
                 ctx.lineTo(fx, h);
             } else {
@@ -477,97 +769,49 @@
             ctx.fill();
             ctx.stroke();
 
-            // Top turf strip
             ctx.fillStyle = 'rgba(34, 197, 94, 0.25)';
             ctx.fillRect(0, edgeY - 5, edgeX - 10, 5);
 
-            // Edge roller / lip protection pad
             ctx.fillStyle = '#eab308';
             ctx.fillRect(edgeX - 18, edgeY - 6, 22, 6);
             ctx.fillStyle = '#cbd5e1';
             ctx.font = '10px sans-serif';
             ctx.fillText('Edge Pad / Roller', edgeX - 68, edgeY + 14);
 
-            // Anchor assembly
             const anchorX = 115, anchorY = edgeY;
-            if (state.anchorType === 'tree') {
-                ctx.fillStyle = '#78350f';
-                ctx.fillRect(anchorX - 9, anchorY - 46, 18, 46);
-                ctx.fillStyle = '#16a34a';
-                ctx.beginPath();
-                ctx.arc(anchorX - 14, anchorY - 56, 20, 0, Math.PI * 2);
-                ctx.arc(anchorX + 14, anchorY - 56, 20, 0, Math.PI * 2);
-                ctx.arc(anchorX, anchorY - 72, 24, 0, Math.PI * 2);
-                ctx.fill();
-            } else if (state.anchorType === 'vehicle') {
-                ctx.fillStyle = '#dc2626';
-                ctx.fillRect(anchorX - 36, anchorY - 24, 72, 16);
-                ctx.fillRect(anchorX - 20, anchorY - 38, 38, 14);
-                ctx.fillStyle = '#38bdf8';
-                ctx.fillRect(anchorX - 16, anchorY - 35, 14, 9);
-                ctx.fillStyle = '#090d16';
-                ctx.beginPath();
-                ctx.arc(anchorX - 20, anchorY - 6, 7, 0, Math.PI * 2);
-                ctx.arc(anchorX + 20, anchorY - 6, 7, 0, Math.PI * 2);
-                ctx.fill();
-            } else {
-                ctx.fillStyle = '#0284c7';
-                ctx.strokeStyle = '#7dd3fc';
-                ctx.lineWidth = 2;
-                ctx.fillRect(anchorX - 20, anchorY - 28, 40, 28);
-                ctx.strokeRect(anchorX - 20, anchorY - 28, 40, 28);
-                ctx.fillStyle = '#e0f2fe';
-                ctx.font = 'bold 9px sans-serif';
-                ctx.fillText('6k IND', anchorX - 15, anchorY - 11);
-            }
+            if (state.anchorType === 'tree') drawTreeGraphic(ctx, anchorX, anchorY);
+            else if (state.anchorType === 'vehicle') drawVehicleGraphic(ctx, anchorX, anchorY);
+            else drawIndustrialAnchorGraphic(ctx, anchorX, anchorY);
+
+            const anchorLbs = anchorStrengths[state.anchorType] || 4000;
             ctx.fillStyle = '#f8fafc';
             ctx.font = 'bold 12px sans-serif';
-            ctx.fillText(`Anchor (${state.anchorType.toUpperCase()})`, anchorX - 42, anchorY - 102);
+            ctx.fillText(`Anchor: ${state.anchorType.toUpperCase()}`, anchorX - 46, anchorY - 106);
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '10px sans-serif';
+            ctx.fillText(`${anchorLbs} lbs / ${(anchorLbs * LBS_TO_KN).toFixed(1)} kN`, anchorX - 46, anchorY - 93);
 
-            // High Point (Elevated HD Frame) vs Edge-Only
             let passX = edgeX - 6;
             let passY = edgeY - 3;
+            const loadAttachY = state.litterOrientation === 'vertical' ? targetY - 26 : targetY - 14;
+
             if (state.highPoint) {
-                const apexX = edgeX + 12;
-                const apexY = edgeY - 78;
-                // A-frame / Gin legs
-                ctx.strokeStyle = '#38bdf8';
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.moveTo(edgeX - 28, edgeY);
-                ctx.lineTo(apexX, apexY);
-                ctx.moveTo(edgeX + 26, edgeY);
-                ctx.lineTo(apexX, apexY);
-                ctx.stroke();
-
-                // Head sheave pulley
-                ctx.fillStyle = '#0f172a';
-                ctx.strokeStyle = '#eab308';
-                ctx.lineWidth = 2.5;
-                ctx.beginPath();
-                ctx.arc(apexX, apexY, 8, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.fillStyle = '#38bdf8';
-                ctx.font = 'bold 11px sans-serif';
-                ctx.fillText('HIGH POINT (HD)', apexX - 42, apexY - 15);
-                passX = apexX;
-                passY = apexY;
+                const hub = drawArizonaVortexGraphic(ctx, edgeX, edgeY);
+                passX = hub.x;
+                passY = hub.y;
             } else {
                 ctx.fillStyle = '#94a3b8';
                 ctx.font = 'bold 11px sans-serif';
                 ctx.fillText('NO HIGH POINT (Lip Pass)', edgeX - 65, edgeY - 20);
             }
 
-            // Rigging lines (Anchor -> Pass -> Litter)
             const ropeColor = state.ropeType === 'dynamic11' ? '#f59e0b' : '#38bdf8';
             ctx.strokeStyle = ropeColor;
             ctx.lineWidth = 3;
             ctx.beginPath();
             ctx.moveTo(anchorX, anchorY - 14);
             ctx.lineTo(passX, passY);
-            ctx.lineTo(targetX, targetY - 12);
+            ctx.lineTo(targetX, loadAttachY);
             ctx.stroke();
 
             if (state.riggingStrategy === 'tts') {
@@ -576,83 +820,53 @@
                 ctx.beginPath();
                 ctx.moveTo(anchorX, anchorY - 8);
                 ctx.lineTo(passX + (state.highPoint ? 3 : 0), passY + (state.highPoint ? 3 : 2));
-                ctx.lineTo(targetX + 5, targetY - 12);
+                ctx.lineTo(targetX + 5, loadAttachY);
                 ctx.stroke();
                 ctx.setLineDash([]);
             }
 
-            // Rescuer along line
             if (state.numRescuers > 0) {
-                const rx = passX + (targetX - passX) * 0.44;
-                const ry = passY + (targetY - passY) * 0.44;
+                const rx = passX + (targetX - passX) * 0.42;
+                const ry = passY + (loadAttachY - passY) * 0.42;
                 ctx.fillStyle = '#f97316';
-                ctx.beginPath();
-                ctx.arc(rx, ry - 12, 6, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.strokeStyle = '#38bdf8';
-                ctx.lineWidth = 3.5;
-                ctx.beginPath();
-                ctx.moveTo(rx, ry - 6);
-                ctx.lineTo(rx, ry + 10);
-                ctx.stroke();
+                ctx.beginPath(); ctx.arc(rx, ry - 12, 6, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3.5;
+                ctx.beginPath(); ctx.moveTo(rx, ry - 6); ctx.lineTo(rx, ry + 10); ctx.stroke();
                 ctx.fillStyle = '#f8fafc';
                 ctx.font = 'bold 11px sans-serif';
                 ctx.fillText(`Rescuer (${state.numRescuers})`, rx + 12, ry + 4);
             }
 
-            // Litter bridle + basket + patient
-            ctx.strokeStyle = '#eab308';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(targetX, targetY - 12);
-            ctx.lineTo(targetX - 20, targetY + 4);
-            ctx.moveTo(targetX, targetY - 12);
-            ctx.lineTo(targetX + 20, targetY + 4);
-            ctx.stroke();
+            drawStokesBasketGraphic(ctx, targetX, targetY, state.litterOrientation, state.useLitter, state.numPatients);
 
-            if (state.useLitter) {
-                ctx.strokeStyle = '#e2e8f0';
-                ctx.fillStyle = 'rgba(148, 163, 184, 0.16)';
-                ctx.lineWidth = 2.5;
-                ctx.beginPath();
-                ctx.roundRect(targetX - 26, targetY + 4, 52, 18, 7);
-                ctx.fill();
-                ctx.stroke();
-            }
+            const totalWeightLbs = ((state.numPatients + state.numRescuers) * state.avgWeight) + (state.useLitter ? 30 : 0);
+            const effectiveAngleRad = Math.min(state.angle, 90) * (Math.PI / 180);
+            const effectiveFrictionPct = state.highPoint ? Math.max(5, state.frictionLoss - 5) : state.frictionLoss;
+            const governingLbs = totalWeightLbs * Math.sin(effectiveAngleRad) * (1 + effectiveFrictionPct / 100);
 
-            if (state.numPatients > 0) {
-                ctx.fillStyle = '#ef4444';
-                ctx.beginPath();
-                ctx.arc(targetX, targetY + (state.useLitter ? 12 : 6), 5.5, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            ctx.fillStyle = '#f8fafc';
-            ctx.font = 'bold 11px sans-serif';
-            ctx.fillText(`${state.useLitter ? 'Litter' : 'Load'} (${state.numPatients}P)`, targetX - 30, targetY + 38);
-
-            // Configuration HUD panel
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
             ctx.strokeStyle = '#334155';
             ctx.lineWidth = 1.2;
-            ctx.beginPath();
-            ctx.roundRect(615, 18, 285, 112, 8);
-            ctx.fill();
-            ctx.stroke();
+            ctx.beginPath(); ctx.roundRect(605, 16, 315, 142, 8); ctx.fill(); ctx.stroke();
 
             ctx.fillStyle = '#38bdf8';
             ctx.font = 'bold 12px sans-serif';
-            ctx.fillText('SYSTEM LAY SUMMARY', 628, 38);
+            ctx.fillText('SYSTEM LAY SUMMARY (LBS / kN)', 618, 36);
             ctx.fillStyle = '#f8fafc';
-            ctx.font = '12px sans-serif';
-            ctx.fillText(`High Point: ${state.highPoint ? 'ENABLED (Elevated HD)' : 'NONE (Edge Roller)'}`, 628, 58);
-            ctx.fillText(`Slope: ${state.angle > 90 ? state.angle + '° (Overhang)' : state.angle + '°'} | MA: ${state.maSystem}:1`, 628, 78);
-            ctx.fillText(`Strategy: ${state.riggingStrategy.toUpperCase()} | Haul: ${state.haulTeam} crew`, 628, 98);
+            ctx.font = '11.5px sans-serif';
+            ctx.fillText(`Mode: ${state.opMode.toUpperCase()} | High Point: ${state.highPoint ? 'Vortex' : 'None'}`, 618, 55);
+            ctx.fillText(`Stokes Litter: ${state.litterOrientation.toUpperCase()} | MA: ${state.maSystem}:1`, 618, 74);
+            ctx.fillText(`Slope: ${state.angle > 90 ? state.angle + '° (Overhang)' : state.angle + '°'} | ${state.riggingStrategy.toUpperCase()}`, 618, 93);
+            ctx.fillStyle = '#eab308';
+            ctx.fillText(`Total Mass: ${fmtForce(totalWeightLbs)}`, 618, 113);
+            ctx.fillStyle = '#22c55e';
+            ctx.fillText(`Gov. Load: ${fmtForce(governingLbs)}`, 618, 131);
             ctx.fillStyle = '#94a3b8';
             ctx.font = '11px sans-serif';
-            ctx.fillText(`Rope: ${ropeSpecs[state.ropeType].label}`, 628, 118);
+            ctx.fillText(`Travel: ${state.travelFt} ft (${(state.travelFt * FT_TO_M).toFixed(1)} m) | Haul Crew: ${state.haulTeam}`, 618, 149);
         }
 
+        syncStepLabels();
         calculate();
     </script>
 </body>
